@@ -1,0 +1,10 @@
+<project name="atto" default="grammar">
+	<path id="build.classpath">
+		<fileset dir="lib" includes="*.jar"/>
+	</path>
+	<target name="grammar">
+		<java classname="org.antlr.Tool" maxmemory="750M" fork="true" dir="src/atto" classpathref="build.classpath" failonerror="true">
+			<arg line="Atto.g"/>
+		</java>
+	</target>
+</project>

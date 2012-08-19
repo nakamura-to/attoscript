@@ -1,0 +1,462 @@
+package atto;
+
+import static atto.AttoParser.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Stack;
+
+import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.antlr.runtime.tree.TreeAdaptor;
+
+import atto.lang.Function;
+
+public class Interpreter {
+
+    static TreeAdaptor treeAdaptor = new CommonTreeAdaptor() {
+        @Override
+        public Object create(Token token) {
+            return new AttoTree(token);
+        }
+
+        @Override
+        public Object dupNode(Object t) {
+            if (t == null) {
+                return null;
+            }
+            return create(((AttoTree) t).token);
+        }
+
+        public Object errorNode(org.antlr.runtime.TokenStream input,
+                Token start, Token stop, RecognitionException e) {
+            return new AttoErrorNode(input, start, stop, e);
+        }
+
+    };
+
+    Scope globalScope = new Scope();
+
+    Space globalSpace = new Space("global");
+
+    Space currentSpace = globalSpace;
+
+    Stack<Space> stack = new Stack<Space>();
+
+    AttoTree root;
+
+    PrintWriter out;
+
+    public Interpreter() {
+        this(System.out);
+    }
+
+    public Interpreter(OutputStream out) {
+        this.out = new PrintWriter(out);
+    }
+
+    public Interpreter(Writer out) {
+        this.out = new PrintWriter(out);
+    }
+
+    public Object run(InputStream input) throws RecognitionException,
+            IOException {
+        return run(new ANTLRInputStream(input));
+    }
+
+    public Object run(String input) throws RecognitionException, IOException {
+        return run(new ANTLRStringStream(input));
+    }
+
+    Object run(CharStream input) throws RecognitionException, IOException {
+        AttoLexer lexer = new AttoLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        AttoTokenSource source = new AttoTokenSource(tokens);
+        tokens = new CommonTokenStream(source);
+        AttoParser parser = new AttoParser(tokens, globalScope);
+        parser.setTreeAdaptor(treeAdaptor);
+        AttoParser.root_return ret = parser.root();
+        if (parser.getNumberOfSyntaxErrors() == 0) {
+            root = (AttoTree) ret.getTree();
+            return block(root);
+        }
+        return null;
+    }
+
+    Object exec(AttoTree t) {
+        System.out.println("exec: " + t.getText());
+        switch (t.getType()) {
+        case BLOCK:
+            return block(t);
+        case STMT:
+            return stmt(t);
+        case ASSIGN:
+            return assign(t);
+        case FUN:
+            return fun(t);
+        case OR:
+            return or(t);
+        case AND:
+            return and(t);
+        case EQ:
+            return eq(t);
+        case NE:
+            return ne(t);
+        case LT:
+            return lt(t);
+        case GT:
+            return gt(t);
+        case LE:
+            return le(t);
+        case GE:
+            return ge(t);
+        case PLUS:
+            return plus(t);
+        case MINUS:
+            return minus(t);
+        case MUL:
+            return mul(t);
+        case DIV:
+            return div(t);
+        case MOD:
+            return mod(t);
+        case NOT:
+            return not(t);
+        case PRINT:
+            return print(t);
+        case CALL:
+            return call(t);
+        case INT:
+            return int_(t);
+        case STRING:
+            return string(t);
+        case BOOL:
+            return bool(t);
+        case NULL:
+            return null_(t);
+        case NAME:
+            return name(t);
+        default:
+            return unknown(t);
+        }
+    }
+
+    Object block(AttoTree t) {
+        Assert.treeType(t, BLOCK);
+        Object result = null;
+        for (AttoTree c : t.getChildren()) {
+            result = exec(c);
+        }
+        return result;
+    }
+
+    Object stmt(AttoTree t) {
+        Assert.treeType(t, STMT);
+        Assert.equals(1, t.getChildCount());
+        return exec(t.getChild(0));
+    }
+
+    Object assign(AttoTree t) {
+        Assert.treeType(t, ASSIGN);
+        AttoTree lhs = t.getChild(0);
+        Object value = exec(t.getChild(1));
+
+        if (lhs.getType() == DOT) {
+            // field assign
+            fieldAssign(lhs, value);
+        } else {
+            // assign
+            String id = lhs.getText();
+            Space space = getSpaceWithSymbol(id);
+            if (space == null) {
+                space = currentSpace;
+            }
+            space.put(id, value);
+        }
+
+        return value;
+    }
+
+    void fieldAssign(AttoTree t, Object value) {
+        // TODO
+    }
+
+    Object fun(AttoTree t) {
+        Assert.treeType(t, FUN);
+        Function fun = new Function();
+        fun.scope = t.scope;
+        for (int i = 0; i < t.getChildCount() - 1; i++) {
+            fun.parameters.add(t.getChild(i));
+        }
+        fun.body = t.getChild(t.getChildCount() - 1);
+        return fun;
+    }
+
+    Object call(AttoTree t) {
+        Assert.treeType(t, CALL);
+        Object lhs = exec(t.getChild(0));
+        if (!(lhs instanceof Function)) {
+            throw new RuntimeException("not function");
+        }
+        Function fun = (Function) lhs;
+        Space preservedSpace = currentSpace;
+        currentSpace = new Space("fun:" + fun);
+        int i = 1;
+        for (AttoTree p : fun.parameters) {
+            String pname = p.getText();
+            Object arg = exec(t.getChild(i));
+            currentSpace.put(pname, arg);
+            i++;
+        }
+        Object result = null;
+        stack.push(currentSpace);
+        result = exec(fun.body);
+        stack.pop();
+        currentSpace = preservedSpace;
+        return result;
+    }
+
+    Object or(AttoTree t) {
+        Assert.treeType(t, OR);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        return toBoolean(lhs) || toBoolean(rhs);
+    }
+
+    Object and(AttoTree t) {
+        Assert.treeType(t, AND);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        return toBoolean(lhs) && toBoolean(rhs);
+    }
+
+    boolean toBoolean(Object value) {
+        if (value == null) {
+            return false;
+        }
+        if (Boolean.FALSE.equals(value)) {
+            return false;
+        }
+        if (Integer.valueOf(0).equals(value)) {
+            return false;
+        }
+        if ("".equals(value)) {
+            return false;
+        }
+        return true;
+    }
+
+    Object eq(AttoTree t) {
+        Assert.treeType(t, EQ);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        return lhs.equals(rhs);
+    }
+
+    Object ne(AttoTree t) {
+        Assert.treeType(t, NE);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        return !lhs.equals(rhs);
+    }
+
+    Object lt(AttoTree t) {
+        Assert.treeType(t, LT);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Comparable && rhs instanceof Comparable) {
+            Comparable x = (Comparable) lhs;
+            Comparable y = (Comparable) rhs;
+            if (x.compareTo(y) < 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Object gt(AttoTree t) {
+        Assert.treeType(t, GT);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Comparable && rhs instanceof Comparable) {
+            Comparable x = (Comparable) lhs;
+            Comparable y = (Comparable) rhs;
+            if (x.compareTo(y) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Object le(AttoTree t) {
+        Assert.treeType(t, LE);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Comparable && rhs instanceof Comparable) {
+            Comparable x = (Comparable) lhs;
+            Comparable y = (Comparable) rhs;
+            if (x.compareTo(y) <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Object ge(AttoTree t) {
+        Assert.treeType(t, GE);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Comparable && rhs instanceof Comparable) {
+            Comparable x = (Comparable) lhs;
+            Comparable y = (Comparable) rhs;
+            if (x.compareTo(y) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    Object plus(AttoTree t) {
+        Assert.treeType(t, PLUS);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Integer && rhs instanceof Integer) {
+            Integer x = (Integer) lhs;
+            Integer y = (Integer) rhs;
+            return Integer.valueOf(x.intValue() + y.intValue());
+        }
+        return 0;
+    }
+
+    Object minus(AttoTree t) {
+        Assert.treeType(t, MINUS);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Integer && rhs instanceof Integer) {
+            Integer x = (Integer) lhs;
+            Integer y = (Integer) rhs;
+            return Integer.valueOf(x.intValue() - y.intValue());
+        }
+        return 0;
+    }
+
+    Object mul(AttoTree t) {
+        Assert.treeType(t, MUL);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Integer && rhs instanceof Integer) {
+            Integer x = (Integer) lhs;
+            Integer y = (Integer) rhs;
+            return Integer.valueOf(x.intValue() * y.intValue());
+        }
+        return 0;
+    }
+
+    Object div(AttoTree t) {
+        Assert.treeType(t, DIV);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Integer && rhs instanceof Integer) {
+            Integer x = (Integer) lhs;
+            Integer y = (Integer) rhs;
+            return Integer.valueOf(x.intValue() / y.intValue());
+        }
+        return 0;
+    }
+
+    Object mod(AttoTree t) {
+        Assert.treeType(t, MOD);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (lhs instanceof Integer && rhs instanceof Integer) {
+            Integer x = (Integer) lhs;
+            Integer y = (Integer) rhs;
+            return Integer.valueOf((x.intValue() % y.intValue()));
+        }
+        return 0;
+    }
+
+    Object not(AttoTree t) {
+        Assert.treeType(t, NOT);
+        AttoTree expr = t.getChild(0);
+        return !toBoolean(exec(expr));
+    }
+
+    Object print(AttoTree t) {
+        Assert.treeType(t, PRINT);
+        AttoTree expr = t.getChild(0);
+        Object value = exec(expr);
+        out.println(value);
+        out.flush();
+        return null;
+    }
+
+    Object int_(AttoTree t) {
+        Assert.treeType(t, INT);
+        return Integer.valueOf(t.getText());
+    }
+
+    Object string(AttoTree t) {
+        Assert.treeType(t, STRING);
+        String s = t.getText();
+        return s.substring(1, s.length() - 1);
+    }
+
+    Object bool(AttoTree t) {
+        Assert.treeType(t, BOOL);
+        return Boolean.valueOf(t.getText());
+    }
+
+    Object null_(AttoTree t) {
+        Assert.treeType(t, NULL);
+        return null;
+    }
+
+    Object name(AttoTree t) {
+        Assert.treeType(t, NAME);
+        return load(t);
+    }
+
+    Object unknown(AttoTree t) {
+        throw new RuntimeException("unknown node: " + t.getToken());
+    }
+
+    Object load(AttoTree t) {
+        if (t.getType() == DOT) {
+            return fieldLoad(t);
+        }
+        String name = t.getText();
+        Space space = getSpaceWithSymbol(name);
+        if (space == null) {
+            throw new RuntimeException("no such variable: " + name + ": "
+                    + t.getToken());
+        }
+        return space.get(name);
+    }
+
+    Object fieldLoad(AttoTree t) {
+        // TODO
+        return null;
+    }
+
+    Space getSpaceWithSymbol(String name) {
+        if (stack.size() > 0) {
+            Space top = stack.peek();
+            if (top.get(name) != null) {
+                return top;
+            }
+        }
+        if (globalSpace.get(name) != null) {
+            return globalSpace;
+        }
+        return null;
+    }
+}
