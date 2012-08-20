@@ -2,10 +2,8 @@ package atto;
 
 import java.io.StringWriter;
 
-import atto.Interpreter;
-import atto.lang.Function;
-
 import junit.framework.TestCase;
+import atto.lang.Function;
 
 public class InterpreterTest extends TestCase {
 
@@ -31,7 +29,8 @@ public class InterpreterTest extends TestCase {
         StringWriter writer = new StringWriter();
         Interpreter i = new Interpreter(writer);
         i.run("a = 100\nprint a\n");
-        assertEquals("100\n", writer.toString());
+        assertEquals("100" + System.getProperty("line.separator"),
+                writer.toString());
     }
 
     public void testOR() throws Exception {
