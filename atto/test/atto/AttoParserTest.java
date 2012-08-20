@@ -14,9 +14,11 @@ public class AttoParserTest extends TestCase {
     }
 
     public void testCall() throws Exception {
-        AttoParser p = createParser("(fun x,y->x+y)(1,2)\n");
+        AttoParser p = createParser("(fun x,y->x+y)(1,2)(3, 4)\n");
         AttoTree t = (AttoTree) p.stmt().getTree();
-        assertEquals("(STMT (CALL (FUN x y (+ x y)) 1 2))", t.toStringTree());
+        assertEquals(
+                "(STMT (CALL (FUN x y (+ x y)) (ARGSDEF 1 2) (ARGSDEF 3 4)))",
+                t.toStringTree());
     }
 
     public void testCall2() throws Exception {

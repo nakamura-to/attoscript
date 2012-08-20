@@ -147,6 +147,8 @@ public class Interpreter {
             return print(t);
         case CALL:
             return call(t);
+        case ARGSDEF:
+            return argsdef(t);
         case INT:
             return int_(t);
         case STRING:
@@ -301,24 +303,36 @@ public class Interpreter {
 
     Object call(AttoTree t) {
         Assert.treeType(t, CALL);
-        Object lhs = exec(t.getChild(0));
-        if (!(lhs instanceof Function)) {
-            throw new RuntimeException("not function");
+        Object result = exec(t.getChild(0));
+        for (int i = 1; i < t.getChildCount(); i++) {
+            if (!(result instanceof Function)) {
+                throw new RuntimeException("not function");
+            }
+            Function fun = (Function) result;
+            Env calleeEnv = new Env(fun.env);
+            Object[] args = (Object[]) exec(t.getChild(i));
+            int j = 0;
+            for (AttoTree p : fun.parameters) {
+                String pname = p.getText();
+                if (j < args.length) {
+                    calleeEnv.putLocal(pname, args[j++]);
+                }
+            }
+            Env preservedEnv = currentEnv;
+            currentEnv = calleeEnv;
+            result = exec(fun.body);
+            currentEnv = preservedEnv;
         }
-        Function fun = (Function) lhs;
-        Env calleeEnv = new Env(fun.env);
-        int i = 1;
-        for (AttoTree p : fun.parameters) {
-            String pname = p.getText();
-            Object arg = exec(t.getChild(i++));
-            calleeEnv.putLocal(pname, arg);
-        }
-        Object result = null;
-        Env preservedEnv = currentEnv;
-        currentEnv = calleeEnv;
-        result = exec(fun.body);
-        currentEnv = preservedEnv;
         return result;
+    }
+
+    Object argsdef(AttoTree t) {
+        Assert.treeType(t, ARGSDEF);
+        Object[] args = new Object[t.getChildCount()];
+        for (int i = 0; i < t.getChildCount(); i++) {
+            args[i] = exec(t.getChild(i));
+        }
+        return args;
     }
 
     Object or(AttoTree t) {

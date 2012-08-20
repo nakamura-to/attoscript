@@ -41,7 +41,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT; PRINT='print';
 	CALL; FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	PARAMS; UNARY_MINUS;
+	PARAMS; UNARY_MINUS; ARGSDEF;
 }
 
 @lexer::header {
@@ -175,7 +175,11 @@ vardef
 	;
 		
 call
-	: atom OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT  -> ^(CALL atom expr*)
+	: atom argsdef+  -> ^(CALL atom argsdef+)
+	;
+
+argsdef
+	: OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT -> ^(ARGSDEF expr*)
 	;
 
 // Literals
