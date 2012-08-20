@@ -182,6 +182,11 @@ public class InterpreterTest extends TestCase {
         assertEquals(Boolean.FALSE, i.run("!1\n"));
     }
 
+    public void testUNARY_MINUS() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(-1), i.run("-1\n"));
+    }
+
     public void testINT() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals(new Integer(10), i.run("10\n"));

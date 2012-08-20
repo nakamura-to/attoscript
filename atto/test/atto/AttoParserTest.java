@@ -19,6 +19,12 @@ public class AttoParserTest extends TestCase {
         assertEquals("(STMT (CALL (FUN x y (+ x y)) 1 2))", t.toStringTree());
     }
 
+    public void testCall2() throws Exception {
+        AttoParser p = createParser("n * fuct(n-1)\n");
+        AttoTree t = (AttoTree) p.stmt().getTree();
+        System.out.println(t.toStringTree());
+    }
+
     public void testFun_expr() throws Exception {
         AttoParser p = createParser("fun a, b -> a + b\n");
         AttoTree t = (AttoTree) p.fun().getTree();

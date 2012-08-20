@@ -41,7 +41,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT; PRINT='print';
 	CALL; FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	PARAMS;
+	PARAMS; UNARY_MINUS;
 }
 
 @lexer::header {
@@ -172,6 +172,7 @@ mul
 unary
 	: primary
 	| NOT^ primary
+	| MINUS primary -> ^(UNARY_MINUS primary)
 	;
 
 primary 
@@ -202,7 +203,7 @@ vardef
 	;
 		
 call
-	: atom OPEN_PARENT (primary (COMMA primary)*)? CLOSE_PARENT  -> ^(CALL atom primary*)
+	: atom OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT  -> ^(CALL atom expr*)
 	;
 
 // Literals
@@ -215,7 +216,7 @@ NUMBER:             '-'? DIGIT+
                       |                                     { $type = INTEGER; }
                       );
 */           
-INT		: MINUS? DIGIT+;	           
+INT		: DIGIT+;	           
 STRING		: '"' ~('\\' | '"')* '"' | '\'' ~('\\' | '\'')* '\'' ;
 BOOL		: 'true' | 'false';
 NULL		: 'null';

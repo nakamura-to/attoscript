@@ -148,6 +148,8 @@ public class Interpreter {
             return mod(t);
         case NOT:
             return not(t);
+        case UNARY_MINUS:
+            return unary_minus(t);
         case PRINT:
             return print(t);
         case CALL:
@@ -500,6 +502,16 @@ public class Interpreter {
         Assert.treeType(t, NOT);
         AttoTree expr = t.getChild(0);
         return !toBoolean(exec(expr));
+    }
+
+    Object unary_minus(AttoTree t) {
+        Assert.treeType(t, UNARY_MINUS);
+        Object expr = exec(t.getChild(0));
+        if (expr instanceof Integer) {
+            Integer x = (Integer) expr;
+            return Integer.valueOf(-x.intValue());
+        }
+        return 0;
     }
 
     Object print(AttoTree t) {

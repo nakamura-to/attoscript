@@ -1,0 +1,8 @@
+counter = fun ->
+	i = 0
+	fun -> i = i + 1
+	
+c = counter()
+print c()
+print c()
+print c()

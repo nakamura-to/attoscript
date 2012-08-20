@@ -6,7 +6,6 @@ import java.util.List;
 import atto.AttoTree;
 import atto.Scope;
 
-
 public class Function {
 
     public Scope scope;
