@@ -101,7 +101,7 @@ print
 	;
 
 obj	
-	: OPEN_BRACKET (pair (COLON pair)* COLON?)? CLOSE_BRACKET -> ^(OBJ pair*)
+	: OPEN_BRACKET (pair (COMMA pair)* COMMA?)? CLOSE_BRACKET -> ^(OBJ pair*)
 	;
 
 pair
@@ -202,7 +202,7 @@ vardef
 	;
 		
 call
-	: atom OPEN_PARENT (primary (COMMA primary)*)? CLOSE_PARENT -> ^(CALL atom primary*)
+	: atom OPEN_PARENT (primary (COMMA primary)*)? CLOSE_PARENT  -> ^(CALL atom primary*)
 	;
 
 // Literals

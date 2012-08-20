@@ -3,9 +3,70 @@ package atto;
 import java.io.StringWriter;
 
 import junit.framework.TestCase;
+import atto.lang.Array;
 import atto.lang.Function;
+import atto.lang.Obj;
 
 public class InterpreterTest extends TestCase {
+
+    public void testIF() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(100), i.run("i=3\nif i==3\n  100\n"));
+    }
+
+    public void testELIF_first() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i
+                .run("i=3\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelif i==4\n  400\n");
+        assertEquals(new Integer(300), result);
+    }
+
+    public void testELIF_middle() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i
+                .run("i=3\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelif i==4\n  400\n");
+        assertEquals(new Integer(300), result);
+    }
+
+    public void testELIF_last() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i
+                .run("i=4\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelif i==4\n  400\n");
+        assertEquals(new Integer(400), result);
+    }
+
+    public void testELSE() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i
+                .run("i=0\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelse\n  400\n");
+        assertEquals(new Integer(400), result);
+    }
+
+    public void testWHILE() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(3), i.run("i=0\nwhile i<3\n  i=i+1\n"));
+    }
+
+    public void testOBJ() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i.run("{name: 'hoge', age: 10}\n");
+        assertTrue(result instanceof Obj);
+        Obj obj = (Obj) result;
+        assertEquals(2, obj.values.size());
+        assertEquals("hoge", obj.values.get("name"));
+        assertEquals(new Integer(10), obj.values.get("age"));
+    }
+
+    public void testARRAY() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i.run("[1,2,3]\n");
+        assertTrue(result instanceof Array);
+        Array array = (Array) result;
+        assertEquals(3, array.values.length);
+        assertEquals(new Integer(1), array.values[0]);
+        assertEquals(new Integer(2), array.values[1]);
+        assertEquals(new Integer(3), array.values[2]);
+    }
 
     public void testFUN_expr() throws Exception {
         Interpreter i = new Interpreter();
@@ -19,7 +80,7 @@ public class InterpreterTest extends TestCase {
         assertTrue(result instanceof Function);
     }
 
-    public void testCall() throws Exception {
+    public void testCALL() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals(new Integer(3), i.run("f=fun x,y->x+y\nf(1,2)\n"));
         assertEquals(new Integer(3), i.run("(fun x,y->x+y)(1,2)\n"));

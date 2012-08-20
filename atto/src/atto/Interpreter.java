@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 
 import org.antlr.runtime.ANTLRInputStream;
@@ -18,7 +21,9 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.TreeAdaptor;
 
+import atto.lang.Array;
 import atto.lang.Function;
+import atto.lang.Obj;
 
 public class Interpreter {
 
@@ -98,6 +103,20 @@ public class Interpreter {
             return block(t);
         case STMT:
             return stmt(t);
+        case OBJ:
+            return obj(t);
+        case COLON:
+            return colon(t);
+        case ARRAY:
+            return array(t);
+        case IF:
+            return if_(t);
+        case ELIF:
+            return elif(t);
+        case ELSE:
+            return else_(t);
+        case WHILE:
+            return while_(t);
         case ASSIGN:
             return assign(t);
         case FUN:
@@ -164,6 +183,96 @@ public class Interpreter {
         return exec(t.getChild(0));
     }
 
+    Object obj(AttoTree t) {
+        Assert.treeType(t, OBJ);
+        Obj obj = new Obj();
+        obj.values = new HashMap<String, Object>(t.getChildCount());
+        for (AttoTree c : t.getChildren()) {
+            Object[] pair = (Object[]) exec(c);
+            obj.values.put((String) pair[0], pair[1]);
+        }
+        return obj;
+    }
+
+    Object colon(AttoTree t) {
+        Assert.treeType(t, COLON);
+        AttoTree lhs = t.getChild(0);
+        AttoTree rhs = t.getChild(1);
+        if (lhs.getType() != NAME) {
+            throw new RuntimeException("key must be NAME token: "
+                    + t.getToken());
+        }
+        String key = lhs.getText();
+        Object value = exec(rhs);
+        return new Object[] { key, value };
+    }
+
+    Object array(AttoTree t) {
+        Assert.treeType(t, ARRAY);
+        Array array = new Array();
+        array.values = new Object[t.getChildCount()];
+        int i = 0;
+        for (AttoTree c : t.getChildren()) {
+            array.values[i++] = exec(c);
+        }
+        return array;
+    }
+
+    Object if_(AttoTree t) {
+        Assert.treeType(t, IF);
+        AttoTree condition = t.getChild(0);
+        AttoTree body = t.getChild(1);
+        List<AttoTree> otherConditions = new ArrayList<AttoTree>();
+        for (int i = 2; i < t.getChildCount(); i++) {
+            otherConditions.add(t.getChild(i));
+        }
+        Object result = null;
+        if (toBoolean(exec(condition))) {
+            result = exec(body);
+        } else {
+            for (AttoTree c : otherConditions) {
+                Object[] otherResult = null;
+                otherResult = (Object[]) exec(c);
+                if (otherResult.length > 0) {
+                    result = otherResult[0];
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    Object elif(AttoTree t) {
+        Assert.treeType(t, ELIF);
+        AttoTree condition = t.getChild(0);
+        AttoTree body = t.getChild(1);
+        Object result = null;
+        if (toBoolean(exec(condition))) {
+            result = new Object[] { exec(body) };
+        } else {
+            result = new Object[] {};
+        }
+        return result;
+    }
+
+    Object else_(AttoTree t) {
+        Assert.treeType(t, ELSE);
+        AttoTree body = t.getChild(0);
+        Object result = new Object[] { exec(body) };
+        return result;
+    }
+
+    Object while_(AttoTree t) {
+        Assert.treeType(t, WHILE);
+        AttoTree condition = t.getChild(0);
+        AttoTree body = t.getChild(1);
+        Object result = null;
+        while (toBoolean(exec(condition))) {
+            result = exec(body);
+        }
+        return result;
+    }
+
     Object assign(AttoTree t) {
         Assert.treeType(t, ASSIGN);
         AttoTree lhs = t.getChild(0);
@@ -212,9 +321,8 @@ public class Interpreter {
         int i = 1;
         for (AttoTree p : fun.parameters) {
             String pname = p.getText();
-            Object arg = exec(t.getChild(i));
+            Object arg = exec(t.getChild(i++));
             currentSpace.put(pname, arg);
-            i++;
         }
         Object result = null;
         stack.push(currentSpace);
@@ -420,6 +528,7 @@ public class Interpreter {
         return null;
     }
 
+    // TODO we need a rule to distinguish between ref and def
     Object name(AttoTree t) {
         Assert.treeType(t, NAME);
         return load(t);
