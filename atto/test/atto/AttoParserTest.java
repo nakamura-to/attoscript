@@ -13,6 +13,12 @@ public class AttoParserTest extends TestCase {
         assertEquals("1", t.toStringTree());
     }
 
+    public void testCall() throws Exception {
+        AttoParser p = createParser("(fun x,y->x+y)(1,2)\n");
+        AttoTree t = (AttoTree) p.stmt().getTree();
+        System.out.println(t.toStringTree());
+    }
+
     public void testFun_expr() throws Exception {
         AttoParser p = createParser("fun a, b -> a + b\n");
         AttoTree t = (AttoTree) p.fun().getTree();

@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Atto.g 2012-08-20 10:55:32
+// $ANTLR 3.4 Atto.g 2012-08-20 13:35:35
 
 package atto;
 
@@ -236,8 +236,8 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "INTEGER"
     public final void mINTEGER() throws RecognitionException {
         try {
-            // Atto.g:203:17: ()
-            // Atto.g:203:18: 
+            // Atto.g:209:17: ()
+            // Atto.g:209:18: 
             {
             }
 
@@ -252,8 +252,8 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "FLOAT"
     public final void mFLOAT() throws RecognitionException {
         try {
-            // Atto.g:204:15: ()
-            // Atto.g:204:16: 
+            // Atto.g:210:15: ()
+            // Atto.g:210:16: 
             {
             }
 
@@ -270,10 +270,10 @@ public class AttoLexer extends Lexer {
         try {
             int _type = INT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:212:6: ( ( MINUS )? ( DIGIT )+ )
-            // Atto.g:212:8: ( MINUS )? ( DIGIT )+
+            // Atto.g:218:6: ( ( MINUS )? ( DIGIT )+ )
+            // Atto.g:218:8: ( MINUS )? ( DIGIT )+
             {
-            // Atto.g:212:8: ( MINUS )?
+            // Atto.g:218:8: ( MINUS )?
             int alt1=2;
             int LA1_0 = input.LA(1);
 
@@ -300,7 +300,7 @@ public class AttoLexer extends Lexer {
             }
 
 
-            // Atto.g:212:15: ( DIGIT )+
+            // Atto.g:218:15: ( DIGIT )+
             int cnt2=0;
             loop2:
             do {
@@ -355,7 +355,7 @@ public class AttoLexer extends Lexer {
         try {
             int _type = STRING;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:213:9: ( '\"' (~ ( '\\\\' | '\"' ) )* '\"' | '\\'' (~ ( '\\\\' | '\\'' ) )* '\\'' )
+            // Atto.g:219:9: ( '\"' (~ ( '\\\\' | '\"' ) )* '\"' | '\\'' (~ ( '\\\\' | '\\'' ) )* '\\'' )
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -374,11 +374,11 @@ public class AttoLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // Atto.g:213:11: '\"' (~ ( '\\\\' | '\"' ) )* '\"'
+                    // Atto.g:219:11: '\"' (~ ( '\\\\' | '\"' ) )* '\"'
                     {
                     match('\"'); 
 
-                    // Atto.g:213:15: (~ ( '\\\\' | '\"' ) )*
+                    // Atto.g:219:15: (~ ( '\\\\' | '\"' ) )*
                     loop3:
                     do {
                         int alt3=2;
@@ -417,11 +417,11 @@ public class AttoLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // Atto.g:213:36: '\\'' (~ ( '\\\\' | '\\'' ) )* '\\''
+                    // Atto.g:219:36: '\\'' (~ ( '\\\\' | '\\'' ) )* '\\''
                     {
                     match('\''); 
 
-                    // Atto.g:213:41: (~ ( '\\\\' | '\\'' ) )*
+                    // Atto.g:219:41: (~ ( '\\\\' | '\\'' ) )*
                     loop4:
                     do {
                         int alt4=2;
@@ -475,7 +475,7 @@ public class AttoLexer extends Lexer {
         try {
             int _type = BOOL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:214:7: ( 'true' | 'false' )
+            // Atto.g:220:7: ( 'true' | 'false' )
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -494,7 +494,7 @@ public class AttoLexer extends Lexer {
             }
             switch (alt6) {
                 case 1 :
-                    // Atto.g:214:9: 'true'
+                    // Atto.g:220:9: 'true'
                     {
                     match("true"); 
 
@@ -503,7 +503,7 @@ public class AttoLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // Atto.g:214:18: 'false'
+                    // Atto.g:220:18: 'false'
                     {
                     match("false"); 
 
@@ -527,8 +527,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = NULL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:215:7: ( 'null' )
-            // Atto.g:215:9: 'null'
+            // Atto.g:221:7: ( 'null' )
+            // Atto.g:221:9: 'null'
             {
             match("null"); 
 
@@ -550,8 +550,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = NAME;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:216:7: ( ( LOWER | '_' ) ( ID_CHAR )* )
-            // Atto.g:216:9: ( LOWER | '_' ) ( ID_CHAR )*
+            // Atto.g:222:7: ( ( LOWER | '_' ) ( ID_CHAR )* )
+            // Atto.g:222:9: ( LOWER | '_' ) ( ID_CHAR )*
             {
             if ( input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
                 input.consume();
@@ -563,7 +563,7 @@ public class AttoLexer extends Lexer {
             }
 
 
-            // Atto.g:216:23: ( ID_CHAR )*
+            // Atto.g:222:23: ( ID_CHAR )*
             loop7:
             do {
                 int alt7=2;
@@ -613,13 +613,13 @@ public class AttoLexer extends Lexer {
         try {
             int _type = CONSTANT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:217:10: ( UPPER ( ID_CHAR )* )
-            // Atto.g:217:12: UPPER ( ID_CHAR )*
+            // Atto.g:223:10: ( UPPER ( ID_CHAR )* )
+            // Atto.g:223:12: UPPER ( ID_CHAR )*
             {
             mUPPER(); 
 
 
-            // Atto.g:217:18: ( ID_CHAR )*
+            // Atto.g:223:18: ( ID_CHAR )*
             loop8:
             do {
                 int alt8=2;
@@ -669,8 +669,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = SEMICOLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:219:11: ( ';' )
-            // Atto.g:219:13: ';'
+            // Atto.g:225:11: ( ';' )
+            // Atto.g:225:13: ';'
             {
             match(';'); 
 
@@ -690,8 +690,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = COLON;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:220:8: ( ':' )
-            // Atto.g:220:10: ':'
+            // Atto.g:226:8: ( ':' )
+            // Atto.g:226:10: ':'
             {
             match(':'); 
 
@@ -711,8 +711,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = DOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:221:6: ( '.' )
-            // Atto.g:221:8: '.'
+            // Atto.g:227:6: ( '.' )
+            // Atto.g:227:8: '.'
             {
             match('.'); 
 
@@ -732,8 +732,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = COMMA;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:222:8: ( ',' )
-            // Atto.g:222:10: ','
+            // Atto.g:228:8: ( ',' )
+            // Atto.g:228:10: ','
             {
             match(','); 
 
@@ -753,8 +753,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = OPEN_PARENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:223:13: ( '(' )
-            // Atto.g:223:15: '('
+            // Atto.g:229:13: ( '(' )
+            // Atto.g:229:15: '('
             {
             match('('); 
 
@@ -774,8 +774,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = CLOSE_PARENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:224:14: ( ')' )
-            // Atto.g:224:16: ')'
+            // Atto.g:230:14: ( ')' )
+            // Atto.g:230:16: ')'
             {
             match(')'); 
 
@@ -795,8 +795,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = OPEN_BRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:225:14: ( '{' )
-            // Atto.g:225:16: '{'
+            // Atto.g:231:14: ( '{' )
+            // Atto.g:231:16: '{'
             {
             match('{'); 
 
@@ -816,8 +816,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = CLOSE_BRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:226:15: ( '}' )
-            // Atto.g:226:17: '}'
+            // Atto.g:232:15: ( '}' )
+            // Atto.g:232:17: '}'
             {
             match('}'); 
 
@@ -837,8 +837,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = OPEN_S_BRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:227:16: ( '[' )
-            // Atto.g:227:18: '['
+            // Atto.g:233:16: ( '[' )
+            // Atto.g:233:18: '['
             {
             match('['); 
 
@@ -858,8 +858,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = CLOSE_S_BRACKET;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:228:17: ( ']' )
-            // Atto.g:228:19: ']'
+            // Atto.g:234:17: ( ']' )
+            // Atto.g:234:19: ']'
             {
             match(']'); 
 
@@ -879,8 +879,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = AT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:229:5: ( '@' )
-            // Atto.g:229:7: '@'
+            // Atto.g:235:5: ( '@' )
+            // Atto.g:235:7: '@'
             {
             match('@'); 
 
@@ -900,8 +900,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = EQ;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:230:5: ( '==' )
-            // Atto.g:230:7: '=='
+            // Atto.g:236:5: ( '==' )
+            // Atto.g:236:7: '=='
             {
             match("=="); 
 
@@ -923,8 +923,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = NE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:231:5: ( '!=' )
-            // Atto.g:231:7: '!='
+            // Atto.g:237:5: ( '!=' )
+            // Atto.g:237:7: '!='
             {
             match("!="); 
 
@@ -946,8 +946,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = LE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:232:5: ( '<=' )
-            // Atto.g:232:7: '<='
+            // Atto.g:238:5: ( '<=' )
+            // Atto.g:238:7: '<='
             {
             match("<="); 
 
@@ -969,8 +969,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = GE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:233:5: ( '>=' )
-            // Atto.g:233:7: '>='
+            // Atto.g:239:5: ( '>=' )
+            // Atto.g:239:7: '>='
             {
             match(">="); 
 
@@ -992,8 +992,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = LT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:234:5: ( '<' )
-            // Atto.g:234:7: '<'
+            // Atto.g:240:5: ( '<' )
+            // Atto.g:240:7: '<'
             {
             match('<'); 
 
@@ -1013,8 +1013,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = GT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:235:5: ( '>' )
-            // Atto.g:235:7: '>'
+            // Atto.g:241:5: ( '>' )
+            // Atto.g:241:7: '>'
             {
             match('>'); 
 
@@ -1034,8 +1034,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = PLUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:236:7: ( '+' )
-            // Atto.g:236:9: '+'
+            // Atto.g:242:7: ( '+' )
+            // Atto.g:242:9: '+'
             {
             match('+'); 
 
@@ -1055,8 +1055,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = MINUS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:237:8: ( '-' )
-            // Atto.g:237:10: '-'
+            // Atto.g:243:8: ( '-' )
+            // Atto.g:243:10: '-'
             {
             match('-'); 
 
@@ -1076,8 +1076,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = MUL;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:238:6: ( '*' )
-            // Atto.g:238:8: '*'
+            // Atto.g:244:6: ( '*' )
+            // Atto.g:244:8: '*'
             {
             match('*'); 
 
@@ -1097,8 +1097,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = DIV;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:239:6: ( '/' )
-            // Atto.g:239:8: '/'
+            // Atto.g:245:6: ( '/' )
+            // Atto.g:245:8: '/'
             {
             match('/'); 
 
@@ -1118,8 +1118,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = MOD;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:240:6: ( '%' )
-            // Atto.g:240:8: '%'
+            // Atto.g:246:6: ( '%' )
+            // Atto.g:246:8: '%'
             {
             match('%'); 
 
@@ -1139,8 +1139,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = AND;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:241:6: ( '&&' )
-            // Atto.g:241:8: '&&'
+            // Atto.g:247:6: ( '&&' )
+            // Atto.g:247:8: '&&'
             {
             match("&&"); 
 
@@ -1162,8 +1162,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = OR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:242:5: ( '||' )
-            // Atto.g:242:7: '||'
+            // Atto.g:248:5: ( '||' )
+            // Atto.g:248:7: '||'
             {
             match("||"); 
 
@@ -1185,8 +1185,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = NOT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:243:6: ( '!' )
-            // Atto.g:243:8: '!'
+            // Atto.g:249:6: ( '!' )
+            // Atto.g:249:8: '!'
             {
             match('!'); 
 
@@ -1206,8 +1206,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = ASSIGN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:244:9: ( '=' )
-            // Atto.g:244:11: '='
+            // Atto.g:250:9: ( '=' )
+            // Atto.g:250:11: '='
             {
             match('='); 
 
@@ -1227,8 +1227,8 @@ public class AttoLexer extends Lexer {
         try {
             int _type = ARROW;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:245:8: ( '->' )
-            // Atto.g:245:10: '->'
+            // Atto.g:251:8: ( '->' )
+            // Atto.g:251:10: '->'
             {
             match("->"); 
 
@@ -1250,10 +1250,10 @@ public class AttoLexer extends Lexer {
         try {
             int _type = NEWLINE;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:247:10: ( ( ( '\\r' )? '\\n' )+ )
-            // Atto.g:247:12: ( ( '\\r' )? '\\n' )+
+            // Atto.g:253:10: ( ( ( '\\r' )? '\\n' )+ )
+            // Atto.g:253:12: ( ( '\\r' )? '\\n' )+
             {
-            // Atto.g:247:12: ( ( '\\r' )? '\\n' )+
+            // Atto.g:253:12: ( ( '\\r' )? '\\n' )+
             int cnt10=0;
             loop10:
             do {
@@ -1267,9 +1267,9 @@ public class AttoLexer extends Lexer {
 
                 switch (alt10) {
             	case 1 :
-            	    // Atto.g:247:13: ( '\\r' )? '\\n'
+            	    // Atto.g:253:13: ( '\\r' )? '\\n'
             	    {
-            	    // Atto.g:247:13: ( '\\r' )?
+            	    // Atto.g:253:13: ( '\\r' )?
             	    int alt9=2;
             	    int LA9_0 = input.LA(1);
 
@@ -1278,7 +1278,7 @@ public class AttoLexer extends Lexer {
             	    }
             	    switch (alt9) {
             	        case 1 :
-            	            // Atto.g:247:14: '\\r'
+            	            // Atto.g:253:14: '\\r'
             	            {
             	            match('\r'); 
 
@@ -1321,14 +1321,14 @@ public class AttoLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:248:5: ({...}? => ( SPACE )+ )
-            // Atto.g:248:7: {...}? => ( SPACE )+
+            // Atto.g:254:5: ({...}? => ( SPACE )+ )
+            // Atto.g:254:7: {...}? => ( SPACE )+
             {
             if ( !(( startPos > 0 )) ) {
                 throw new FailedPredicateException(input, "WS", " startPos > 0 ");
             }
 
-            // Atto.g:248:27: ( SPACE )+
+            // Atto.g:254:27: ( SPACE )+
             int cnt11=0;
             loop11:
             do {
@@ -1386,14 +1386,14 @@ public class AttoLexer extends Lexer {
             int _type = LEADING_WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
              int spaces = 0; 
-            // Atto.g:251:3: ({...}? => ({...}? ( ' ' | '\\t' )+ | ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )* ) )
-            // Atto.g:251:5: {...}? => ({...}? ( ' ' | '\\t' )+ | ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )* )
+            // Atto.g:257:3: ({...}? => ({...}? ( ' ' | '\\t' )+ | ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )* ) )
+            // Atto.g:257:5: {...}? => ({...}? ( ' ' | '\\t' )+ | ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )* )
             {
             if ( !(( startPos == 0 )) ) {
                 throw new FailedPredicateException(input, "LEADING_WS", " startPos == 0 ");
             }
 
-            // Atto.g:252:4: ({...}? ( ' ' | '\\t' )+ | ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )* )
+            // Atto.g:258:4: ({...}? ( ' ' | '\\t' )+ | ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )* )
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1440,13 +1440,13 @@ public class AttoLexer extends Lexer {
             }
             switch (alt16) {
                 case 1 :
-                    // Atto.g:252:6: {...}? ( ' ' | '\\t' )+
+                    // Atto.g:258:6: {...}? ( ' ' | '\\t' )+
                     {
                     if ( !(( implicitLineJoiningLevel > 0 )) ) {
                         throw new FailedPredicateException(input, "LEADING_WS", " implicitLineJoiningLevel > 0 ");
                     }
 
-                    // Atto.g:252:40: ( ' ' | '\\t' )+
+                    // Atto.g:258:40: ( ' ' | '\\t' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -1490,9 +1490,9 @@ public class AttoLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // Atto.g:253:8: ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )*
+                    // Atto.g:259:8: ( ' ' | '\\t' )+ ( ( '\\r' )? '\\n' )*
                     {
-                    // Atto.g:253:8: ( ' ' | '\\t' )+
+                    // Atto.g:259:8: ( ' ' | '\\t' )+
                     int cnt13=0;
                     loop13:
                     do {
@@ -1509,7 +1509,7 @@ public class AttoLexer extends Lexer {
 
                         switch (alt13) {
                     	case 1 :
-                    	    // Atto.g:253:9: ' '
+                    	    // Atto.g:259:9: ' '
                     	    {
                     	    match(' '); 
 
@@ -1518,7 +1518,7 @@ public class AttoLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // Atto.g:253:29: '\\t'
+                    	    // Atto.g:259:29: '\\t'
                     	    {
                     	    match('\t'); 
 
@@ -1546,7 +1546,7 @@ public class AttoLexer extends Lexer {
                     					emit(new ClassicToken(LEADING_WS, new String(indentation)));
                     				
 
-                    // Atto.g:263:5: ( ( '\\r' )? '\\n' )*
+                    // Atto.g:269:5: ( ( '\\r' )? '\\n' )*
                     loop15:
                     do {
                         int alt15=2;
@@ -1559,9 +1559,9 @@ public class AttoLexer extends Lexer {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // Atto.g:263:7: ( '\\r' )? '\\n'
+                    	    // Atto.g:269:7: ( '\\r' )? '\\n'
                     	    {
-                    	    // Atto.g:263:7: ( '\\r' )?
+                    	    // Atto.g:269:7: ( '\\r' )?
                     	    int alt14=2;
                     	    int LA14_0 = input.LA(1);
 
@@ -1570,7 +1570,7 @@ public class AttoLexer extends Lexer {
                     	    }
                     	    switch (alt14) {
                     	        case 1 :
-                    	            // Atto.g:263:8: '\\r'
+                    	            // Atto.g:269:8: '\\r'
                     	            {
                     	            match('\r'); 
 
@@ -1619,18 +1619,18 @@ public class AttoLexer extends Lexer {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
              _channel = HIDDEN; 
-            // Atto.g:273:3: ({...}? => ( SPACE )* '#' (~ '\\n' )* ( '\\n' )+ |{...}? => '#' (~ '\\n' )* )
+            // Atto.g:279:3: ({...}? => ( SPACE )* '#' (~ '\\n' )* ( '\\n' )+ |{...}? => '#' (~ '\\n' )* )
             int alt21=2;
             alt21 = dfa21.predict(input);
             switch (alt21) {
                 case 1 :
-                    // Atto.g:273:5: {...}? => ( SPACE )* '#' (~ '\\n' )* ( '\\n' )+
+                    // Atto.g:279:5: {...}? => ( SPACE )* '#' (~ '\\n' )* ( '\\n' )+
                     {
                     if ( !(( startPos == 0 )) ) {
                         throw new FailedPredicateException(input, "COMMENT", " startPos == 0 ");
                     }
 
-                    // Atto.g:273:26: ( SPACE )*
+                    // Atto.g:279:26: ( SPACE )*
                     loop17:
                     do {
                         int alt17=2;
@@ -1666,7 +1666,7 @@ public class AttoLexer extends Lexer {
 
                     match('#'); 
 
-                    // Atto.g:273:37: (~ '\\n' )*
+                    // Atto.g:279:37: (~ '\\n' )*
                     loop18:
                     do {
                         int alt18=2;
@@ -1700,7 +1700,7 @@ public class AttoLexer extends Lexer {
                     } while (true);
 
 
-                    // Atto.g:273:46: ( '\\n' )+
+                    // Atto.g:279:46: ( '\\n' )+
                     int cnt19=0;
                     loop19:
                     do {
@@ -1714,7 +1714,7 @@ public class AttoLexer extends Lexer {
 
                         switch (alt19) {
                     	case 1 :
-                    	    // Atto.g:273:46: '\\n'
+                    	    // Atto.g:279:46: '\\n'
                     	    {
                     	    match('\n'); 
 
@@ -1734,7 +1734,7 @@ public class AttoLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // Atto.g:274:5: {...}? => '#' (~ '\\n' )*
+                    // Atto.g:280:5: {...}? => '#' (~ '\\n' )*
                     {
                     if ( !(( startPos > 0 )) ) {
                         throw new FailedPredicateException(input, "COMMENT", " startPos > 0 ");
@@ -1742,7 +1742,7 @@ public class AttoLexer extends Lexer {
 
                     match('#'); 
 
-                    // Atto.g:274:29: (~ '\\n' )*
+                    // Atto.g:280:29: (~ '\\n' )*
                     loop20:
                     do {
                         int alt20=2;
@@ -1792,7 +1792,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "LETTER"
     public final void mLETTER() throws RecognitionException {
         try {
-            // Atto.g:277:17: ( LOWER | UPPER )
+            // Atto.g:283:17: ( LOWER | UPPER )
             // Atto.g:
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -1818,7 +1818,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "ID_CHAR"
     public final void mID_CHAR() throws RecognitionException {
         try {
-            // Atto.g:278:17: ( LETTER | DIGIT | '_' )
+            // Atto.g:284:17: ( LETTER | DIGIT | '_' )
             // Atto.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -1844,7 +1844,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "LOWER"
     public final void mLOWER() throws RecognitionException {
         try {
-            // Atto.g:279:16: ( 'a' .. 'z' )
+            // Atto.g:285:16: ( 'a' .. 'z' )
             // Atto.g:
             {
             if ( (input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
@@ -1870,7 +1870,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "UPPER"
     public final void mUPPER() throws RecognitionException {
         try {
-            // Atto.g:280:16: ( 'A' .. 'Z' )
+            // Atto.g:286:16: ( 'A' .. 'Z' )
             // Atto.g:
             {
             if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z') ) {
@@ -1896,7 +1896,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "DIGIT"
     public final void mDIGIT() throws RecognitionException {
         try {
-            // Atto.g:281:16: ( '0' .. '9' )
+            // Atto.g:287:16: ( '0' .. '9' )
             // Atto.g:
             {
             if ( (input.LA(1) >= '0' && input.LA(1) <= '9') ) {
@@ -1922,7 +1922,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR start "SPACE"
     public final void mSPACE() throws RecognitionException {
         try {
-            // Atto.g:282:16: ( ' ' | '\\t' )
+            // Atto.g:288:16: ( ' ' | '\\t' )
             // Atto.g:
             {
             if ( input.LA(1)=='\t'||input.LA(1)==' ' ) {
@@ -2352,7 +2352,7 @@ public class AttoLexer extends Lexer {
             this.transition = DFA21_transition;
         }
         public String getDescription() {
-            return "271:1: COMMENT : ({...}? => ( SPACE )* '#' (~ '\\n' )* ( '\\n' )+ |{...}? => '#' (~ '\\n' )* );";
+            return "277:1: COMMENT : ({...}? => ( SPACE )* '#' (~ '\\n' )* ( '\\n' )+ |{...}? => '#' (~ '\\n' )* );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;

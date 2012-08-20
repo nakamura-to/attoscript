@@ -21,8 +21,8 @@ public class InterpreterTest extends TestCase {
 
     public void testCall() throws Exception {
         Interpreter i = new Interpreter();
-        Object result = i.run("f=fun x,y->x+y\nf(1,2)\n");
-        assertEquals(new Integer(3), result);
+        assertEquals(new Integer(3), i.run("f=fun x,y->x+y\nf(1,2)\n"));
+        assertEquals(new Integer(3), i.run("(fun x,y->x+y)(1,2)\n"));
     }
 
     public void testPRINT() throws Exception {

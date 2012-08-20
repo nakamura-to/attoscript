@@ -63,6 +63,8 @@ package atto;
 }
 
 @members {
+	boolean calling;
+
 	Scope scope;
 	
 	public AttoParser(TokenStream input, Scope scope) {
@@ -99,7 +101,7 @@ print
 	;
 
 obj	
-	: OPEN_BRACKET (pair (COMMA pair)* COMMA?)? CLOSE_BRACKET -> ^(OBJ pair*)
+	: OPEN_BRACKET (pair (COLON pair)* COLON?)? CLOSE_BRACKET -> ^(OBJ pair*)
 	;
 
 pair
@@ -168,13 +170,17 @@ mul
 	;
 	
 unary
-	: atom
-	| NOT^ atom
+	: primary
+	| NOT^ primary
+	;
+
+primary 
+	: (call)=> call
+	| atom
 	;
 
 atom	
-	: (call)=> call
-	| qname	
+	: qname	
 	| INT
 	| STRING
 	| BOOL
@@ -196,7 +202,7 @@ vardef
 	;
 		
 call
-	: qname OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT  -> ^(CALL qname expr*)
+	: atom OPEN_PARENT (primary (COMMA primary)*)? CLOSE_PARENT -> ^(CALL atom primary*)
 	;
 
 // Literals
