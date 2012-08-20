@@ -97,7 +97,6 @@ public class Interpreter {
     }
 
     Object exec(AttoTree t) {
-        System.out.println("exec: " + t.getText());
         switch (t.getType()) {
         case BLOCK:
             return block(t);
@@ -441,6 +440,11 @@ public class Interpreter {
             Integer y = (Integer) rhs;
             return Integer.valueOf(x.intValue() + y.intValue());
         }
+        if (lhs instanceof String || rhs instanceof String) {
+            String x = lhs != null ? lhs.toString() : "";
+            String y = rhs != null ? rhs.toString() : "";
+            return x + y;
+        }
         return 0;
     }
 
@@ -504,7 +508,7 @@ public class Interpreter {
         Object value = exec(expr);
         out.println(value);
         out.flush();
-        return null;
+        return value;
     }
 
     Object int_(AttoTree t) {

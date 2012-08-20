@@ -149,6 +149,9 @@ public class InterpreterTest extends TestCase {
     public void testPLUS() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals(new Integer(30), i.run("10 + 20\n"));
+        assertEquals("ab", i.run("'a' + 'b'\n"));
+        assertEquals("10b", i.run("10 + 'b'\n"));
+        assertEquals("a10", i.run("'a' + 10\n"));
     }
 
     public void testMINUS() throws Exception {
