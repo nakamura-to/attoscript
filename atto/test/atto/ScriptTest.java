@@ -34,11 +34,10 @@ public class ScriptTest extends TestCase {
         assertEquals("foo", i.run(stream));
     }
 
-    // ignore
-    public void _testCounter() throws Exception {
+    public void testCounter() throws Exception {
         InputStream stream = read("atto/counter.atto");
         Interpreter i = new Interpreter();
-        assertEquals("foo", i.run(stream));
+        assertEquals(new Integer(3), i.run(stream));
     }
 
     private InputStream read(String path) throws Exception {

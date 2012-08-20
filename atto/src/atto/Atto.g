@@ -62,17 +62,6 @@ package atto;
 package atto;
 }
 
-@members {
-	boolean calling;
-
-	Scope scope;
-	
-	public AttoParser(TokenStream input, Scope scope) {
-		this(input);
-		this.scope = scope;
-	}
-}
-
 root
 	: stmt* EOF -> ^(BLOCK stmt*)
 	;
@@ -133,20 +122,8 @@ assign
 	;
 
 fun
-@after { $fun.tree.scope = scope; }
-	: 'fun'
-	  {
-	  	scope = new Scope(scope); // push function args scope
-	  } 
-	  (vardef (COMMA vardef)*)? ARROW 
-	  {
-	  	scope = new Scope(scope); // push function body scope
-	  }
-	  (expr -> ^(FUN vardef* expr) | block -> ^(FUN vardef* block)) // TODO block
-	  {
-	  	scope = scope.getEnclosingScope(); // pop function body scope
-	  	scope = scope.getEnclosingScope(); // pop function args scope
-	  }
+	: 'fun' (vardef (COMMA vardef)*)? ARROW 
+	  (expr -> ^(FUN vardef* expr) | block -> ^(FUN vardef* block))
 	;
 
 or
@@ -195,11 +172,6 @@ qname
 
 vardef
 	: NAME
-	  {
-	  	$NAME.tree.scope = scope;
-	  	Symbol symbol = new Symbol($NAME.text);
-	  	scope.define(symbol);
-	  }
 	;
 		
 call

@@ -6,7 +6,6 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.tree.CommonTree;
 
 public class AttoTree extends CommonTree {
-    Scope scope;
 
     public AttoTree(Token token) {
         super(token);

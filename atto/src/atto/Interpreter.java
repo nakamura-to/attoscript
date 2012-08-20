@@ -10,7 +10,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -48,13 +47,7 @@ public class Interpreter {
 
     };
 
-    Scope globalScope = new Scope();
-
-    Space globalSpace = new Space("global");
-
-    Space currentSpace = globalSpace;
-
-    Stack<Space> stack = new Stack<Space>();
+    Env currentEnv = new Env();
 
     AttoTree root;
 
@@ -86,7 +79,7 @@ public class Interpreter {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         AttoTokenSource source = new AttoTokenSource(tokens);
         tokens = new CommonTokenStream(source);
-        AttoParser parser = new AttoParser(tokens, globalScope);
+        AttoParser parser = new AttoParser(tokens);
         parser.setTreeAdaptor(treeAdaptor);
         AttoParser.root_return ret = parser.root();
         if (parser.getNumberOfSyntaxErrors() == 0) {
@@ -284,12 +277,8 @@ public class Interpreter {
             fieldAssign(lhs, value);
         } else {
             // assign
-            String id = lhs.getText();
-            Space space = getSpaceWithSymbol(id);
-            if (space == null) {
-                space = currentSpace;
-            }
-            space.put(id, value);
+            String name = lhs.getText();
+            currentEnv.put(name, value);
         }
 
         return value;
@@ -302,7 +291,7 @@ public class Interpreter {
     Object fun(AttoTree t) {
         Assert.treeType(t, FUN);
         Function fun = new Function();
-        fun.scope = t.scope;
+        fun.env = currentEnv;
         for (int i = 0; i < t.getChildCount() - 1; i++) {
             fun.parameters.add(t.getChild(i));
         }
@@ -317,19 +306,18 @@ public class Interpreter {
             throw new RuntimeException("not function");
         }
         Function fun = (Function) lhs;
-        Space preservedSpace = currentSpace;
-        currentSpace = new Space("fun:" + fun);
+        Env calleeEnv = new Env(fun.env);
         int i = 1;
         for (AttoTree p : fun.parameters) {
             String pname = p.getText();
             Object arg = exec(t.getChild(i++));
-            currentSpace.put(pname, arg);
+            calleeEnv.putLocal(pname, arg);
         }
         Object result = null;
-        stack.push(currentSpace);
+        Env preservedEnv = currentEnv;
+        currentEnv = calleeEnv;
         result = exec(fun.body);
-        stack.pop();
-        currentSpace = preservedSpace;
+        currentEnv = preservedEnv;
         return result;
     }
 
@@ -559,12 +547,12 @@ public class Interpreter {
             return fieldLoad(t);
         }
         String name = t.getText();
-        Space space = getSpaceWithSymbol(name);
-        if (space == null) {
+        Object value = currentEnv.get(name);
+        if (value == null) {
             throw new RuntimeException("no such variable: " + name + ": "
                     + t.getToken());
         }
-        return space.get(name);
+        return value;
     }
 
     Object fieldLoad(AttoTree t) {
@@ -572,16 +560,4 @@ public class Interpreter {
         return null;
     }
 
-    Space getSpaceWithSymbol(String name) {
-        if (stack.size() > 0) {
-            Space top = stack.peek();
-            if (top.get(name) != null) {
-                return top;
-            }
-        }
-        if (globalSpace.get(name) != null) {
-            return globalSpace;
-        }
-        return null;
-    }
 }

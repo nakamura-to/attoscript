@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import atto.AttoTree;
-import atto.Scope;
+import atto.Env;
 
 public class Function {
 
-    public Scope scope;
+    public Env env;
 
     public List<AttoTree> parameters = new ArrayList<AttoTree>();
 
@@ -26,7 +26,7 @@ public class Function {
             buf.delete(buf.length() - 2, buf.length());
         }
         buf.append(" -> ");
-        buf.append(body.toStringTree());
+        buf.append("...");
         return buf.toString();
     }
 }
