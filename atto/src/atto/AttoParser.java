@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Atto.g 2012-08-20 01:05:34
+// $ANTLR 3.4 Atto.g 2012-08-20 10:55:30
 
 package atto;
 
@@ -1348,7 +1348,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: else_, block, expr, elif
+            // elements: expr, elif, block, else_
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2009,7 +2009,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_block.add(block56.getTree());
 
                     // AST REWRITE
-                    // elements: vardef, block
+                    // elements: block, vardef
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -3277,7 +3277,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
             // AST REWRITE
-            // elements: expr, qname
+            // elements: qname, expr
             // token labels: 
             // rule labels: retval
             // token list labels: 
