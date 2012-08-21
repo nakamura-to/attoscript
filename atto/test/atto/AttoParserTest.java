@@ -17,26 +17,21 @@ public class AttoParserTest extends TestCase {
         AttoParser p = createParser("(fun x,y->x+y)(1,2)(3, 4)\n");
         AttoTree t = (AttoTree) p.stmt().getTree();
         assertEquals(
-                "(STMT (CALL (FUN x y (+ x y)) (ARGSDEF 1 2) (ARGSDEF 3 4)))",
+                "(STMT (CALL (FUN (PARAMSDEF x y) (+ x y)) (ARGSDEF 1 2) (ARGSDEF 3 4)))",
                 t.toStringTree());
-    }
-
-    public void testCall2() throws Exception {
-        AttoParser p = createParser("n * fuct(n-1)\n");
-        AttoTree t = (AttoTree) p.stmt().getTree();
-        System.out.println(t.toStringTree());
     }
 
     public void testFun_expr() throws Exception {
         AttoParser p = createParser("fun a, b -> a + b\n");
         AttoTree t = (AttoTree) p.fun().getTree();
-        assertEquals("(FUN a b (+ a b))", t.toStringTree());
+        assertEquals("(FUN (PARAMSDEF a b) (+ a b))", t.toStringTree());
     }
 
     public void testFun_block() throws Exception {
         AttoParser p = createParser("fun a, b ->\n  a + b\n");
         AttoTree t = (AttoTree) p.fun().getTree();
-        assertEquals("(FUN a b (BLOCK (STMT (+ a b))))", t.toStringTree());
+        assertEquals("(FUN (PARAMSDEF a b) (BLOCK (STMT (+ a b))))",
+                t.toStringTree());
     }
 
     public void testIf() throws Exception {

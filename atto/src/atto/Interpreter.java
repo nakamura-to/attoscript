@@ -16,36 +16,15 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
 import org.antlr.runtime.tree.TreeAdaptor;
 
 import atto.lang.Array;
-import atto.lang.Function;
+import atto.lang.Fun;
 import atto.lang.Obj;
 
 public class Interpreter {
 
-    static TreeAdaptor treeAdaptor = new CommonTreeAdaptor() {
-        @Override
-        public Object create(Token token) {
-            return new AttoTree(token);
-        }
-
-        @Override
-        public Object dupNode(Object t) {
-            if (t == null) {
-                return null;
-            }
-            return create(((AttoTree) t).token);
-        }
-
-        public Object errorNode(org.antlr.runtime.TokenStream input,
-                Token start, Token stop, RecognitionException e) {
-            return new AttoErrorNode(input, start, stop, e);
-        }
-
-    };
+    static TreeAdaptor treeAdaptor = new AttoTreeAdaptor();
 
     Env currentEnv = new Env();
 
@@ -113,6 +92,8 @@ public class Interpreter {
             return assign(t);
         case FUN:
             return fun(t);
+        case PARAMSDEF:
+            return paramsdef(t);
         case OR:
             return or(t);
         case AND:
@@ -292,30 +273,36 @@ public class Interpreter {
 
     Object fun(AttoTree t) {
         Assert.treeType(t, FUN);
-        Function fun = new Function();
+        Fun fun = new Fun();
         fun.env = currentEnv;
-        for (int i = 0; i < t.getChildCount() - 1; i++) {
-            fun.parameters.add(t.getChild(i));
-        }
-        fun.body = t.getChild(t.getChildCount() - 1);
+        fun.params = (String[]) exec(t.getChild(0));
+        fun.body = t.getChild(1);
         return fun;
+    }
+
+    Object paramsdef(AttoTree t) {
+        Assert.treeType(t, PARAMSDEF);
+        int len = t.getChildCount();
+        String[] params = new String[len];
+        for (int i = 0; i < len; i++) {
+            params[i] = t.getChild(i).getText();
+        }
+        return params;
     }
 
     Object call(AttoTree t) {
         Assert.treeType(t, CALL);
         Object result = exec(t.getChild(0));
         for (int i = 1; i < t.getChildCount(); i++) {
-            if (!(result instanceof Function)) {
+            if (!(result instanceof Fun)) {
                 throw new RuntimeException("not function");
             }
-            Function fun = (Function) result;
+            Fun fun = (Fun) result;
             Env calleeEnv = new Env(fun.env);
             Object[] args = (Object[]) exec(t.getChild(i));
-            int j = 0;
-            for (AttoTree p : fun.parameters) {
-                String pname = p.getText();
+            for (int j = 0, len = fun.params.length; j < len; j++) {
                 if (j < args.length) {
-                    calleeEnv.putLocal(pname, args[j++]);
+                    calleeEnv.putLocal(fun.params[j], args[j]);
                 }
             }
             Env preservedEnv = currentEnv;

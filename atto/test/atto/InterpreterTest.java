@@ -4,7 +4,7 @@ import java.io.StringWriter;
 
 import junit.framework.TestCase;
 import atto.lang.Array;
-import atto.lang.Function;
+import atto.lang.Fun;
 import atto.lang.Obj;
 
 public class InterpreterTest extends TestCase {
@@ -71,13 +71,13 @@ public class InterpreterTest extends TestCase {
     public void testFUN_expr() throws Exception {
         Interpreter i = new Interpreter();
         Object result = i.run("fun x,y -> x+y\n");
-        assertTrue(result instanceof Function);
+        assertTrue(result instanceof Fun);
     }
 
     public void testFUN_block() throws Exception {
         Interpreter i = new Interpreter();
         Object result = i.run("fun x,y ->\n  x+y\n");
-        assertTrue(result instanceof Function);
+        assertTrue(result instanceof Fun);
     }
 
     public void testCALL() throws Exception {

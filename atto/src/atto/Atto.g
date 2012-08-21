@@ -41,7 +41,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT; PRINT='print';
 	CALL; FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	PARAMS; UNARY_MINUS; ARGSDEF;
+	PARAMS; UNARY_MINUS; ARGSDEF; PARAMSDEF;
 }
 
 @lexer::header {
@@ -122,8 +122,15 @@ assign
 	;
 
 fun
-	: 'fun' (vardef (COMMA vardef)*)? ARROW 
-	  (expr -> ^(FUN vardef* expr) | block -> ^(FUN vardef* block))
+	: 'fun' paramsdef ARROW body -> ^(FUN paramsdef body)
+	;
+
+paramsdef
+	: (vardef (COMMA vardef)*)? -> ^(PARAMSDEF vardef*)
+	;
+
+body	: expr
+	| block
 	;
 
 or
