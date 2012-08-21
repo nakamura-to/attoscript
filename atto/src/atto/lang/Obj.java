@@ -1,10 +1,11 @@
 package atto.lang;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Obj {
 
-    public Map<String, Object> values;
+    public LinkedHashMap<String, Object> values;
 
     @Override
     public String toString() {

@@ -57,6 +57,12 @@ public class InterpreterTest extends TestCase {
         assertEquals(new Integer(10), obj.values.get("age"));
     }
 
+    public void testOBJ_assign_and_load() throws Exception {
+        Interpreter i = new Interpreter();
+        Object result = i.run("o={name: 'hoge', age: 10}\no.name\n");
+        assertEquals("hoge", result);
+    }
+
     public void testARRAY() throws Exception {
         Interpreter i = new Interpreter();
         Object result = i.run("[1,2,3]\n");

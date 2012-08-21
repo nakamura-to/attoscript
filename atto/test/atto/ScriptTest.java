@@ -52,6 +52,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(3), i.run(stream));
     }
 
+    public void testObj() throws Exception {
+        InputStream stream = read("atto/obj.atto");
+        Interpreter i = new Interpreter();
+        assertEquals(20, i.run(stream));
+    }
+
     private InputStream read(String path) throws Exception {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream(path);

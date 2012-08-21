@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRInputStream;
@@ -140,6 +140,8 @@ public class Interpreter {
             return null_(t);
         case NAME:
             return name(t);
+        case DOT:
+            return dot(t);
         default:
             return unknown(t);
         }
@@ -163,9 +165,9 @@ public class Interpreter {
     Object obj(AttoTree t) {
         Assert.treeType(t, OBJ);
         Obj obj = new Obj();
-        obj.values = new HashMap<String, Object>(t.getChildCount());
-        for (AttoTree c : t.getChildren()) {
-            Object[] pair = (Object[]) exec(c);
+        obj.values = new LinkedHashMap<String, Object>(t.getChildCount());
+        for (int i = 0, len = t.getChildCount(); i < len; i++) {
+            Object[] pair = (Object[]) exec(t.getChild(i));
             obj.values.put((String) pair[0], pair[1]);
         }
         return obj;
@@ -268,7 +270,15 @@ public class Interpreter {
     }
 
     void fieldAssign(AttoTree t, Object value) {
-        // TODO
+        AttoTree lhs = t.getChild(0);
+        AttoTree rhs = t.getChild(1);
+        Object loaded = load(lhs);
+        if (!(loaded instanceof Obj)) {
+            throw new RuntimeException("not Obj: " + lhs.getText());
+        }
+        Obj obj = (Obj) loaded;
+        String name = rhs.getText();
+        obj.values.put(name, value);
     }
 
     Object fun(AttoTree t) {
@@ -539,10 +549,16 @@ public class Interpreter {
         return load(t);
     }
 
+    Object dot(AttoTree t) {
+        Assert.treeType(t, DOT);
+        return load(t);
+    }
+
     Object unknown(AttoTree t) {
         throw new RuntimeException("unknown node: " + t.getToken());
     }
 
+    // TODO: should return atto.lnag.Obj ?
     Object load(AttoTree t) {
         if (t.getType() == DOT) {
             return fieldLoad(t);
@@ -557,8 +573,15 @@ public class Interpreter {
     }
 
     Object fieldLoad(AttoTree t) {
-        // TODO
-        return null;
+        AttoTree lhs = t.getChild(0);
+        AttoTree rhs = t.getChild(1);
+        Object loaded = load(t.getChild(0));
+        if (!(loaded instanceof Obj)) {
+            throw new RuntimeException("not Obj: " + lhs.getText());
+        }
+        Obj obj = (Obj) loaded;
+        String name = rhs.getText();
+        return obj.values.get(name);
     }
 
 }

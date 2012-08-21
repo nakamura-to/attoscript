@@ -1,0 +1,5 @@
+user = { }
+user.name = "parrt"
+user.age = 20
+print user
+user.age
