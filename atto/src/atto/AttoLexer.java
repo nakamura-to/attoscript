@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Atto.g 2012-08-21 16:14:42
+// $ANTLR 3.4 Atto.g 2012-08-21 21:29:09
 
 package atto;
 
@@ -20,34 +20,34 @@ public class AttoLexer extends Lexer {
     public static final int AT=9;
     public static final int BLOCK=10;
     public static final int BOOL=11;
-    public static final int CLOSE_BRACKET=12;
-    public static final int CLOSE_PARENT=13;
-    public static final int CLOSE_S_BRACKET=14;
-    public static final int COLON=15;
-    public static final int COMMA=16;
-    public static final int COMMENT=17;
-    public static final int CONSTANT=18;
-    public static final int DEDENT=19;
-    public static final int DIGIT=20;
-    public static final int DIV=21;
-    public static final int DOT=22;
-    public static final int ELIF=23;
-    public static final int ELSE=24;
-    public static final int EQ=25;
-    public static final int FLOAT=26;
-    public static final int FUN=27;
-    public static final int GE=28;
-    public static final int GT=29;
-    public static final int ID_CHAR=30;
-    public static final int IF=31;
-    public static final int INDENT=32;
-    public static final int INDEX=33;
-    public static final int INT=34;
-    public static final int INTEGER=35;
-    public static final int LE=36;
-    public static final int LEADING_WS=37;
-    public static final int LETTER=38;
-    public static final int LOWER=39;
+    public static final int COLON=12;
+    public static final int COMMA=13;
+    public static final int COMMENT=14;
+    public static final int CONSTANT=15;
+    public static final int DEDENT=16;
+    public static final int DIGIT=17;
+    public static final int DIV=18;
+    public static final int DOT=19;
+    public static final int ELIF=20;
+    public static final int ELSE=21;
+    public static final int EQ=22;
+    public static final int FLOAT=23;
+    public static final int FUN=24;
+    public static final int GE=25;
+    public static final int GT=26;
+    public static final int ID_CHAR=27;
+    public static final int IF=28;
+    public static final int INDENT=29;
+    public static final int INDEX=30;
+    public static final int INT=31;
+    public static final int INTEGER=32;
+    public static final int LBRACK=33;
+    public static final int LCURLY=34;
+    public static final int LE=35;
+    public static final int LEADING_WS=36;
+    public static final int LETTER=37;
+    public static final int LOWER=38;
+    public static final int LPAREN=39;
     public static final int LT=40;
     public static final int MINUS=41;
     public static final int MOD=42;
@@ -58,14 +58,14 @@ public class AttoLexer extends Lexer {
     public static final int NOT=47;
     public static final int NULL=48;
     public static final int OBJ=49;
-    public static final int OPEN_BRACKET=50;
-    public static final int OPEN_PARENT=51;
-    public static final int OPEN_S_BRACKET=52;
-    public static final int OR=53;
-    public static final int PARAMS=54;
-    public static final int PLUS=55;
-    public static final int PRIMARY=56;
-    public static final int PRINT=57;
+    public static final int OR=50;
+    public static final int PARAMS=51;
+    public static final int PLUS=52;
+    public static final int PRIMARY=53;
+    public static final int PRINT=54;
+    public static final int RBRACK=55;
+    public static final int RCURLY=56;
+    public static final int RPAREN=57;
     public static final int SEMICOLON=58;
     public static final int SPACE=59;
     public static final int STMT=60;
@@ -748,16 +748,18 @@ public class AttoLexer extends Lexer {
     }
     // $ANTLR end "COMMA"
 
-    // $ANTLR start "OPEN_PARENT"
-    public final void mOPEN_PARENT() throws RecognitionException {
+    // $ANTLR start "LPAREN"
+    public final void mLPAREN() throws RecognitionException {
         try {
-            int _type = OPEN_PARENT;
+            int _type = LPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:226:13: ( '(' )
-            // Atto.g:226:15: '('
+            // Atto.g:226:9: ( '(' )
+            // Atto.g:226:11: '('
             {
             match('('); 
 
+             implicitLineJoiningLevel++; 
+
             }
 
             state.type = _type;
@@ -767,18 +769,20 @@ public class AttoLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "OPEN_PARENT"
+    // $ANTLR end "LPAREN"
 
-    // $ANTLR start "CLOSE_PARENT"
-    public final void mCLOSE_PARENT() throws RecognitionException {
+    // $ANTLR start "RPAREN"
+    public final void mRPAREN() throws RecognitionException {
         try {
-            int _type = CLOSE_PARENT;
+            int _type = RPAREN;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:227:14: ( ')' )
-            // Atto.g:227:16: ')'
+            // Atto.g:227:9: ( ')' )
+            // Atto.g:227:11: ')'
             {
             match(')'); 
 
+             implicitLineJoiningLevel--; 
+
             }
 
             state.type = _type;
@@ -788,18 +792,20 @@ public class AttoLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "CLOSE_PARENT"
+    // $ANTLR end "RPAREN"
 
-    // $ANTLR start "OPEN_BRACKET"
-    public final void mOPEN_BRACKET() throws RecognitionException {
+    // $ANTLR start "LCURLY"
+    public final void mLCURLY() throws RecognitionException {
         try {
-            int _type = OPEN_BRACKET;
+            int _type = LCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:228:14: ( '{' )
-            // Atto.g:228:16: '{'
+            // Atto.g:228:9: ( '{' )
+            // Atto.g:228:11: '{'
             {
             match('{'); 
 
+             implicitLineJoiningLevel++; 
+
             }
 
             state.type = _type;
@@ -809,18 +815,20 @@ public class AttoLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "OPEN_BRACKET"
+    // $ANTLR end "LCURLY"
 
-    // $ANTLR start "CLOSE_BRACKET"
-    public final void mCLOSE_BRACKET() throws RecognitionException {
+    // $ANTLR start "RCURLY"
+    public final void mRCURLY() throws RecognitionException {
         try {
-            int _type = CLOSE_BRACKET;
+            int _type = RCURLY;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:229:15: ( '}' )
-            // Atto.g:229:17: '}'
+            // Atto.g:229:9: ( '}' )
+            // Atto.g:229:11: '}'
             {
             match('}'); 
 
+             implicitLineJoiningLevel--; 
+
             }
 
             state.type = _type;
@@ -830,18 +838,20 @@ public class AttoLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "CLOSE_BRACKET"
+    // $ANTLR end "RCURLY"
 
-    // $ANTLR start "OPEN_S_BRACKET"
-    public final void mOPEN_S_BRACKET() throws RecognitionException {
+    // $ANTLR start "LBRACK"
+    public final void mLBRACK() throws RecognitionException {
         try {
-            int _type = OPEN_S_BRACKET;
+            int _type = LBRACK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:230:16: ( '[' )
-            // Atto.g:230:18: '['
+            // Atto.g:230:9: ( '[' )
+            // Atto.g:230:11: '['
             {
             match('['); 
 
+             implicitLineJoiningLevel++; 
+
             }
 
             state.type = _type;
@@ -851,18 +861,20 @@ public class AttoLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "OPEN_S_BRACKET"
+    // $ANTLR end "LBRACK"
 
-    // $ANTLR start "CLOSE_S_BRACKET"
-    public final void mCLOSE_S_BRACKET() throws RecognitionException {
+    // $ANTLR start "RBRACK"
+    public final void mRBRACK() throws RecognitionException {
         try {
-            int _type = CLOSE_S_BRACKET;
+            int _type = RBRACK;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Atto.g:231:17: ( ']' )
-            // Atto.g:231:19: ']'
+            // Atto.g:231:9: ( ']' )
+            // Atto.g:231:11: ']'
             {
             match(']'); 
 
+             implicitLineJoiningLevel--; 
+
             }
 
             state.type = _type;
@@ -872,7 +884,7 @@ public class AttoLexer extends Lexer {
         	// do for sure before leaving
         }
     }
-    // $ANTLR end "CLOSE_S_BRACKET"
+    // $ANTLR end "RBRACK"
 
     // $ANTLR start "AT"
     public final void mAT() throws RecognitionException {
@@ -1946,7 +1958,7 @@ public class AttoLexer extends Lexer {
     // $ANTLR end "SPACE"
 
     public void mTokens() throws RecognitionException {
-        // Atto.g:1:8: ( ELIF | ELSE | FUN | IF | PRINT | WHILE | T__66 | INT | STRING | BOOL | NULL | NAME | CONSTANT | SEMICOLON | COLON | DOT | COMMA | OPEN_PARENT | CLOSE_PARENT | OPEN_BRACKET | CLOSE_BRACKET | OPEN_S_BRACKET | CLOSE_S_BRACKET | AT | EQ | NE | LE | GE | LT | GT | PLUS | MINUS | MUL | DIV | MOD | AND | OR | NOT | ASSIGN | ARROW | NEWLINE | WS | LEADING_WS | COMMENT )
+        // Atto.g:1:8: ( ELIF | ELSE | FUN | IF | PRINT | WHILE | T__66 | INT | STRING | BOOL | NULL | NAME | CONSTANT | SEMICOLON | COLON | DOT | COMMA | LPAREN | RPAREN | LCURLY | RCURLY | LBRACK | RBRACK | AT | EQ | NE | LE | GE | LT | GT | PLUS | MINUS | MUL | DIV | MOD | AND | OR | NOT | ASSIGN | ARROW | NEWLINE | WS | LEADING_WS | COMMENT )
         int alt21=44;
         alt21 = dfa21.predict(input);
         switch (alt21) {
@@ -2087,55 +2099,55 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 18 :
-                // Atto.g:1:106: OPEN_PARENT
+                // Atto.g:1:106: LPAREN
                 {
-                mOPEN_PARENT(); 
+                mLPAREN(); 
 
 
                 }
                 break;
             case 19 :
-                // Atto.g:1:118: CLOSE_PARENT
+                // Atto.g:1:113: RPAREN
                 {
-                mCLOSE_PARENT(); 
+                mRPAREN(); 
 
 
                 }
                 break;
             case 20 :
-                // Atto.g:1:131: OPEN_BRACKET
+                // Atto.g:1:120: LCURLY
                 {
-                mOPEN_BRACKET(); 
+                mLCURLY(); 
 
 
                 }
                 break;
             case 21 :
-                // Atto.g:1:144: CLOSE_BRACKET
+                // Atto.g:1:127: RCURLY
                 {
-                mCLOSE_BRACKET(); 
+                mRCURLY(); 
 
 
                 }
                 break;
             case 22 :
-                // Atto.g:1:158: OPEN_S_BRACKET
+                // Atto.g:1:134: LBRACK
                 {
-                mOPEN_S_BRACKET(); 
+                mLBRACK(); 
 
 
                 }
                 break;
             case 23 :
-                // Atto.g:1:173: CLOSE_S_BRACKET
+                // Atto.g:1:141: RBRACK
                 {
-                mCLOSE_S_BRACKET(); 
+                mRBRACK(); 
 
 
                 }
                 break;
             case 24 :
-                // Atto.g:1:189: AT
+                // Atto.g:1:148: AT
                 {
                 mAT(); 
 
@@ -2143,7 +2155,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 25 :
-                // Atto.g:1:192: EQ
+                // Atto.g:1:151: EQ
                 {
                 mEQ(); 
 
@@ -2151,7 +2163,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 26 :
-                // Atto.g:1:195: NE
+                // Atto.g:1:154: NE
                 {
                 mNE(); 
 
@@ -2159,7 +2171,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 27 :
-                // Atto.g:1:198: LE
+                // Atto.g:1:157: LE
                 {
                 mLE(); 
 
@@ -2167,7 +2179,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 28 :
-                // Atto.g:1:201: GE
+                // Atto.g:1:160: GE
                 {
                 mGE(); 
 
@@ -2175,7 +2187,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 29 :
-                // Atto.g:1:204: LT
+                // Atto.g:1:163: LT
                 {
                 mLT(); 
 
@@ -2183,7 +2195,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 30 :
-                // Atto.g:1:207: GT
+                // Atto.g:1:166: GT
                 {
                 mGT(); 
 
@@ -2191,7 +2203,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 31 :
-                // Atto.g:1:210: PLUS
+                // Atto.g:1:169: PLUS
                 {
                 mPLUS(); 
 
@@ -2199,7 +2211,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 32 :
-                // Atto.g:1:215: MINUS
+                // Atto.g:1:174: MINUS
                 {
                 mMINUS(); 
 
@@ -2207,7 +2219,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 33 :
-                // Atto.g:1:221: MUL
+                // Atto.g:1:180: MUL
                 {
                 mMUL(); 
 
@@ -2215,7 +2227,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 34 :
-                // Atto.g:1:225: DIV
+                // Atto.g:1:184: DIV
                 {
                 mDIV(); 
 
@@ -2223,7 +2235,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 35 :
-                // Atto.g:1:229: MOD
+                // Atto.g:1:188: MOD
                 {
                 mMOD(); 
 
@@ -2231,7 +2243,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 36 :
-                // Atto.g:1:233: AND
+                // Atto.g:1:192: AND
                 {
                 mAND(); 
 
@@ -2239,7 +2251,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 37 :
-                // Atto.g:1:237: OR
+                // Atto.g:1:196: OR
                 {
                 mOR(); 
 
@@ -2247,7 +2259,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 38 :
-                // Atto.g:1:240: NOT
+                // Atto.g:1:199: NOT
                 {
                 mNOT(); 
 
@@ -2255,7 +2267,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 39 :
-                // Atto.g:1:244: ASSIGN
+                // Atto.g:1:203: ASSIGN
                 {
                 mASSIGN(); 
 
@@ -2263,7 +2275,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 40 :
-                // Atto.g:1:251: ARROW
+                // Atto.g:1:210: ARROW
                 {
                 mARROW(); 
 
@@ -2271,7 +2283,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 41 :
-                // Atto.g:1:257: NEWLINE
+                // Atto.g:1:216: NEWLINE
                 {
                 mNEWLINE(); 
 
@@ -2279,7 +2291,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 42 :
-                // Atto.g:1:265: WS
+                // Atto.g:1:224: WS
                 {
                 mWS(); 
 
@@ -2287,7 +2299,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 43 :
-                // Atto.g:1:268: LEADING_WS
+                // Atto.g:1:227: LEADING_WS
                 {
                 mLEADING_WS(); 
 
@@ -2295,7 +2307,7 @@ public class AttoLexer extends Lexer {
                 }
                 break;
             case 44 :
-                // Atto.g:1:279: COMMENT
+                // Atto.g:1:238: COMMENT
                 {
                 mCOMMENT(); 
 
@@ -2321,7 +2333,7 @@ public class AttoLexer extends Lexer {
     static final String DFA20_acceptS =
         "\1\uffff\1\1\2\uffff\1\2";
     static final String DFA20_specialS =
-        "\1\2\1\uffff\1\1\1\0\1\uffff}>";
+        "\1\1\1\uffff\1\2\1\0\1\uffff}>";
     static final String[] DFA20_transitionS = {
             "\1\1\26\uffff\1\1\2\uffff\1\2",
             "",
@@ -2387,6 +2399,24 @@ public class AttoLexer extends Lexer {
                         break;
 
                     case 1 : 
+                        int LA20_0 = input.LA(1);
+
+                         
+                        int index20_0 = input.index();
+                        input.rewind();
+
+                        s = -1;
+                        if ( (LA20_0=='\t'||LA20_0==' ') && (( startPos == 0 ))) {s = 1;}
+
+                        else if ( (LA20_0=='#') && ((( startPos == 0 )||( startPos > 0 )))) {s = 2;}
+
+                         
+                        input.seek(index20_0);
+
+                        if ( s>=0 ) return s;
+                        break;
+
+                    case 2 : 
                         int LA20_2 = input.LA(1);
 
                          
@@ -2402,24 +2432,6 @@ public class AttoLexer extends Lexer {
 
                          
                         input.seek(index20_2);
-
-                        if ( s>=0 ) return s;
-                        break;
-
-                    case 2 : 
-                        int LA20_0 = input.LA(1);
-
-                         
-                        int index20_0 = input.index();
-                        input.rewind();
-
-                        s = -1;
-                        if ( (LA20_0=='\t'||LA20_0==' ') && (( startPos == 0 ))) {s = 1;}
-
-                        else if ( (LA20_0=='#') && ((( startPos == 0 )||( startPos > 0 )))) {s = 2;}
-
-                         
-                        input.seek(index20_0);
 
                         if ( s>=0 ) return s;
                         break;
@@ -2457,7 +2469,7 @@ public class AttoLexer extends Lexer {
         "\35\1\34\1\36\1\50\1\40\1\uffff\1\53\1\54\4\uffff\1\4\5\uffff\1"+
         "\52\2\uffff\1\3\6\uffff\1\1\1\2\3\uffff\1\7\1\12\1\13\1\5\1\6";
     static final String DFA21_specialS =
-        "\1\0\42\uffff\1\3\1\2\24\uffff\1\1\40\uffff}>";
+        "\1\0\42\uffff\1\2\1\3\24\uffff\1\1\40\uffff}>";
     static final String[] DFA21_transitionS = {
             "\1\44\1\42\2\uffff\1\42\22\uffff\1\43\1\30\1\10\1\45\1\uffff"+
             "\1\37\1\40\1\10\1\20\1\21\1\35\1\33\1\17\1\34\1\16\1\36\12\7"+
@@ -2585,7 +2597,7 @@ public class AttoLexer extends Lexer {
             this.transition = DFA21_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( ELIF | ELSE | FUN | IF | PRINT | WHILE | T__66 | INT | STRING | BOOL | NULL | NAME | CONSTANT | SEMICOLON | COLON | DOT | COMMA | OPEN_PARENT | CLOSE_PARENT | OPEN_BRACKET | CLOSE_BRACKET | OPEN_S_BRACKET | CLOSE_S_BRACKET | AT | EQ | NE | LE | GE | LT | GT | PLUS | MINUS | MUL | DIV | MOD | AND | OR | NOT | ASSIGN | ARROW | NEWLINE | WS | LEADING_WS | COMMENT );";
+            return "1:1: Tokens : ( ELIF | ELSE | FUN | IF | PRINT | WHILE | T__66 | INT | STRING | BOOL | NULL | NAME | CONSTANT | SEMICOLON | COLON | DOT | COMMA | LPAREN | RPAREN | LCURLY | RCURLY | LBRACK | RBRACK | AT | EQ | NE | LE | GE | LT | GT | PLUS | MINUS | MUL | DIV | MOD | AND | OR | NOT | ASSIGN | ARROW | NEWLINE | WS | LEADING_WS | COMMENT );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
@@ -2698,30 +2710,6 @@ public class AttoLexer extends Lexer {
                         break;
 
                     case 2 : 
-                        int LA21_36 = input.LA(1);
-
-                         
-                        int index21_36 = input.index();
-                        input.rewind();
-
-                        s = -1;
-                        if ( (LA21_36==' ') && ((( startPos == 0 )||( startPos > 0 )))) {s = 35;}
-
-                        else if ( (LA21_36=='\n'||LA21_36=='\r') && (( startPos == 0 ))) {s = 58;}
-
-                        else if ( (LA21_36=='\t') && ((( startPos == 0 )||( startPos > 0 )))) {s = 36;}
-
-                        else if ( (LA21_36=='#') && (( startPos == 0 ))) {s = 59;}
-
-                        else s = 57;
-
-                         
-                        input.seek(index21_36);
-
-                        if ( s>=0 ) return s;
-                        break;
-
-                    case 3 : 
                         int LA21_35 = input.LA(1);
 
                          
@@ -2741,6 +2729,30 @@ public class AttoLexer extends Lexer {
 
                          
                         input.seek(index21_35);
+
+                        if ( s>=0 ) return s;
+                        break;
+
+                    case 3 : 
+                        int LA21_36 = input.LA(1);
+
+                         
+                        int index21_36 = input.index();
+                        input.rewind();
+
+                        s = -1;
+                        if ( (LA21_36==' ') && ((( startPos == 0 )||( startPos > 0 )))) {s = 35;}
+
+                        else if ( (LA21_36=='\n'||LA21_36=='\r') && (( startPos == 0 ))) {s = 58;}
+
+                        else if ( (LA21_36=='\t') && ((( startPos == 0 )||( startPos > 0 )))) {s = 36;}
+
+                        else if ( (LA21_36=='#') && (( startPos == 0 ))) {s = 59;}
+
+                        else s = 57;
+
+                         
+                        input.seek(index21_36);
 
                         if ( s>=0 ) return s;
                         break;

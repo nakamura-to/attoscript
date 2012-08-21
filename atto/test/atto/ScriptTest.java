@@ -55,7 +55,13 @@ public class ScriptTest extends TestCase {
     public void testObj() throws Exception {
         InputStream stream = read("atto/obj.atto");
         Interpreter i = new Interpreter();
-        assertEquals(20, i.run(stream));
+        assertEquals(new Integer(20), i.run(stream));
+    }
+
+    public void testLineJoining() throws Exception {
+        InputStream stream = read("atto/line_joining.atto");
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(2), i.run(stream));
     }
 
     private InputStream read(String path) throws Exception {
