@@ -40,8 +40,8 @@ options {
 
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT; PRINT='print';
-	CALL; FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	PARAMS; UNARY_MINUS; ARGSDEF; PARAMSDEF;
+	FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
+	PARAMS; UNARY_MINUS; ARGS; INDEX; PARAMS; PRIMARY;
 }
 
 @lexer::header {
@@ -84,8 +84,6 @@ expr
 	| or
 	| if_
 	| while_
-	| obj
-	| array
 	| print
 	;
 
@@ -146,7 +144,7 @@ fun
 	;
 
 paramsdef
-	: (vardef (COMMA vardef)*)? -> ^(PARAMSDEF vardef*)
+	: (vardef (COMMA vardef)*)? -> ^(PARAMS vardef*)
 	;
 
 body	: expr
@@ -180,8 +178,7 @@ unary
 	;
 
 primary 
-	: (call)=> call
-	| atom
+	: (atom)=> atom postfix* -> ^(PRIMARY atom postfix*)
 	;
 
 atom	
@@ -191,6 +188,13 @@ atom
 	| BOOL
 	| NULL
 	| OPEN_PARENT expr CLOSE_PARENT -> expr
+	| obj
+	| array	
+	;
+
+postfix 
+	: OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT -> ^(ARGS expr*)
+	| OPEN_S_BRACKET expr CLOSE_S_BRACKET -> ^(INDEX expr)
 	;
 
 qname	
@@ -199,14 +203,6 @@ qname
 
 vardef
 	: NAME
-	;
-		
-call
-	: atom argsdef+  -> ^(CALL atom argsdef+)
-	;
-
-argsdef
-	: OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT -> ^(ARGSDEF expr*)
 	;
 
 // Literals

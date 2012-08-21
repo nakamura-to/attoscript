@@ -74,6 +74,14 @@ public class InterpreterTest extends TestCase {
         assertEquals(new Integer(3), array.values[2]);
     }
 
+    public void testARRAY_get() throws Exception {
+        Interpreter i = new Interpreter();
+        i.run("a=[1,2,3]\n");
+        assertEquals(new Integer(1), i.run("a[0]\n"));
+        assertEquals(new Integer(2), i.run("a[1]\n"));
+        assertEquals(new Integer(3), i.run("a[2]\n"));
+    }
+
     public void testFUN_expr() throws Exception {
         Interpreter i = new Interpreter();
         Object result = i.run("fun x,y -> x+y\n");

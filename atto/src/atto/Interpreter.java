@@ -92,8 +92,8 @@ public class Interpreter {
             return assign(t);
         case FUN:
             return fun(t);
-        case PARAMSDEF:
-            return paramsdef(t);
+        case PARAMS:
+            return params(t);
         case OR:
             return or(t);
         case AND:
@@ -126,10 +126,12 @@ public class Interpreter {
             return unary_minus(t);
         case PRINT:
             return print(t);
-        case CALL:
-            return call(t);
-        case ARGSDEF:
-            return argsdef(t);
+        case PRIMARY:
+            return primary(t);
+        case ARGS:
+            return args(t);
+        case INDEX:
+            return index(t);
         case INT:
             return int_(t);
         case STRING:
@@ -290,8 +292,8 @@ public class Interpreter {
         return fun;
     }
 
-    Object paramsdef(AttoTree t) {
-        Assert.treeType(t, PARAMSDEF);
+    Object params(AttoTree t) {
+        Assert.treeType(t, PARAMS);
         int len = t.getChildCount();
         String[] params = new String[len];
         for (int i = 0; i < len; i++) {
@@ -300,36 +302,58 @@ public class Interpreter {
         return params;
     }
 
-    Object call(AttoTree t) {
-        Assert.treeType(t, CALL);
+    Object primary(AttoTree t) {
+        Assert.treeType(t, PRIMARY);
         Object result = exec(t.getChild(0));
         for (int i = 1; i < t.getChildCount(); i++) {
-            if (!(result instanceof Fun)) {
-                throw new RuntimeException("not function");
-            }
-            Fun fun = (Fun) result;
-            Env calleeEnv = new Env(fun.env);
-            Object[] args = (Object[]) exec(t.getChild(i));
-            for (int j = 0, len = fun.params.length; j < len; j++) {
-                if (j < args.length) {
-                    calleeEnv.putLocal(fun.params[j], args[j]);
+            AttoTree postfix = t.getChild(i);
+            Object value = exec(postfix);
+            if (postfix.getType() == ARGS) {
+                // call
+                if (!(result instanceof Fun)) {
+                    throw new RuntimeException("not function");
                 }
+                Fun fun = (Fun) result;
+                Env calleeEnv = new Env(fun.env);
+                Object[] args = (Object[]) value;
+                for (int j = 0, len = fun.params.length; j < len; j++) {
+                    if (j < args.length) {
+                        calleeEnv.putLocal(fun.params[j], args[j]);
+                    }
+                }
+                Env preservedEnv = currentEnv;
+                currentEnv = calleeEnv;
+                result = exec(fun.body);
+                currentEnv = preservedEnv;
+            } else if (postfix.getType() == INDEX) {
+                // array
+                if (!(result instanceof Array)) {
+                    throw new RuntimeException("not array");
+                }
+                Array array = (Array) result;
+                Integer index = (Integer) value;
+                result = array.values[index];
             }
-            Env preservedEnv = currentEnv;
-            currentEnv = calleeEnv;
-            result = exec(fun.body);
-            currentEnv = preservedEnv;
         }
         return result;
     }
 
-    Object argsdef(AttoTree t) {
-        Assert.treeType(t, ARGSDEF);
+    Object args(AttoTree t) {
+        Assert.treeType(t, ARGS);
         Object[] args = new Object[t.getChildCount()];
         for (int i = 0; i < t.getChildCount(); i++) {
             args[i] = exec(t.getChild(i));
         }
         return args;
+    }
+
+    Object index(AttoTree t) {
+        Assert.treeType(t, INDEX);
+        Object index = exec(t.getChild(0));
+        if (!(index instanceof Integer)) {
+            throw new RuntimeException("not number");
+        }
+        return index;
     }
 
     Object or(AttoTree t) {
