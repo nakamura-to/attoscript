@@ -1,3 +1,4 @@
+T__66=66
 AND=4
 ARGSDEF=5
 ARRAY=6
@@ -65,4 +66,5 @@ WS=65
 'fun'=28
 'if'=32
 'print'=57
+'then'=66
 'while'=64

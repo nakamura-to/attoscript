@@ -62,6 +62,10 @@ package atto;
 package atto;
 }
 
+@members {
+	boolean thenMode = false;
+}
+
 root
 	: stmt* EOF -> ^(BLOCK stmt*)
 	;
@@ -102,19 +106,35 @@ array
 	;
 
 if_	
-	: 'if' expr block elif* else_? -> ^(IF expr block elif* else_?)
+	: 'if' cond=expr 
+	  (
+		  block elif* else_? -> ^(IF $cond block elif* else_?)
+		| 'then' then=expr online_elif* online_else? -> ^(IF $cond $then online_elif* online_else?)
+	  )
 	;
 
 elif	
 	: 'elif' expr block -> ^(ELIF expr block)
 	;
 
-else_	
+else_
 	: 'else' block -> ^(ELSE block)
 	;
 
+online_elif	
+	: 'elif' expr 'then' expr -> ^(ELIF expr expr)
+	;
+	
+online_else
+	: 'else' expr -> ^(ELSE expr)
+	;	
+
 while_	
-	: 'while' expr block -> ^(WHILE expr block)
+	: 'while' cond=expr 
+	  (
+	  	block -> ^(WHILE $cond block)
+	  	| 'then' then=expr -> ^(WHILE $cond $then)
+	  )
 	;
 	
 assign

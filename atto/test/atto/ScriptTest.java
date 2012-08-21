@@ -16,8 +16,14 @@ public class ScriptTest extends TestCase {
         }
     }
 
-    public void testLoop() throws Exception {
-        InputStream stream = read("atto/loop.atto");
+    public void testWhile() throws Exception {
+        InputStream stream = read("atto/while.atto");
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(1000), i.run(stream));
+    }
+
+    public void testWhile_then() throws Exception {
+        InputStream stream = read("atto/while_then.atto");
         Interpreter i = new Interpreter();
         assertEquals(new Integer(1000), i.run(stream));
     }
@@ -30,6 +36,12 @@ public class ScriptTest extends TestCase {
 
     public void testIf() throws Exception {
         InputStream stream = read("atto/if.atto");
+        Interpreter i = new Interpreter();
+        assertEquals("foo", i.run(stream));
+    }
+
+    public void testIf_then() throws Exception {
+        InputStream stream = read("atto/if_then.atto");
         Interpreter i = new Interpreter();
         assertEquals("foo", i.run(stream));
     }
