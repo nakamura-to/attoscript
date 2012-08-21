@@ -256,31 +256,53 @@ public class Interpreter {
 
     Object assign(AttoTree t) {
         Assert.treeType(t, ASSIGN);
-        AttoTree lhs = t.getChild(0);
-        Object value = exec(t.getChild(1));
+        AttoTree primary = t.getChild(0);
+        Object assignValue = exec(t.getChild(1));
+        AttoTree postfix = null;
 
-        if (lhs.getType() == DOT) {
-            // field assign
-            fieldAssign(lhs, value);
+        if (primary.getChildCount() == 1) {
+            // no postfix. simple assign
+            // TODO
+            String name = primary.getChild(0).getText();
+            currentEnv.put(name, assignValue);
         } else {
-            // assign
-            String name = lhs.getText();
-            currentEnv.put(name, value);
+            // has postfix.
+            Object assignTarget = exec(primary.getChild(0));
+            for (int i = 1; i < primary.getChildCount() - 1; i++) {
+                postfix = primary.getChild(i);
+                Object postfixValue = exec(postfix);
+                if (postfix.getType() == ARGS) {
+                    assignTarget = _call(assignTarget, postfixValue);
+                } else if (postfix.getType() == INDEX) {
+                    assignTarget = _index(assignTarget, postfixValue);
+                } else if (postfix.getType() == DOT) {
+                    assignTarget = _load(assignTarget, postfixValue);
+                } else {
+                    throw new RuntimeException("unknown postfix: " + postfix);
+                }
+            }
+            // handle last postfix
+            postfix = primary.getChild(primary.getChildCount() - 1);
+            if (postfix.getType() == INDEX) {
+                if (!(assignTarget instanceof Array)) {
+                    throw new RuntimeException("not Array: " + assignTarget);
+                }
+                Array obj = (Array) assignTarget;
+                Integer index = (Integer) exec(postfix);
+                obj.values[index] = assignValue;
+            } else if (postfix.getType() == DOT) {
+                if (!(assignTarget instanceof Obj)) {
+                    throw new RuntimeException("not Obj: " + assignTarget);
+                }
+                Obj obj = (Obj) assignTarget;
+                // TODO
+                String name = postfix.getChild(0).getText();
+                obj.values.put(name, assignValue);
+            } else {
+                throw new RuntimeException("unknown postfix: " + postfix);
+            }
         }
-
-        return value;
-    }
-
-    void fieldAssign(AttoTree t, Object value) {
-        AttoTree lhs = t.getChild(0);
-        AttoTree rhs = t.getChild(1);
-        Object loaded = load(lhs);
-        if (!(loaded instanceof Obj)) {
-            throw new RuntimeException("not Obj: " + lhs.getText());
-        }
-        Obj obj = (Obj) loaded;
-        String name = rhs.getText();
-        obj.values.put(name, value);
+        return assignValue;
     }
 
     Object fun(AttoTree t) {
@@ -310,39 +332,53 @@ public class Interpreter {
             Object value = exec(postfix);
             if (postfix.getType() == ARGS) {
                 // call
-                if (!(result instanceof Fun)) {
-                    throw new RuntimeException("not function");
-                }
-                Fun fun = (Fun) result;
-                Env calleeEnv = new Env(fun.env);
-                Object[] args = (Object[]) value;
-                for (int j = 0, len = fun.params.length; j < len; j++) {
-                    if (j < args.length) {
-                        calleeEnv.putLocal(fun.params[j], args[j]);
-                    }
-                }
-                Env preservedEnv = currentEnv;
-                currentEnv = calleeEnv;
-                result = exec(fun.body);
-                currentEnv = preservedEnv;
+                result = _call(result, value);
             } else if (postfix.getType() == INDEX) {
                 // array
-                if (!(result instanceof Array)) {
-                    throw new RuntimeException("not array");
-                }
-                Array array = (Array) result;
-                Integer index = (Integer) value;
-                result = array.values[index];
+                result = _index(result, value);
             } else if (postfix.getType() == DOT) {
-                if (!(result instanceof Obj)) {
-                    throw new RuntimeException("not obj");
-                }
-                Obj obj = (Obj) result;
-                String name = (String) value;
-                result = obj.values.get(name);
+                // field
+                result = _load(result, value);
             }
         }
         return result;
+    }
+
+    Object _call(Object result, Object value) {
+        if (!(result instanceof Fun)) {
+            throw new RuntimeException("not function");
+        }
+        Fun fun = (Fun) result;
+        Env calleeEnv = new Env(fun.env);
+        Object[] args = (Object[]) value;
+        for (int j = 0, len = fun.params.length; j < len; j++) {
+            if (j < args.length) {
+                calleeEnv.putLocal(fun.params[j], args[j]);
+            }
+        }
+        Env preservedEnv = currentEnv;
+        currentEnv = calleeEnv;
+        Object ret = exec(fun.body);
+        currentEnv = preservedEnv;
+        return ret;
+    }
+
+    Object _index(Object result, Object value) {
+        if (!(result instanceof Array)) {
+            throw new RuntimeException("not array");
+        }
+        Array array = (Array) result;
+        Integer index = (Integer) value;
+        return array.values[index];
+    }
+
+    Object _load(Object result, Object value) {
+        if (!(result instanceof Obj)) {
+            throw new RuntimeException("not obj");
+        }
+        Obj obj = (Obj) result;
+        String name = (String) value;
+        return obj.values.get(name);
     }
 
     Object args(AttoTree t) {
@@ -591,9 +627,6 @@ public class Interpreter {
 
     // TODO: should return atto.lnag.Obj ?
     Object load(AttoTree t) {
-        if (t.getType() == DOT) {
-            return fieldLoad(t);
-        }
         String name = t.getText();
         Object value = currentEnv.get(name);
         if (value == null) {
@@ -601,18 +634,6 @@ public class Interpreter {
                     + t.getToken());
         }
         return value;
-    }
-
-    Object fieldLoad(AttoTree t) {
-        AttoTree lhs = t.getChild(0);
-        AttoTree rhs = t.getChild(1);
-        Object loaded = load(t.getChild(0));
-        if (!(loaded instanceof Obj)) {
-            throw new RuntimeException("not Obj: " + lhs.getText());
-        }
-        Obj obj = (Obj) loaded;
-        String name = rhs.getText();
-        return obj.values.get(name);
     }
 
 }

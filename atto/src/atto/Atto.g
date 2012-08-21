@@ -79,8 +79,8 @@ block
 	;
 
 expr
-	: fun
-	| assign
+	: (assign)=> assign
+	| fun
 	| or
 	| if_
 	| while_
@@ -136,7 +136,7 @@ while_
 	;
 	
 assign
-	: qname ASSIGN^ expr
+	: primary ASSIGN^ expr
 	;
 
 fun
@@ -196,10 +196,6 @@ postfix
 	: OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT -> ^(ARGS expr*)
 	| OPEN_S_BRACKET expr CLOSE_S_BRACKET -> ^(INDEX expr)
 	| DOT NAME -> ^(DOT NAME)
-	;
-
-qname	
-	: NAME (DOT^ NAME)*
 	;
 
 vardef
