@@ -182,7 +182,7 @@ primary
 	;
 
 atom	
-	: qname	
+	: NAME	
 	| INT
 	| STRING
 	| BOOL
@@ -195,6 +195,7 @@ atom
 postfix 
 	: OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT -> ^(ARGS expr*)
 	| OPEN_S_BRACKET expr CLOSE_S_BRACKET -> ^(INDEX expr)
+	| DOT NAME -> ^(DOT NAME)
 	;
 
 qname	

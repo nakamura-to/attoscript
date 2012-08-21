@@ -333,6 +333,13 @@ public class Interpreter {
                 Array array = (Array) result;
                 Integer index = (Integer) value;
                 result = array.values[index];
+            } else if (postfix.getType() == DOT) {
+                if (!(result instanceof Obj)) {
+                    throw new RuntimeException("not obj");
+                }
+                Obj obj = (Obj) result;
+                String name = (String) value;
+                result = obj.values.get(name);
             }
         }
         return result;
@@ -575,7 +582,7 @@ public class Interpreter {
 
     Object dot(AttoTree t) {
         Assert.treeType(t, DOT);
-        return load(t);
+        return t.getChild(0).getText();
     }
 
     Object unknown(AttoTree t) {
