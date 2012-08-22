@@ -1,0 +1,13 @@
+obj = {
+	name: 'hoge',
+	age: 10,
+}
+
+x = (fun ->
+	array = [
+		obj,
+		2
+	]
+)()
+
+x[1]
