@@ -1,0 +1,3 @@
+add = fun x, y -> x + y
+add1 = add(1)
+print add1(2) + add1(3)

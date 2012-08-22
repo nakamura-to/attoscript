@@ -76,6 +76,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(10), i.run(stream));
     }
 
+    public void testPartialApplication() throws Exception {
+        InputStream stream = read("atto/partial_application.atto");
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(7), i.run(stream));
+    }
+
     private InputStream read(String path) throws Exception {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream(path);

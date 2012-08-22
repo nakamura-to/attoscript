@@ -20,10 +20,18 @@ public class SimpleFun implements Fun {
 
     public Object call(Interpreter interpreter, Object[] args) {
         Env calleeEnv = new Env(env);
-        for (int i = 0, len = params.length; i < len; i++) {
+        for (int i = 0; i < params.length; i++) {
             if (i < args.length) {
                 calleeEnv.putLocal(params[i], args[i]);
             }
+        }
+        if (args.length < params.length) {
+            String[] newParams = new String[params.length - args.length];
+            for (int i = 0; i < newParams.length; i++) {
+                newParams[i] = params[i + args.length];
+            }
+            // partial applied function
+            return new SimpleFun(calleeEnv, newParams, body);
         }
         Env preservedEnv = interpreter.currentEnv;
         interpreter.currentEnv = calleeEnv;
