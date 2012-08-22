@@ -92,7 +92,7 @@ print
 	;
 
 obj	
-	: LCURLY (pair (COMMA pair)* COMMA?)? RCURLY -> ^(OBJ pair*)
+	: OPEN_BRACKET (pair (COMMA pair)* COMMA?)? CLOSE_BRACKET -> ^(OBJ pair*)
 	;
 
 pair
@@ -100,7 +100,7 @@ pair
 	;
 
 array	
-	: LBRACK (expr (COMMA expr)* COMMA?)? RBRACK -> ^(ARRAY expr*)
+	: OPEN_S_BRACKET (expr (COMMA expr)* COMMA?)? CLOSE_S_BRACKET -> ^(ARRAY expr*)
 	;
 
 if_	
@@ -187,14 +187,14 @@ atom
 	| STRING
 	| BOOL
 	| NULL
-	| LPAREN expr RPAREN -> expr
+	| OPEN_PARENT expr CLOSE_PARENT -> expr
 	| obj
 	| array	
 	;
 
 postfix 
-	: LPAREN (expr (COMMA expr)*)? RPAREN -> ^(ARGS expr*)
-	| LBRACK expr RBRACK -> ^(INDEX expr)
+	: OPEN_PARENT (expr (COMMA expr)*)? CLOSE_PARENT -> ^(ARGS expr*)
+	| OPEN_S_BRACKET expr CLOSE_S_BRACKET -> ^(INDEX expr)
 	| DOT NAME -> ^(DOT NAME)
 	;
 
@@ -223,12 +223,12 @@ SEMICOLON	: ';';
 COLON		: ':';
 DOT		: '.';
 COMMA		: ',';
-LPAREN		: '(' { implicitLineJoiningLevel++; } ;
-RPAREN		: ')' { implicitLineJoiningLevel--; } ;
-LCURLY		: '{' { implicitLineJoiningLevel++; } ;
-RCURLY		: '}' { implicitLineJoiningLevel--; } ;
-LBRACK		: '[' { implicitLineJoiningLevel++; } ;
-RBRACK		: ']' { implicitLineJoiningLevel--; } ;
+OPEN_PARENT	: '(';
+CLOSE_PARENT	: ')';
+OPEN_BRACKET	: '{';
+CLOSE_BRACKET	: '}';
+OPEN_S_BRACKET	: '[';
+CLOSE_S_BRACKET	: ']';
 AT		: '@';
 EQ		: '==';
 NE		: '!=';
