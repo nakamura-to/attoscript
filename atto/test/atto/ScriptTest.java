@@ -82,6 +82,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(7), i.run(stream));
     }
 
+    public void testDotChain() throws Exception {
+        InputStream stream = read("atto/dot_chain.atto");
+        Interpreter i = new Interpreter();
+        assertEquals("hoge", i.run(stream));
+    }
+
     private InputStream read(String path) throws Exception {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream(path);

@@ -251,7 +251,10 @@ ASSIGN		: '=';
 ARROW		: '->';
 COMPOSITE	: '>>';
 
-NEWLINE		: (('\r')? '\n' )+ { if (startPos == 0 || implicitLineJoiningLevel > 0) $channel=HIDDEN; } ;
+NEWLINE
+		: ( (('\r')? '\n')+ (' '|'\t')* DOT )=> (('\r')? '\n')+ (' '|'\t')* { $channel=HIDDEN; } 
+		| (('\r')? '\n' )+ { if (startPos == 0 || implicitLineJoiningLevel > 0) $channel=HIDDEN; }
+		;
 WS		: { startPos > 0 }?=> SPACE+ { $channel = HIDDEN; };
 LEADING_WS
 @init { int spaces = 0; }
