@@ -64,6 +64,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(2), i.run(stream));
     }
 
+    public void testAssign() throws Exception {
+        InputStream stream = read("atto/assign.atto");
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(1), i.run(stream));
+    }
+
     private InputStream read(String path) throws Exception {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream(path);

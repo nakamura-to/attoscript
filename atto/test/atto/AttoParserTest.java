@@ -9,7 +9,7 @@ public class AttoParserTest extends TestCase {
 
     public void testAtom_INT() throws Exception {
         AttoParser p = createParser("1");
-        AttoTree t = (AttoTree) p.atom().getTree();
+        AttoTree t = (AttoTree) p.primary().getTree();
         assertEquals("1", t.toStringTree());
     }
 

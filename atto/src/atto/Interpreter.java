@@ -74,12 +74,6 @@ public class Interpreter {
             return block(t);
         case STMT:
             return stmt(t);
-        case OBJ:
-            return obj(t);
-        case COLON:
-            return colon(t);
-        case ARRAY:
-            return array(t);
         case IF:
             return if_(t);
         case ELIF:
@@ -126,12 +120,12 @@ public class Interpreter {
             return unary_minus(t);
         case PRINT:
             return print(t);
-        case PRIMARY:
-            return primary(t);
-        case ARGS:
-            return args(t);
+        case CALL:
+            return call(t);
         case INDEX:
             return index(t);
+        case FIELD_ACCESS:
+            return field_access(t);
         case INT:
             return int_(t);
         case STRING:
@@ -142,8 +136,12 @@ public class Interpreter {
             return null_(t);
         case NAME:
             return name(t);
-        case DOT:
-            return dot(t);
+        case OBJ:
+            return obj(t);
+        case COLON:
+            return colon(t);
+        case ARRAY:
+            return array(t);
         default:
             return unknown(t);
         }
@@ -162,41 +160,6 @@ public class Interpreter {
         Assert.treeType(t, STMT);
         Assert.equals(1, t.getChildCount());
         return exec(t.getChild(0));
-    }
-
-    Object obj(AttoTree t) {
-        Assert.treeType(t, OBJ);
-        Obj obj = new Obj();
-        obj.values = new LinkedHashMap<String, Object>(t.getChildCount());
-        for (int i = 0, len = t.getChildCount(); i < len; i++) {
-            Object[] pair = (Object[]) exec(t.getChild(i));
-            obj.values.put((String) pair[0], pair[1]);
-        }
-        return obj;
-    }
-
-    Object colon(AttoTree t) {
-        Assert.treeType(t, COLON);
-        AttoTree lhs = t.getChild(0);
-        AttoTree rhs = t.getChild(1);
-        if (lhs.getType() != NAME) {
-            throw new RuntimeException("key must be NAME token: "
-                    + t.getToken());
-        }
-        String key = lhs.getText();
-        Object value = exec(rhs);
-        return new Object[] { key, value };
-    }
-
-    Object array(AttoTree t) {
-        Assert.treeType(t, ARRAY);
-        Array array = new Array();
-        array.values = new Object[t.getChildCount()];
-        int i = 0;
-        for (AttoTree c : t.getChildren()) {
-            array.values[i++] = exec(c);
-        }
-        return array;
     }
 
     Object if_(AttoTree t) {
@@ -256,53 +219,38 @@ public class Interpreter {
 
     Object assign(AttoTree t) {
         Assert.treeType(t, ASSIGN);
-        AttoTree primary = t.getChild(0);
-        Object assignValue = exec(t.getChild(1));
-        AttoTree postfix = null;
+        AttoTree postfix = t.getChild(0);
+        Object value = exec(t.getChild(1));
 
-        if (primary.getChildCount() == 1) {
-            // no postfix. simple assign
-            // TODO
-            String name = primary.getChild(0).getText();
-            currentEnv.put(name, assignValue);
-        } else {
-            // has postfix.
-            Object assignTarget = exec(primary.getChild(0));
-            for (int i = 1; i < primary.getChildCount() - 1; i++) {
-                postfix = primary.getChild(i);
-                Object postfixValue = exec(postfix);
-                if (postfix.getType() == ARGS) {
-                    assignTarget = _call(assignTarget, postfixValue);
-                } else if (postfix.getType() == INDEX) {
-                    assignTarget = _index(assignTarget, postfixValue);
-                } else if (postfix.getType() == DOT) {
-                    assignTarget = _load(assignTarget, postfixValue);
-                } else {
-                    throw new RuntimeException("unknown postfix: " + postfix);
-                }
-            }
-            // handle last postfix
-            postfix = primary.getChild(primary.getChildCount() - 1);
-            if (postfix.getType() == INDEX) {
-                if (!(assignTarget instanceof Array)) {
-                    throw new RuntimeException("not Array: " + assignTarget);
-                }
-                Array obj = (Array) assignTarget;
-                Integer index = (Integer) exec(postfix);
-                obj.values[index] = assignValue;
-            } else if (postfix.getType() == DOT) {
-                if (!(assignTarget instanceof Obj)) {
-                    throw new RuntimeException("not Obj: " + assignTarget);
-                }
-                Obj obj = (Obj) assignTarget;
-                // TODO
-                String name = postfix.getChild(0).getText();
-                obj.values.put(name, assignValue);
-            } else {
-                throw new RuntimeException("unknown postfix: " + postfix);
-            }
+        switch (postfix.getType()) {
+        case NAME: {
+            String name = postfix.getText();
+            currentEnv.put(name, value);
+            return value;
         }
-        return assignValue;
+        case INDEX: {
+            Object maybeArray = exec(postfix.getChild(0));
+            if (!(maybeArray instanceof Array)) {
+                throw new RuntimeException("not Array: " + maybeArray);
+            }
+            Array array = (Array) maybeArray;
+            Integer index = (Integer) exec(postfix.getChild(1));
+            array.values[index] = value;
+            return value;
+        }
+        case FIELD_ACCESS: {
+            Object maybeObj = exec(postfix.getChild(0));
+            if (!(maybeObj instanceof Obj)) {
+                throw new RuntimeException("not Obj: " + maybeObj);
+            }
+            Obj obj = (Obj) maybeObj;
+            String name = postfix.getChild(1).getText();
+            obj.values.put(name, value);
+            return value;
+        }
+        default:
+            throw new RuntimeException("can't assign: " + postfix.getToken());
+        }
     }
 
     Object fun(AttoTree t) {
@@ -324,79 +272,50 @@ public class Interpreter {
         return params;
     }
 
-    Object primary(AttoTree t) {
-        Assert.treeType(t, PRIMARY);
-        Object result = exec(t.getChild(0));
-        for (int i = 1; i < t.getChildCount(); i++) {
-            AttoTree postfix = t.getChild(i);
-            Object value = exec(postfix);
-            if (postfix.getType() == ARGS) {
-                // call
-                result = _call(result, value);
-            } else if (postfix.getType() == INDEX) {
-                // array
-                result = _index(result, value);
-            } else if (postfix.getType() == DOT) {
-                // field
-                result = _load(result, value);
-            }
+    Object call(AttoTree t) {
+        Assert.treeType(t, CALL);
+        Object maybeFun = exec(t.getChild(0));
+        Object[] args = new Object[t.getChildCount() - 1];
+        for (int i = 0; i + 1 < t.getChildCount(); i++) {
+            args[i] = exec(t.getChild(i + 1));
         }
-        return result;
-    }
-
-    Object _call(Object result, Object value) {
-        if (!(result instanceof Fun)) {
+        if (!(maybeFun instanceof Fun)) {
             throw new RuntimeException("not function");
         }
-        Fun fun = (Fun) result;
+        Fun fun = (Fun) maybeFun;
         Env calleeEnv = new Env(fun.env);
-        Object[] args = (Object[]) value;
-        for (int j = 0, len = fun.params.length; j < len; j++) {
-            if (j < args.length) {
-                calleeEnv.putLocal(fun.params[j], args[j]);
+        for (int i = 0, len = fun.params.length; i < len; i++) {
+            if (i < args.length) {
+                calleeEnv.putLocal(fun.params[i], args[i]);
             }
         }
         Env preservedEnv = currentEnv;
         currentEnv = calleeEnv;
-        Object ret = exec(fun.body);
+        Object result = exec(fun.body);
         currentEnv = preservedEnv;
-        return ret;
-    }
-
-    Object _index(Object result, Object value) {
-        if (!(result instanceof Array)) {
-            throw new RuntimeException("not array");
-        }
-        Array array = (Array) result;
-        Integer index = (Integer) value;
-        return array.values[index];
-    }
-
-    Object _load(Object result, Object value) {
-        if (!(result instanceof Obj)) {
-            throw new RuntimeException("not obj");
-        }
-        Obj obj = (Obj) result;
-        String name = (String) value;
-        return obj.values.get(name);
-    }
-
-    Object args(AttoTree t) {
-        Assert.treeType(t, ARGS);
-        Object[] args = new Object[t.getChildCount()];
-        for (int i = 0; i < t.getChildCount(); i++) {
-            args[i] = exec(t.getChild(i));
-        }
-        return args;
+        return result;
     }
 
     Object index(AttoTree t) {
         Assert.treeType(t, INDEX);
-        Object index = exec(t.getChild(0));
-        if (!(index instanceof Integer)) {
-            throw new RuntimeException("not number");
+        Object maybeArray = exec(t.getChild(0));
+        if (!(maybeArray instanceof Array)) {
+            throw new RuntimeException("not Array: " + maybeArray);
         }
-        return index;
+        Array array = (Array) maybeArray;
+        Integer index = (Integer) exec(t.getChild(1));
+        return array.values[index];
+    }
+
+    Object field_access(AttoTree t) {
+        Assert.treeType(t, FIELD_ACCESS);
+        Object maybeObj = exec(t.getChild(0));
+        if (!(maybeObj instanceof Obj)) {
+            throw new RuntimeException("not obj");
+        }
+        Obj obj = (Obj) maybeObj;
+        String name = t.getChild(1).getText();
+        return obj.values.get(name);
     }
 
     Object or(AttoTree t) {
@@ -610,23 +529,8 @@ public class Interpreter {
         return null;
     }
 
-    // TODO we need a rule to distinguish between ref and def
     Object name(AttoTree t) {
         Assert.treeType(t, NAME);
-        return load(t);
-    }
-
-    Object dot(AttoTree t) {
-        Assert.treeType(t, DOT);
-        return t.getChild(0).getText();
-    }
-
-    Object unknown(AttoTree t) {
-        throw new RuntimeException("unknown node: " + t.getToken());
-    }
-
-    // TODO: should return atto.lnag.Obj ?
-    Object load(AttoTree t) {
         String name = t.getText();
         Object value = currentEnv.get(name);
         if (value == null) {
@@ -634,6 +538,44 @@ public class Interpreter {
                     + t.getToken());
         }
         return value;
+    }
+
+    Object obj(AttoTree t) {
+        Assert.treeType(t, OBJ);
+        Obj obj = new Obj();
+        obj.values = new LinkedHashMap<String, Object>(t.getChildCount());
+        for (int i = 0; i < t.getChildCount(); i++) {
+            Object[] pair = (Object[]) exec(t.getChild(i));
+            obj.values.put((String) pair[0], pair[1]);
+        }
+        return obj;
+    }
+
+    Object colon(AttoTree t) {
+        Assert.treeType(t, COLON);
+        AttoTree lhs = t.getChild(0);
+        AttoTree rhs = t.getChild(1);
+        if (lhs.getType() != NAME) {
+            throw new RuntimeException("key must be NAME token: "
+                    + t.getToken());
+        }
+        String key = lhs.getText();
+        Object value = exec(rhs);
+        return new Object[] { key, value };
+    }
+
+    Object array(AttoTree t) {
+        Assert.treeType(t, ARRAY);
+        Array array = new Array();
+        array.values = new Object[t.getChildCount()];
+        for (int i = 0; i < t.getChildCount(); i++) {
+            array.values[i] = exec(t.getChild(i));
+        }
+        return array;
+    }
+
+    Object unknown(AttoTree t) {
+        throw new RuntimeException("unknown node: " + t.getToken());
     }
 
 }

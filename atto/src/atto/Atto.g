@@ -41,7 +41,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT; PRINT='print';
 	FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	PARAMS; UNARY_MINUS; ARGS; INDEX; PARAMS; PRIMARY;
+	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS;
 }
 
 @lexer::header {
@@ -87,27 +87,30 @@ expr
 	| print
 	;
 
-print
-	: 'print' expr -> ^(PRINT expr)
+assign
+	: postfix ASSIGN^ body
 	;
 
-obj	
-	: LCURLY (pair (COMMA pair)* COMMA?)? RCURLY -> ^(OBJ pair*)
+fun
+	: 'fun' paramsdef ARROW body -> ^(FUN paramsdef body)
 	;
 
-pair
-	: NAME COLON^ expr
+paramsdef
+	: (vardef (COMMA vardef)*)? -> ^(PARAMS vardef*)
+	| LPAREN (vardef (COMMA vardef)*)? RPAREN -> ^(PARAMS vardef*)
 	;
 
-array	
-	: LBRACK (expr (COMMA expr)* COMMA?)? RBRACK -> ^(ARRAY expr*)
+body	
+	: expr
+	| block
 	;
-
+	
 if_	
-	: 'if' cond=expr 
-	  (
-		  block elif* else_? -> ^(IF $cond block elif* else_?)
-		| 'then' then=expr online_elif* online_else? -> ^(IF $cond $then online_elif* online_else?)
+	: 'if' cond_expr=expr 
+	  ( block elif* else_? 
+	  	-> ^(IF $cond_expr block elif* else_?)
+	  | 'then' then_expr=expr ('else' else_expr=expr)? 
+	  	-> ^(IF $cond_expr $then_expr ^(ELSE $else_expr)?)
 	  )
 	;
 
@@ -119,36 +122,15 @@ else_
 	: 'else' block -> ^(ELSE block)
 	;
 
-online_elif	
-	: 'elif' expr 'then' expr -> ^(ELIF expr expr)
-	;
-	
-online_else
-	: 'else' expr -> ^(ELSE expr)
-	;	
-
 while_	
-	: 'while' cond=expr 
-	  (
-	  	block -> ^(WHILE $cond block)
-	  	| 'then' then=expr -> ^(WHILE $cond $then)
+	: 'while' cond_expr=expr 
+	  ( block -> ^(WHILE $cond_expr block)
+	  | 'then' then_expr=expr -> ^(WHILE $cond_expr $then_expr)
 	  )
 	;
-	
-assign
-	: primary ASSIGN^ expr
-	;
 
-fun
-	: 'fun' paramsdef ARROW body -> ^(FUN paramsdef body)
-	;
-
-paramsdef
-	: (vardef (COMMA vardef)*)? -> ^(PARAMS vardef*)
-	;
-
-body	: expr
-	| block
+print
+	: 'print' expr -> ^(PRINT expr)
 	;
 
 or
@@ -172,16 +154,23 @@ mul
 	;
 	
 unary
-	: primary
-	| NOT^ primary
-	| MINUS primary -> ^(UNARY_MINUS primary)
+	: postfix
+	| NOT^ postfix
+	| MINUS postfix -> ^(UNARY_MINUS postfix)
+	;
+
+postfix 
+	: ( primary -> primary )
+	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
+	  	-> ^(CALL $postfix expr*)
+	  | LBRACK expr RBRACK 
+	  	-> ^(INDEX $postfix expr)
+	  | DOT p=primary 
+	  	-> ^(FIELD_ACCESS $postfix $p)
+	  )*
 	;
 
 primary 
-	: (atom)=> atom postfix* -> ^(PRIMARY atom postfix*)
-	;
-
-atom	
 	: NAME	
 	| INT
 	| STRING
@@ -192,10 +181,20 @@ atom
 	| array	
 	;
 
-postfix 
-	: LPAREN (expr (COMMA expr)*)? RPAREN -> ^(ARGS expr*)
-	| LBRACK expr RBRACK -> ^(INDEX expr)
-	| DOT NAME -> ^(DOT NAME)
+atom
+	:
+	;
+
+obj	
+	: LCURLY (pair (COMMA pair)*)? COMMA? RCURLY -> ^(OBJ pair*)
+	;
+
+pair
+	: NAME COLON^ expr
+	;
+
+array	
+	: LBRACK (expr (COMMA expr)* )? COMMA? RBRACK -> ^(ARRAY expr*)
 	;
 
 vardef
@@ -253,7 +252,7 @@ LEADING_WS
 @init { int spaces = 0; }
 		: { startPos == 0 }?=>
 			( { implicitLineJoiningLevel > 0 }? ( ' ' | '\t' )+ { $channel = HIDDEN; }
-			  | (' ' { spaces++; } | '\t' { spaces += 8; spaces -= (spaces \% 8); })+
+			| (' ' { spaces++; } | '\t' { spaces += 8; spaces -= (spaces \% 8); })+
 				{
 					// make a string of n spaces where n is column number - 1
 					char[] indentation = new char[spaces];
