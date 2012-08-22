@@ -19,14 +19,16 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.TreeAdaptor;
 
 import atto.lang.Array;
+import atto.lang.CompositeFun;
 import atto.lang.Fun;
 import atto.lang.Obj;
+import atto.lang.SimpleFun;
 
 public class Interpreter {
 
     static TreeAdaptor treeAdaptor = new AttoTreeAdaptor();
 
-    Env currentEnv = new Env();
+    public Env currentEnv = new Env();
 
     AttoTree root;
 
@@ -68,7 +70,7 @@ public class Interpreter {
         return null;
     }
 
-    Object exec(AttoTree t) {
+    public Object exec(AttoTree t) {
         switch (t.getType()) {
         case BLOCK:
             return block(t);
@@ -114,6 +116,8 @@ public class Interpreter {
             return div(t);
         case MOD:
             return mod(t);
+        case COMPOSITE:
+            return composite(t);
         case NOT:
             return not(t);
         case UNARY_MINUS:
@@ -255,11 +259,9 @@ public class Interpreter {
 
     Object fun(AttoTree t) {
         Assert.treeType(t, FUN);
-        Fun fun = new Fun();
-        fun.env = currentEnv;
-        fun.params = (String[]) exec(t.getChild(0));
-        fun.body = t.getChild(1);
-        return fun;
+        String[] params = (String[]) exec(t.getChild(0));
+        AttoTree body = t.getChild(1);
+        return new SimpleFun(currentEnv, params, body);
     }
 
     Object params(AttoTree t) {
@@ -283,17 +285,7 @@ public class Interpreter {
             throw new RuntimeException("not function");
         }
         Fun fun = (Fun) maybeFun;
-        Env calleeEnv = new Env(fun.env);
-        for (int i = 0, len = fun.params.length; i < len; i++) {
-            if (i < args.length) {
-                calleeEnv.putLocal(fun.params[i], args[i]);
-            }
-        }
-        Env preservedEnv = currentEnv;
-        currentEnv = calleeEnv;
-        Object result = exec(fun.body);
-        currentEnv = preservedEnv;
-        return result;
+        return fun.call(this, args);
     }
 
     Object index(AttoTree t) {
@@ -481,6 +473,21 @@ public class Interpreter {
             return Integer.valueOf((x.intValue() % y.intValue()));
         }
         return 0;
+    }
+
+    Object composite(AttoTree t) {
+        Assert.treeType(t, COMPOSITE);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (!(lhs instanceof Fun)) {
+            throw new RuntimeException("not function");
+        }
+        Fun lhsFun = (Fun) lhs;
+        if (!(rhs instanceof Fun)) {
+            throw new RuntimeException("not function");
+        }
+        Fun rhsFun = (Fun) rhs;
+        return new CompositeFun(lhsFun, rhsFun);
     }
 
     Object not(AttoTree t) {

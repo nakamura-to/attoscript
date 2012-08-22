@@ -1,0 +1,4 @@
+f = fun x, y -> x + y
+g = fun x -> 2 * x
+h = f >> g
+print h(2, 3)

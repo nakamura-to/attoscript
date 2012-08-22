@@ -70,6 +70,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(1), i.run(stream));
     }
 
+    public void testComposite() throws Exception {
+        InputStream stream = read("atto/composite.atto");
+        Interpreter i = new Interpreter();
+        assertEquals(new Integer(10), i.run(stream));
+    }
+
     private InputStream read(String path) throws Exception {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream(path);

@@ -150,7 +150,11 @@ add
 	;
 
 mul
-	: unary ((MUL|DIV|MOD)^ unary)*
+	: composite ((MUL|DIV|MOD)^ composite)*
+	;
+
+composite
+	: unary (COMPOSITE^ unary)*
 	;
 	
 unary
@@ -245,6 +249,7 @@ OR		: '||';
 NOT		: '!';
 ASSIGN		: '=';
 ARROW		: '->';
+COMPOSITE	: '>>';
 
 NEWLINE		: (('\r')? '\n' )+ { if (startPos == 0 || implicitLineJoiningLevel > 0) $channel=HIDDEN; } ;
 WS		: { startPos > 0 }?=> SPACE+ { $channel = HIDDEN; };
