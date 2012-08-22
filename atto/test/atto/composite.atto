@@ -1,4 +1,6 @@
 f = fun x, y -> x + y
 g = fun x -> 2 * x
 h = f >> g
-print h(2, 3)
+result = h(2, 3)
+print(result)
+result

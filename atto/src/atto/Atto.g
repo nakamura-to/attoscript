@@ -39,7 +39,7 @@ options {
 }
 
 tokens {
-	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT; PRINT='print';
+	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS;
 }
@@ -84,7 +84,6 @@ expr
 	| or
 	| if_
 	| while_
-	| print
 	;
 
 assign
@@ -127,10 +126,6 @@ while_
 	  ( block -> ^(WHILE $cond_expr block)
 	  | 'then' then_expr=expr -> ^(WHILE $cond_expr $then_expr)
 	  )
-	;
-
-print
-	: 'print' expr -> ^(PRINT expr)
 	;
 
 or
@@ -183,10 +178,6 @@ primary
 	| LPAREN expr RPAREN -> expr
 	| obj
 	| array	
-	;
-
-atom
-	:
 	;
 
 obj	

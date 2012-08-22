@@ -111,7 +111,7 @@ public class InterpreterTest extends TestCase {
     public void testPRINT() throws Exception {
         StringWriter writer = new StringWriter();
         Interpreter i = new Interpreter(writer);
-        i.run("a = 100\nprint a\n");
+        i.run("a = 100\nprint(a)\n");
         assertEquals("100" + System.getProperty("line.separator"),
                 writer.toString());
     }

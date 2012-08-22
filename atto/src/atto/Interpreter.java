@@ -4,7 +4,6 @@ import static atto.AttoParser.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.TreeAdaptor;
 
 import atto.lang.Array;
+import atto.lang.BuiltinFun;
 import atto.lang.CompositeFun;
 import atto.lang.Fun;
 import atto.lang.Obj;
@@ -32,18 +32,16 @@ public class Interpreter {
 
     AttoTree root;
 
-    PrintWriter out;
+    public PrintWriter out;
 
     public Interpreter() {
-        this(System.out);
-    }
-
-    public Interpreter(OutputStream out) {
-        this.out = new PrintWriter(out);
+        this(new PrintWriter(System.out));
     }
 
     public Interpreter(Writer out) {
         this.out = new PrintWriter(out);
+        currentEnv.put("assert", BuiltinFun.assert_);
+        currentEnv.put("print", BuiltinFun.print);
     }
 
     public Object run(InputStream input) throws RecognitionException,
@@ -122,8 +120,6 @@ public class Interpreter {
             return not(t);
         case UNARY_MINUS:
             return unary_minus(t);
-        case PRINT:
-            return print(t);
         case CALL:
             return call(t);
         case INDEX:
@@ -324,7 +320,7 @@ public class Interpreter {
         return toBoolean(lhs) && toBoolean(rhs);
     }
 
-    boolean toBoolean(Object value) {
+    public boolean toBoolean(Object value) {
         if (value == null) {
             return false;
         }
@@ -504,15 +500,6 @@ public class Interpreter {
             return Integer.valueOf(-x.intValue());
         }
         return 0;
-    }
-
-    Object print(AttoTree t) {
-        Assert.treeType(t, PRINT);
-        AttoTree expr = t.getChild(0);
-        Object value = exec(expr);
-        out.println(value);
-        out.flush();
-        return value;
     }
 
     Object int_(AttoTree t) {

@@ -1,5 +1,5 @@
 user = { }
 user.name = "parrt"
 user.age = 20
-print user
+print(user)
 user.age
