@@ -62,10 +62,6 @@ package atto;
 package atto;
 }
 
-@members {
-	boolean thenMode = false;
-}
-
 root
 	: stmt* EOF -> ^(BLOCK stmt*)
 	;
@@ -240,7 +236,7 @@ COMPOSITE	: '>>';
 PIPELINE	: '|>';
 
 NEWLINE
-		: ( (('\r')? '\n')+ (' '|'\t')* DOT )=> (('\r')? '\n')+ (' '|'\t')* { $channel=HIDDEN; } 
+		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE) )=> (('\r')? '\n')+ (' '|'\t')* { $channel=HIDDEN; } 
 		| (('\r')? '\n' )+ { if (startPos == 0 || implicitLineJoiningLevel > 0) $channel=HIDDEN; }
 		;
 WS		: { startPos > 0 }?=> SPACE+ { $channel = HIDDEN; };
@@ -265,7 +261,7 @@ LEADING_WS
 					}
 				)*
 			)
-        	;
+		;
 COMMENT
 @init { $channel = HIDDEN; }
 		: { startPos == 0 }?=> SPACE* '#' (~'\n')* '\n'+

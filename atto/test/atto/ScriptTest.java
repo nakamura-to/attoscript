@@ -61,7 +61,7 @@ public class ScriptTest extends TestCase {
     public void testLineJoining() throws Exception {
         InputStream stream = read("atto/line_joining.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(2), i.run(stream));
+        assertEquals("4", i.run(stream));
     }
 
     public void testAssign() throws Exception {
@@ -86,6 +86,12 @@ public class ScriptTest extends TestCase {
         InputStream stream = read("atto/dot_chain.atto");
         Interpreter i = new Interpreter();
         assertEquals("hoge", i.run(stream));
+    }
+
+    public void testPipeline() throws Exception {
+        InputStream stream = read("atto/pipeline.atto");
+        Interpreter i = new Interpreter();
+        assertEquals("20", i.run(stream));
     }
 
     private InputStream read(String path) throws Exception {

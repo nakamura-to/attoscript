@@ -103,6 +103,10 @@ public class Interpreter {
             return le(t);
         case GE:
             return ge(t);
+        case COMPOSITE:
+            return composite(t);
+        case PIPELINE:
+            return pipeline(t);
         case PLUS:
             return plus(t);
         case MINUS:
@@ -113,8 +117,6 @@ public class Interpreter {
             return div(t);
         case MOD:
             return mod(t);
-        case COMPOSITE:
-            return composite(t);
         case NOT:
             return not(t);
         case UNARY_MINUS:
@@ -405,6 +407,32 @@ public class Interpreter {
         return false;
     }
 
+    Object composite(AttoTree t) {
+        Assert.treeType(t, COMPOSITE);
+        Object lhs = exec(t.getChild(0));
+        Object rhs = exec(t.getChild(1));
+        if (!(lhs instanceof Fun)) {
+            throw new RuntimeException("not function");
+        }
+        Fun first = (Fun) lhs;
+        if (!(rhs instanceof Fun)) {
+            throw new RuntimeException("not function");
+        }
+        Fun second = (Fun) rhs;
+        return new CompositeFun(currentEnv, first, second);
+    }
+
+    Object pipeline(AttoTree t) {
+        Assert.treeType(t, PIPELINE);
+        Object[] args = new Object[] { exec(t.getChild(0)) };
+        Object maybeFun = exec(t.getChild(1));
+        if (!(maybeFun instanceof Fun)) {
+            throw new RuntimeException("not function");
+        }
+        Fun fun = (Fun) maybeFun;
+        return fun.call(this, args);
+    }
+
     Object plus(AttoTree t) {
         Assert.treeType(t, PLUS);
         Object lhs = exec(t.getChild(0));
@@ -468,21 +496,6 @@ public class Interpreter {
             return Integer.valueOf((x.intValue() % y.intValue()));
         }
         return 0;
-    }
-
-    Object composite(AttoTree t) {
-        Assert.treeType(t, COMPOSITE);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
-        if (!(lhs instanceof Fun)) {
-            throw new RuntimeException("not function");
-        }
-        Fun first = (Fun) lhs;
-        if (!(rhs instanceof Fun)) {
-            throw new RuntimeException("not function");
-        }
-        Fun second = (Fun) rhs;
-        return new CompositeFun(currentEnv, first, second);
     }
 
     Object not(AttoTree t) {
