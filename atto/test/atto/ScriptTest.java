@@ -49,7 +49,7 @@ public class ScriptTest extends TestCase {
     public void testCounter() throws Exception {
         InputStream stream = read("atto/counter.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(3), i.run(stream));
+        assertEquals("3", i.run(stream));
     }
 
     public void testObj() throws Exception {

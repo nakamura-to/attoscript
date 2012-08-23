@@ -1,41 +1,37 @@
 package atto.lang;
 
+import atto.Env;
 import atto.Interpreter;
 
-public interface BuiltinFun extends Fun {
+public abstract class BuiltinFun extends Fun {
 
-    public static BuiltinFun assert_ = new BuiltinFun() {
+    private BuiltinFun(Env env, String[] params) {
+        super(env, params);
+    }
 
-        @Override
-        public Object call(Interpreter interpreter, Object[] args) {
-            if (args.length > 0) {
-                if (!interpreter.toBoolean(args[0])) {
-                    if (args.length > 1) {
-                        throw new RuntimeException(args[1].toString());
-                    }
-                    throw new RuntimeException();
-                }
-            }
-            return null;
+    public static class PrintFun extends BuiltinFun {
+
+        public PrintFun(Env env) {
+            this(env, new String[] { "obj" });
         }
-    };
 
-    public static BuiltinFun print = new BuiltinFun() {
+        private PrintFun(Env env, String[] params) {
+            super(env, params);
+        }
 
         @Override
-        public Object call(Interpreter interpreter, Object[] args) {
-            StringBuilder buf = new StringBuilder();
-            for (int i = 0; i < args.length; i++) {
-                buf.append(args[i]).append(" ");
-            }
-            if (args.length > 0) {
-                buf.delete(buf.length() - 1, buf.length());
-            }
-            String s = buf.toString();
+        protected Object invoke(Interpreter interpreter) {
+            Object o = interpreter.currentEnv.get("obj");
+            String s = o == null ? "null" : o.toString();
             interpreter.out.println(s);
             interpreter.out.flush();
             return s;
         }
-    };
+
+        @Override
+        protected Object applyPartial(Env env, String[] params) {
+            return new PrintFun(env, params);
+        }
+    }
 
 }

@@ -1,4 +1,4 @@
-fact = fun n ->
+fact = n ->
 	if n < 2 
 		1 
 	else 

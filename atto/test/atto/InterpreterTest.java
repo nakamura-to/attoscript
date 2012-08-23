@@ -92,20 +92,20 @@ public class InterpreterTest extends TestCase {
 
     public void testFUN_expr() throws Exception {
         Interpreter i = new Interpreter();
-        Object result = i.run("fun x,y -> x+y\n");
+        Object result = i.run("x,y -> x+y\n");
         assertTrue(result instanceof Fun);
     }
 
     public void testFUN_block() throws Exception {
         Interpreter i = new Interpreter();
-        Object result = i.run("fun x,y ->\n  x+y\n");
+        Object result = i.run("x,y ->\n  x+y\n");
         assertTrue(result instanceof Fun);
     }
 
     public void testCALL() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(3), i.run("f=fun x,y->x+y\nf(1,2)\n"));
-        assertEquals(new Integer(3), i.run("(fun x,y->x+y)(1,2)\n"));
+        assertEquals(new Integer(3), i.run("f=x,y->x+y\nf(1,2)\n"));
+        assertEquals(new Integer(3), i.run("(x,y->x+y)(1,2)\n"));
     }
 
     public void testPRINT() throws Exception {

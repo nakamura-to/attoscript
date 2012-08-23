@@ -1,4 +1,9 @@
 /*
+ Indentation logic is based on Python.g which is from a following URL.
+ - https://github.com/antlr/examples-v3/blob/master/java/python/Python.g
+*/
+
+/*
  [The 'BSD licence']
  Copyright (c) 2004 Terence Parr and Loring Craymer
  All rights reserved.
@@ -25,11 +30,6 @@
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
-/*
- Indentation logic is based on a Python.g which is from a following URL.
- - https://github.com/antlr/examples-v3/blob/master/java/python/Python.g
-*/
  
 grammar Atto;
 
@@ -40,7 +40,7 @@ options {
 
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
-	FUN='fun'; IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
+	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS;
 }
 
@@ -80,10 +80,10 @@ block
 
 expr
 	: (assign)=> assign
-	| fun
-	| or
+	| (fun)=> fun
 	| if_
 	| while_
+	| or
 	;
 
 assign
@@ -91,7 +91,7 @@ assign
 	;
 
 fun
-	: 'fun' paramsdef ARROW body -> ^(FUN paramsdef body)
+	: paramsdef ARROW^ body
 	;
 
 paramsdef
@@ -137,7 +137,7 @@ and
 	;
 
 rel
-	: add ((EQ|NE|LE|GE|LT|GT)^ add)*
+	: add ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE)^ add)*
 	;
 
 add
@@ -145,11 +145,7 @@ add
 	;
 
 mul
-	: composite ((MUL|DIV|MOD)^ composite)*
-	;
-
-composite
-	: unary (COMPOSITE^ unary)*
+	: unary ((MUL|DIV|MOD)^ unary)*
 	;
 	
 unary
@@ -241,6 +237,7 @@ NOT		: '!';
 ASSIGN		: '=';
 ARROW		: '->';
 COMPOSITE	: '>>';
+PIPELINE	: '|>';
 
 NEWLINE
 		: ( (('\r')? '\n')+ (' '|'\t')* DOT )=> (('\r')? '\n')+ (' '|'\t')* { $channel=HIDDEN; } 

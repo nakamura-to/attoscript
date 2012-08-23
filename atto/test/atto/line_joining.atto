@@ -3,7 +3,7 @@ obj = {
 	age: 10,
 }
 
-x = (fun ->
+x = ( ->
 	array = [
 		obj,
 		2

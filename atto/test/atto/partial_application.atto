@@ -1,4 +1,4 @@
-add = fun x, y -> x + y
+add = x, y -> x + y
 add1 = add(1)
 result = add1(2) + add1(3)
 print result

@@ -40,8 +40,7 @@ public class Interpreter {
 
     public Interpreter(Writer out) {
         this.out = new PrintWriter(out);
-        currentEnv.put("assert", BuiltinFun.assert_);
-        currentEnv.put("print", BuiltinFun.print);
+        currentEnv.put("print", new BuiltinFun.PrintFun(currentEnv));
     }
 
     public Object run(InputStream input) throws RecognitionException,
@@ -84,8 +83,8 @@ public class Interpreter {
             return while_(t);
         case ASSIGN:
             return assign(t);
-        case FUN:
-            return fun(t);
+        case ARROW:
+            return arrow(t);
         case PARAMS:
             return params(t);
         case OR:
@@ -253,8 +252,8 @@ public class Interpreter {
         }
     }
 
-    Object fun(AttoTree t) {
-        Assert.treeType(t, FUN);
+    Object arrow(AttoTree t) {
+        Assert.treeType(t, ARROW);
         String[] params = (String[]) exec(t.getChild(0));
         AttoTree body = t.getChild(1);
         return new SimpleFun(currentEnv, params, body);
@@ -478,12 +477,12 @@ public class Interpreter {
         if (!(lhs instanceof Fun)) {
             throw new RuntimeException("not function");
         }
-        Fun lhsFun = (Fun) lhs;
+        Fun first = (Fun) lhs;
         if (!(rhs instanceof Fun)) {
             throw new RuntimeException("not function");
         }
-        Fun rhsFun = (Fun) rhs;
-        return new CompositeFun(lhsFun, rhsFun);
+        Fun second = (Fun) rhs;
+        return new CompositeFun(currentEnv, first, second);
     }
 
     Object not(AttoTree t) {

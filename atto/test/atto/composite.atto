@@ -1,5 +1,5 @@
-f = fun x, y -> x + y
-g = fun x -> 2 * x
+f = x, y -> x + y
+g = x -> 2 * x
 h = f >> g
 result = h(2, 3)
 print(result)
