@@ -1,13 +1,11 @@
-package atto;
+package atto.lang;
 
 import static atto.AttoParser.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRInputStream;
@@ -17,43 +15,43 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.tree.TreeAdaptor;
 
-import atto.lang.Array;
-import atto.lang.BuiltinFun;
-import atto.lang.CompositeFun;
-import atto.lang.Fun;
-import atto.lang.Obj;
-import atto.lang.SimpleFun;
+import atto.AttoLexer;
+import atto.AttoParser;
+import atto.AttoTokenSource;
+import atto.AttoTree;
+import atto.AttoTreeAdaptor;
+import atto.lang.util.Assert;
 
 public class Interpreter {
 
-    static TreeAdaptor treeAdaptor = new AttoTreeAdaptor();
+    protected static TreeAdaptor treeAdaptor = new AttoTreeAdaptor();
 
-    public Env currentEnv = new Env();
-
-    AttoTree root;
-
-    public PrintWriter out;
+    protected Runtime runtime;
 
     public Interpreter() {
-        this(new PrintWriter(System.out));
     }
 
-    public Interpreter(Writer out) {
-        this.out = new PrintWriter(out);
-        currentEnv.put("print", new BuiltinFun.PrintFun(currentEnv));
+    public Obj run(InputStream in) throws RecognitionException, IOException {
+        return run(new ANTLRInputStream(in), new PrintWriter(System.out));
     }
 
-    public Object run(InputStream input) throws RecognitionException,
+    public Obj run(InputStream in, PrintWriter out)
+            throws RecognitionException, IOException {
+        return run(new ANTLRInputStream(in), out);
+    }
+
+    public Obj run(String in) throws RecognitionException, IOException {
+        return run(new ANTLRStringStream(in), new PrintWriter(System.out));
+    }
+
+    public Obj run(String in, PrintWriter out) throws RecognitionException,
             IOException {
-        return run(new ANTLRInputStream(input));
+        return run(new ANTLRStringStream(in), out);
     }
 
-    public Object run(String input) throws RecognitionException, IOException {
-        return run(new ANTLRStringStream(input));
-    }
-
-    Object run(CharStream input) throws RecognitionException, IOException {
-        AttoLexer lexer = new AttoLexer(input);
+    protected Obj run(CharStream in, PrintWriter out)
+            throws RecognitionException, IOException {
+        AttoLexer lexer = new AttoLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         AttoTokenSource source = new AttoTokenSource(tokens);
         tokens = new CommonTokenStream(source);
@@ -61,13 +59,17 @@ public class Interpreter {
         parser.setTreeAdaptor(treeAdaptor);
         AttoParser.root_return ret = parser.root();
         if (parser.getNumberOfSyntaxErrors() == 0) {
-            root = (AttoTree) ret.getTree();
-            return block(root);
+            if (runtime == null) {
+                this.runtime = new Runtime(this, out);
+                this.runtime.init();
+            }
+            AttoTree root = (AttoTree) ret.getTree();
+            return (Obj) block(root);
         }
         return null;
     }
 
-    public Object exec(AttoTree t) {
+    protected Object exec(AttoTree t) {
         switch (t.getType()) {
         case BLOCK:
             return block(t);
@@ -121,6 +123,8 @@ public class Interpreter {
             return not(t);
         case UNARY_MINUS:
             return unary_minus(t);
+        case SEND:
+            return send(t);
         case CALL:
             return call(t);
         case INDEX:
@@ -148,7 +152,7 @@ public class Interpreter {
         }
     }
 
-    Object block(AttoTree t) {
+    protected Object block(AttoTree t) {
         Assert.treeType(t, BLOCK);
         Object result = null;
         for (AttoTree c : t.getChildren()) {
@@ -157,13 +161,13 @@ public class Interpreter {
         return result;
     }
 
-    Object stmt(AttoTree t) {
+    protected Object stmt(AttoTree t) {
         Assert.treeType(t, STMT);
         Assert.equals(1, t.getChildCount());
         return exec(t.getChild(0));
     }
 
-    Object if_(AttoTree t) {
+    protected Object if_(AttoTree t) {
         Assert.treeType(t, IF);
         AttoTree condition = t.getChild(0);
         AttoTree body = t.getChild(1);
@@ -187,7 +191,7 @@ public class Interpreter {
         return result;
     }
 
-    Object elif(AttoTree t) {
+    protected Object elif(AttoTree t) {
         Assert.treeType(t, ELIF);
         AttoTree condition = t.getChild(0);
         AttoTree body = t.getChild(1);
@@ -200,14 +204,14 @@ public class Interpreter {
         return result;
     }
 
-    Object else_(AttoTree t) {
+    protected Object else_(AttoTree t) {
         Assert.treeType(t, ELSE);
         AttoTree body = t.getChild(0);
         Object result = new Object[] { exec(body) };
         return result;
     }
 
-    Object while_(AttoTree t) {
+    protected Object while_(AttoTree t) {
         Assert.treeType(t, WHILE);
         AttoTree condition = t.getChild(0);
         AttoTree body = t.getChild(1);
@@ -218,26 +222,27 @@ public class Interpreter {
         return result;
     }
 
-    Object assign(AttoTree t) {
+    protected Object assign(AttoTree t) {
         Assert.treeType(t, ASSIGN);
         AttoTree postfix = t.getChild(0);
-        Object value = exec(t.getChild(1));
+        Obj value = (Obj) exec(t.getChild(1));
 
         switch (postfix.getType()) {
         case NAME: {
             String name = postfix.getText();
-            currentEnv.put(name, value);
+            runtime.put(name, value);
             return value;
         }
         case INDEX: {
-            Object maybeArray = exec(postfix.getChild(0));
-            if (!(maybeArray instanceof Array)) {
-                throw new RuntimeException("not Array: " + maybeArray);
+            Obj array = (Obj) exec(postfix.getChild(0));
+            if (!runtime.array().isPrototypeOf(array)) {
+                throw new RuntimeException("not Array: " + array);
             }
-            Array array = (Array) maybeArray;
-            Integer index = (Integer) exec(postfix.getChild(1));
-            array.values[index] = value;
-            return value;
+            Obj index = (Obj) exec(postfix.getChild(1));
+            if (!runtime.integer().isPrototypeOf(index)) {
+                throw new RuntimeException("not Number: " + index);
+            }
+            return array.send("set", index, value);
         }
         case FIELD_ACCESS: {
             Object maybeObj = exec(postfix.getChild(0));
@@ -246,7 +251,7 @@ public class Interpreter {
             }
             Obj obj = (Obj) maybeObj;
             String name = postfix.getChild(1).getText();
-            obj.values.put(name, value);
+            obj.put(name, value);
             return value;
         }
         default:
@@ -254,14 +259,14 @@ public class Interpreter {
         }
     }
 
-    Object arrow(AttoTree t) {
+    protected Object arrow(AttoTree t) {
         Assert.treeType(t, ARROW);
         String[] params = (String[]) exec(t.getChild(0));
         AttoTree body = t.getChild(1);
-        return new SimpleFun(currentEnv, params, body);
+        return runtime.newSimpleFun(params, body);
     }
 
-    Object params(AttoTree t) {
+    protected Object params(AttoTree t) {
         Assert.treeType(t, PARAMS);
         int len = t.getChildCount();
         String[] params = new String[len];
@@ -271,32 +276,43 @@ public class Interpreter {
         return params;
     }
 
-    Object call(AttoTree t) {
+    protected Object send(AttoTree t) {
+        Assert.treeType(t, SEND);
+        Obj obj = (Obj) exec(t.getChild(0));
+        String name = t.getChild(1).getText();
+        Obj[] args = new Obj[t.getChildCount() - 2];
+        for (int i = 0; i + 2 < t.getChildCount(); i++) {
+            args[i] = (Obj) exec(t.getChild(i + 2));
+        }
+        return obj.send(name, args);
+    }
+
+    protected Object call(AttoTree t) {
         Assert.treeType(t, CALL);
         Object maybeFun = exec(t.getChild(0));
-        Object[] args = new Object[t.getChildCount() - 1];
+        Obj[] args = new Obj[t.getChildCount() - 1];
         for (int i = 0; i + 1 < t.getChildCount(); i++) {
-            args[i] = exec(t.getChild(i + 1));
+            args[i] = (Obj) exec(t.getChild(i + 1));
         }
         if (!(maybeFun instanceof Fun)) {
             throw new RuntimeException("not function");
         }
         Fun fun = (Fun) maybeFun;
-        return fun.call(this, args);
+        return fun.call(null, args);
     }
 
-    Object index(AttoTree t) {
+    protected Object index(AttoTree t) {
         Assert.treeType(t, INDEX);
         Object maybeArray = exec(t.getChild(0));
-        if (!(maybeArray instanceof Array)) {
+        if (!(maybeArray instanceof Obj)) {
             throw new RuntimeException("not Array: " + maybeArray);
         }
-        Array array = (Array) maybeArray;
-        Integer index = (Integer) exec(t.getChild(1));
-        return array.values[index];
+        Obj array = (Obj) maybeArray;
+        Obj index = (Obj) exec(t.getChild(1));
+        return array.send("get", index);
     }
 
-    Object field_access(AttoTree t) {
+    protected Object field_access(AttoTree t) {
         Assert.treeType(t, FIELD_ACCESS);
         Object maybeObj = exec(t.getChild(0));
         if (!(maybeObj instanceof Obj)) {
@@ -304,21 +320,23 @@ public class Interpreter {
         }
         Obj obj = (Obj) maybeObj;
         String name = t.getChild(1).getText();
-        return obj.values.get(name);
+        return obj.get(name);
     }
 
-    Object or(AttoTree t) {
+    protected Object or(AttoTree t) {
         Assert.treeType(t, OR);
         Object lhs = exec(t.getChild(0));
         Object rhs = exec(t.getChild(1));
-        return toBoolean(lhs) || toBoolean(rhs);
+        return toBoolean(lhs) || toBoolean(rhs) ? runtime._true() : runtime
+                ._false();
     }
 
-    Object and(AttoTree t) {
+    protected Object and(AttoTree t) {
         Assert.treeType(t, AND);
         Object lhs = exec(t.getChild(0));
         Object rhs = exec(t.getChild(1));
-        return toBoolean(lhs) && toBoolean(rhs);
+        return toBoolean(lhs) && toBoolean(rhs) ? runtime._true() : runtime
+                ._false();
     }
 
     public boolean toBoolean(Object value) {
@@ -334,80 +352,90 @@ public class Interpreter {
         if ("".equals(value)) {
             return false;
         }
+        if (value instanceof Obj) {
+            Obj o = (Obj) value;
+            return toBoolean(o.getObject());
+        }
         return true;
     }
 
-    Object eq(AttoTree t) {
+    protected Object eq(AttoTree t) {
         Assert.treeType(t, EQ);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
-        return lhs.equals(rhs);
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
+        if (lhs != null && rhs != null) {
+            return lhs.equals(rhs) ? runtime._true() : runtime._false();
+        }
+        return runtime._false();
     }
 
-    Object ne(AttoTree t) {
+    protected Object ne(AttoTree t) {
         Assert.treeType(t, NE);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
-        return !lhs.equals(rhs);
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
+        if (lhs != null && rhs != null) {
+            return lhs.equals(rhs) ? runtime._false() : runtime._true();
+        }
+        return runtime._false();
     }
 
-    Object lt(AttoTree t) {
+    protected Object lt(AttoTree t) {
         Assert.treeType(t, LT);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Comparable && rhs instanceof Comparable) {
             Comparable x = (Comparable) lhs;
             Comparable y = (Comparable) rhs;
             if (x.compareTo(y) < 0) {
-                return true;
+                return runtime._true();
             }
         }
-        return false;
+        return runtime._false();
     }
 
-    Object gt(AttoTree t) {
+    protected Object gt(AttoTree t) {
         Assert.treeType(t, GT);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Comparable && rhs instanceof Comparable) {
             Comparable x = (Comparable) lhs;
             Comparable y = (Comparable) rhs;
             if (x.compareTo(y) > 0) {
-                return true;
+                return runtime._true();
             }
         }
-        return false;
+        return runtime._false();
     }
 
-    Object le(AttoTree t) {
+    protected Object le(AttoTree t) {
         Assert.treeType(t, LE);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Comparable && rhs instanceof Comparable) {
             Comparable x = (Comparable) lhs;
             Comparable y = (Comparable) rhs;
             if (x.compareTo(y) <= 0) {
-                return true;
+                return runtime._true();
             }
         }
-        return false;
+        return runtime._false();
     }
 
-    Object ge(AttoTree t) {
+    protected Object ge(AttoTree t) {
         Assert.treeType(t, GE);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Comparable && rhs instanceof Comparable) {
             Comparable x = (Comparable) lhs;
             Comparable y = (Comparable) rhs;
             if (x.compareTo(y) >= 0) {
-                return true;
+                return runtime._true();
             }
         }
-        return false;
+        return runtime._false();
     }
 
-    Object composite(AttoTree t) {
+    protected Object composite(AttoTree t) {
         Assert.treeType(t, COMPOSITE);
         Object lhs = exec(t.getChild(0));
         Object rhs = exec(t.getChild(1));
@@ -419,126 +447,127 @@ public class Interpreter {
             throw new RuntimeException("not function");
         }
         Fun second = (Fun) rhs;
-        return new CompositeFun(currentEnv, first, second);
+        return runtime.newCompositeFun(first, second);
     }
 
-    Object pipeline(AttoTree t) {
+    protected Object pipeline(AttoTree t) {
         Assert.treeType(t, PIPELINE);
-        Object[] args = new Object[] { exec(t.getChild(0)) };
+        Obj[] args = new Obj[] { (Obj) exec(t.getChild(0)) };
         Object maybeFun = exec(t.getChild(1));
         if (!(maybeFun instanceof Fun)) {
             throw new RuntimeException("not function");
         }
         Fun fun = (Fun) maybeFun;
-        return fun.call(this, args);
+        return fun.call(null, args);
     }
 
-    Object plus(AttoTree t) {
+    protected Object plus(AttoTree t) {
         Assert.treeType(t, PLUS);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Integer && rhs instanceof Integer) {
             Integer x = (Integer) lhs;
             Integer y = (Integer) rhs;
-            return Integer.valueOf(x.intValue() + y.intValue());
+            return runtime.newInteger((x.intValue() + y.intValue()));
         }
         if (lhs instanceof String || rhs instanceof String) {
             String x = lhs != null ? lhs.toString() : "";
             String y = rhs != null ? rhs.toString() : "";
-            return x + y;
+            return runtime.newString(x + y);
         }
         return 0;
     }
 
-    Object minus(AttoTree t) {
+    protected Object minus(AttoTree t) {
         Assert.treeType(t, MINUS);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Integer && rhs instanceof Integer) {
             Integer x = (Integer) lhs;
             Integer y = (Integer) rhs;
-            return Integer.valueOf(x.intValue() - y.intValue());
+            return runtime.newInteger((x.intValue() - y.intValue()));
         }
         return 0;
     }
 
-    Object mul(AttoTree t) {
+    protected Object mul(AttoTree t) {
         Assert.treeType(t, MUL);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Integer && rhs instanceof Integer) {
             Integer x = (Integer) lhs;
             Integer y = (Integer) rhs;
-            return Integer.valueOf(x.intValue() * y.intValue());
+            return runtime.newInteger((x.intValue() * y.intValue()));
         }
         return 0;
     }
 
-    Object div(AttoTree t) {
+    protected Object div(AttoTree t) {
         Assert.treeType(t, DIV);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Integer && rhs instanceof Integer) {
             Integer x = (Integer) lhs;
             Integer y = (Integer) rhs;
-            return Integer.valueOf(x.intValue() / y.intValue());
+            return runtime.newInteger((x.intValue() / y.intValue()));
         }
         return 0;
     }
 
-    Object mod(AttoTree t) {
+    protected Object mod(AttoTree t) {
         Assert.treeType(t, MOD);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
+        Object lhs = ((Obj) exec(t.getChild(0))).getObject();
+        Object rhs = ((Obj) exec(t.getChild(1))).getObject();
         if (lhs instanceof Integer && rhs instanceof Integer) {
             Integer x = (Integer) lhs;
             Integer y = (Integer) rhs;
-            return Integer.valueOf((x.intValue() % y.intValue()));
+            return runtime.newInteger((x.intValue() % y.intValue()));
         }
         return 0;
     }
 
-    Object not(AttoTree t) {
+    protected Object not(AttoTree t) {
         Assert.treeType(t, NOT);
-        AttoTree expr = t.getChild(0);
-        return !toBoolean(exec(expr));
+        // TODO
+        Object expr = ((Obj) exec(t.getChild(0))).getObject();
+        return runtime.newBool(!toBoolean(expr));
     }
 
-    Object unary_minus(AttoTree t) {
+    protected Object unary_minus(AttoTree t) {
         Assert.treeType(t, UNARY_MINUS);
-        Object expr = exec(t.getChild(0));
+        Object expr = ((Obj) exec(t.getChild(0))).getObject();
         if (expr instanceof Integer) {
             Integer x = (Integer) expr;
-            return Integer.valueOf(-x.intValue());
+            return runtime.newInteger(Integer.valueOf(-x.intValue()));
         }
         return 0;
     }
 
-    Object int_(AttoTree t) {
+    protected Object int_(AttoTree t) {
         Assert.treeType(t, INT);
-        return Integer.valueOf(t.getText());
+        return runtime.newInteger(Integer.valueOf(t.getText()));
     }
 
-    Object string(AttoTree t) {
+    protected Object string(AttoTree t) {
         Assert.treeType(t, STRING);
         String s = t.getText();
-        return s.substring(1, s.length() - 1);
+        return runtime.newString(s.substring(1, s.length() - 1));
     }
 
-    Object bool(AttoTree t) {
+    protected Object bool(AttoTree t) {
         Assert.treeType(t, BOOL);
-        return Boolean.valueOf(t.getText());
+        return runtime.newBool(Boolean.valueOf(t.getText()));
     }
 
-    Object null_(AttoTree t) {
+    protected Object null_(AttoTree t) {
         Assert.treeType(t, NULL);
-        return null;
+        return runtime._null();
     }
 
-    Object name(AttoTree t) {
+    protected Object name(AttoTree t) {
         Assert.treeType(t, NAME);
         String name = t.getText();
-        Object value = currentEnv.get(name);
+        Object value = runtime.get(name);
         if (value == null) {
             throw new RuntimeException("no such variable: " + name + ": "
                     + t.getToken());
@@ -546,18 +575,17 @@ public class Interpreter {
         return value;
     }
 
-    Object obj(AttoTree t) {
+    protected Object obj(AttoTree t) {
         Assert.treeType(t, OBJ);
-        Obj obj = new Obj();
-        obj.values = new LinkedHashMap<String, Object>(t.getChildCount());
+        Obj obj = runtime.newObj();
         for (int i = 0; i < t.getChildCount(); i++) {
             Object[] pair = (Object[]) exec(t.getChild(i));
-            obj.values.put((String) pair[0], pair[1]);
+            obj.put((String) pair[0], (Obj) pair[1]);
         }
         return obj;
     }
 
-    Object colon(AttoTree t) {
+    protected Object colon(AttoTree t) {
         Assert.treeType(t, COLON);
         AttoTree lhs = t.getChild(0);
         AttoTree rhs = t.getChild(1);
@@ -566,21 +594,23 @@ public class Interpreter {
                     + t.getToken());
         }
         String key = lhs.getText();
-        Object value = exec(rhs);
+        Obj value = (Obj) exec(rhs);
         return new Object[] { key, value };
     }
 
-    Object array(AttoTree t) {
+    protected Object array(AttoTree t) {
         Assert.treeType(t, ARRAY);
-        Array array = new Array();
-        array.values = new Object[t.getChildCount()];
-        for (int i = 0; i < t.getChildCount(); i++) {
-            array.values[i] = exec(t.getChild(i));
+        Obj array = runtime.newArray();
+        int len = t.getChildCount();
+        for (int i = 0; i < len; i++) {
+            Obj arg = (Obj) exec(t.getChild(i));
+            array.values.put(String.valueOf(i), arg);
         }
+        array.put("length", runtime.newInteger(len));
         return array;
     }
 
-    Object unknown(AttoTree t) {
+    protected Object unknown(AttoTree t) {
         throw new RuntimeException("unknown node: " + t.getToken());
     }
 

@@ -1,20 +1,18 @@
 package atto.lang;
 
-import atto.Env;
-import atto.Interpreter;
-
-public abstract class Fun {
+public abstract class Fun extends Obj {
 
     protected Env env;
 
     protected String[] params;
 
-    protected Fun(Env env, String[] params) {
+    protected Fun(Runtime runtime, Env env, String[] params) {
+        super(runtime, runtime.fun());
         this.env = env;
         this.params = params;
     }
 
-    public Object call(Interpreter interpreter, Object[] args) {
+    public Obj call(Obj receiver, Obj[] args) {
         Env calleeEnv = new Env(env);
         for (int i = 0; i < params.length; i++) {
             if (i < args.length) {
@@ -28,16 +26,16 @@ public abstract class Fun {
             }
             return applyPartial(calleeEnv, newParams);
         }
-        Env preservedEnv = interpreter.currentEnv;
-        interpreter.currentEnv = calleeEnv;
-        Object result = invoke(interpreter);
-        interpreter.currentEnv = preservedEnv;
+        Env preservedEnv = runtime.currentEnv;
+        runtime.currentEnv = calleeEnv;
+        Obj result = invoke(receiver, args);
+        runtime.currentEnv = preservedEnv;
         return result;
     }
 
-    protected abstract Object invoke(Interpreter interpreter);
+    protected abstract Obj invoke(Obj receiver, Obj[] args);
 
-    protected abstract Object applyPartial(Env env, String[] params);
+    protected abstract Obj applyPartial(Env env, String[] params);
 
     public Env getEnv() {
         return env;

@@ -25,7 +25,7 @@ public class AttoParserTest extends TestCase {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         AttoTokenSource source = new AttoTokenSource(tokens);
         AttoParser parser = new AttoParser(new CommonTokenStream(source));
-        parser.setTreeAdaptor(Interpreter.treeAdaptor);
+        parser.setTreeAdaptor(new AttoTreeAdaptor());
         return parser;
     }
 }

@@ -1,5 +1,8 @@
 user = { }
 user.name = "parrt"
 user.age = 20
+user.hello = (-> print('Hi'))
+user.hello()
 print(user)
 user.age
+

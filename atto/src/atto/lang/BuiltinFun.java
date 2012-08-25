@@ -1,36 +1,38 @@
 package atto.lang;
 
-import atto.Env;
-import atto.Interpreter;
+import java.io.PrintWriter;
 
 public abstract class BuiltinFun extends Fun {
 
-    private BuiltinFun(Env env, String[] params) {
-        super(env, params);
+    protected BuiltinFun(Runtime runtime, Env env, String[] params) {
+        super(runtime, env, params);
     }
 
     public static class PrintFun extends BuiltinFun {
 
-        public PrintFun(Env env) {
-            this(env, new String[] { "obj" });
+        protected PrintWriter out;
+
+        public PrintFun(Runtime runtime, PrintWriter out) {
+            this(runtime, null, new String[] { "obj" });
+            this.out = out;
         }
 
-        private PrintFun(Env env, String[] params) {
-            super(env, params);
+        protected PrintFun(Runtime runtime, Env env, String[] params) {
+            super(runtime, env, params);
         }
 
         @Override
-        protected Object invoke(Interpreter interpreter) {
-            Object o = interpreter.currentEnv.get("obj");
-            String s = o == null ? "null" : o.toString();
-            interpreter.out.println(s);
-            interpreter.out.flush();
+        protected Obj invoke(Obj receiver, Obj[] args) {
+            Obj o = args[0];
+            Obj s = o.send("toString");
+            out.println(s.object);
+            out.flush();
             return s;
         }
 
         @Override
-        protected Object applyPartial(Env env, String[] params) {
-            return new PrintFun(env, params);
+        protected Obj applyPartial(Env env, String[] params) {
+            return new PrintFun(runtime, env, params);
         }
     }
 

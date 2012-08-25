@@ -1,12 +1,14 @@
-package atto;
+package atto.lang;
 
 import java.util.HashMap;
 
+import atto.lang.util.Assert;
+
 public class Env {
 
-    HashMap<String, Object> values = new HashMap<String, Object>();
+    protected HashMap<String, Obj> values = new HashMap<String, Obj>();
 
-    Env enclosingEnv;
+    protected Env enclosingEnv;
 
     public Env() {
     }
@@ -15,9 +17,9 @@ public class Env {
         this.enclosingEnv = enclosingEnv;
     }
 
-    public Object get(String name) {
+    public Obj get(String name) {
         Assert.notNull(name);
-        Object value = values.get(name);
+        Obj value = values.get(name);
         if (value != null) {
             return value;
         }
@@ -27,7 +29,7 @@ public class Env {
         return null;
     }
 
-    public void put(String name, Object value) {
+    public void put(String name, Obj value) {
         Assert.notNull(name);
         Env env = search(name);
         if (env == null) {
@@ -36,12 +38,12 @@ public class Env {
         env.putLocal(name, value);
     }
 
-    public void putLocal(String name, Object value) {
+    public void putLocal(String name, Obj value) {
         Assert.notNull(name);
         values.put(name, value);
     }
 
-    Env search(String name) {
+    protected Env search(String name) {
         Assert.notNull(name);
         if (values.containsKey(name)) {
             return this;

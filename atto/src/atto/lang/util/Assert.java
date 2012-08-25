@@ -1,4 +1,4 @@
-package atto;
+package atto.lang.util;
 
 import org.antlr.runtime.tree.CommonTree;
 

@@ -41,7 +41,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS;
+	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
 }
 
 @lexer::header {
@@ -152,12 +152,14 @@ unary
 
 postfix 
 	: ( primary -> primary )
-	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
+	  ( (DOT primary LPAREN)=> DOT primary LPAREN (expr (COMMA expr)*)? RPAREN
+	  	-> ^(SEND $postfix primary expr*)
+	  | LPAREN (expr (COMMA expr)*)? RPAREN 
 	  	-> ^(CALL $postfix expr*)
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
-	  | DOT p=primary 
-	  	-> ^(FIELD_ACCESS $postfix $p)
+	  | DOT p=primary
+	  	-> ^(FIELD_ACCESS $postfix $p) 
 	  )*
 	;
 
