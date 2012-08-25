@@ -164,7 +164,8 @@ postfix
 	;
 
 primary 
-	: NAME	
+	: NAME
+	| AT^ NAME	
 	| INT
 	| STRING
 	| BOOL

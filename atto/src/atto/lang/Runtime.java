@@ -8,7 +8,7 @@ import atto.AttoTree;
 
 public class Runtime {
 
-    protected Env currentEnv = new Env();
+    protected Env currentEnv;
 
     protected final Interpreter interpreter;
 
@@ -30,6 +30,8 @@ public class Runtime {
     }
 
     public void init() {
+        currentEnv = new Env(this);
+
         objProto = new Obj(this, null);
         funProto = new Obj(this, objProto);
         arrayProto = new Obj(this, objProto);
@@ -323,19 +325,8 @@ public class Runtime {
         return trueObj.isPrototypeOf(obj);
     }
 
-    public void put(String name, Obj value) {
-        currentEnv.put(name, value);
-    }
-
-    public Obj get(String name) {
-        Obj obj = currentEnv.get(name);
-        if (obj != null) {
-            return obj;
-        }
-        return nullObj;
-    }
-
     public Obj exec(AttoTree tree) {
         return (Obj) interpreter.exec(tree);
     }
+
 }

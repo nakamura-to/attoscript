@@ -7,6 +7,21 @@ public class Null extends Obj {
     }
 
     @Override
+    public void put(String name, Obj value) {
+        throw new RuntimeException("null reference.");
+    }
+
+    @Override
+    public Obj get(String name) {
+        throw new RuntimeException("null reference.");
+    }
+
+    @Override
+    public Obj send(String name, Obj... args) {
+        throw new RuntimeException("null reference.");
+    }
+
+    @Override
     public boolean isNull() {
         return true;
     }

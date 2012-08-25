@@ -1,0 +1,10 @@
+person = {
+	name: 'hoge',
+	hi: -> 'Hi ' + @name,
+	set: x -> @name = @name + x
+}
+
+print(person.hi())
+person.set('foo')
+print(person.hi())
+person.name

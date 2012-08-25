@@ -141,6 +141,8 @@ public class Interpreter {
             return null_(t);
         case NAME:
             return name(t);
+        case AT:
+            return at(t);
         case OBJ:
             return obj(t);
         case COLON:
@@ -230,7 +232,12 @@ public class Interpreter {
         switch (postfix.getType()) {
         case NAME: {
             String name = postfix.getText();
-            runtime.put(name, value);
+            runtime.currentEnv.put(name, value);
+            return value;
+        }
+        case AT: {
+            String name = postfix.getChild(0).getText();
+            runtime.currentEnv.self.put(name, value);
             return value;
         }
         case INDEX: {
@@ -298,7 +305,7 @@ public class Interpreter {
             throw new RuntimeException("not function");
         }
         Fun fun = (Fun) maybeFun;
-        return fun.call(null, args);
+        return fun.call(runtime.nullObj, args);
     }
 
     protected Object index(AttoTree t) {
@@ -458,7 +465,7 @@ public class Interpreter {
             throw new RuntimeException("not function");
         }
         Fun fun = (Fun) maybeFun;
-        return fun.call(null, args);
+        return fun.call(runtime.nullObj, args);
     }
 
     protected Object plus(AttoTree t) {
@@ -567,7 +574,18 @@ public class Interpreter {
     protected Object name(AttoTree t) {
         Assert.treeType(t, NAME);
         String name = t.getText();
-        Object value = runtime.get(name);
+        Obj value = runtime.currentEnv.get(name);
+        if (value == null) {
+            throw new RuntimeException("no such variable: " + name + ": "
+                    + t.getToken());
+        }
+        return value;
+    }
+
+    protected Object at(AttoTree t) {
+        Assert.treeType(t, AT);
+        String name = t.getChild(0).getText();
+        Obj value = runtime.currentEnv.self.get(name);
         if (value == null) {
             throw new RuntimeException("no such variable: " + name + ": "
                     + t.getToken());

@@ -116,6 +116,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(6), result.get("2").object);
     }
 
+    public void testAt() throws Exception {
+        InputStream stream = read("at.atto");
+        Interpreter i = new Interpreter();
+        assertEquals("hogefoo", i.run(stream).object);
+    }
+
     private InputStream read(String fileName) throws Exception {
         String path = "atto/lang/" + fileName;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();

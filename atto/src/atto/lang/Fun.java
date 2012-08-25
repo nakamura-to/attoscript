@@ -13,7 +13,7 @@ public abstract class Fun extends Obj {
     }
 
     public Obj call(Obj receiver, Obj[] args) {
-        Env calleeEnv = new Env(env);
+        Env calleeEnv = new Env(runtime, receiver, env);
         for (int i = 0; i < params.length; i++) {
             if (i < args.length) {
                 calleeEnv.putLocal(params[i], args[i]);

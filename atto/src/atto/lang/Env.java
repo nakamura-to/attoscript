@@ -8,12 +8,19 @@ public class Env {
 
     protected HashMap<String, Obj> values = new HashMap<String, Obj>();
 
+    protected Runtime runtime;
+
+    protected Obj self;
+
     protected Env enclosingEnv;
 
-    public Env() {
+    public Env(Runtime runtime) {
+        this(runtime, runtime.nullObj, null);
     }
 
-    public Env(Env enclosingEnv) {
+    public Env(Runtime runtime, Obj self, Env enclosingEnv) {
+        this.runtime = runtime;
+        this.self = self;
         this.enclosingEnv = enclosingEnv;
     }
 
