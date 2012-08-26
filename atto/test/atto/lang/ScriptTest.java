@@ -16,6 +16,12 @@ public class ScriptTest extends TestCase {
         }
     }
 
+    public void testSpike() throws Exception {
+        InputStream stream = read("spike.atto");
+        Interpreter i = new Interpreter();
+        i.run(stream);
+    }
+
     public void testWhile() throws Exception {
         InputStream stream = read("while.atto");
         Interpreter i = new Interpreter();

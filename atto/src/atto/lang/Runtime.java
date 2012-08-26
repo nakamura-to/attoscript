@@ -1,7 +1,6 @@
 package atto.lang;
 
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.Map;
 
 import atto.AttoTree;
@@ -20,6 +19,8 @@ public class Runtime {
     protected Obj integerProto;
     protected Obj arrayProto;
     protected Obj stringProto;
+    protected Obj nullProto;
+
     protected Obj nullObj;
     protected Obj trueObj;
     protected Obj falseObj;
@@ -38,10 +39,7 @@ public class Runtime {
         boolProto = new Obj(this, objProto);
         integerProto = new Obj(this, objProto);
         stringProto = new Obj(this, objProto);
-
-        nullObj = new Null(this, objProto);
-        trueObj = new Obj(this, boolProto, true);
-        falseObj = new Obj(this, boolProto, false);
+        nullProto = new Obj(this, objProto);
 
         initObjProto();
         initFunProto();
@@ -49,41 +47,41 @@ public class Runtime {
         initBoolProto();
         initIntegerProto();
         initStringProto();
+        initNullProto();
 
-        initNullObj();
+        nullObj = new Null(this, nullProto);
+        trueObj = new Obj(this, boolProto, true);
+        falseObj = new Obj(this, boolProto, false);
 
         // builtin function
         currentEnv.put("print", new BuiltinFun.PrintFun(this, out));
+        currentEnv.put("assert", new BuiltinFun.AssertFun(this, out));
     }
 
     protected void initObjProto() {
+        objProto.put("__proto__", objProto);
+
         objProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                HashSet<String> set = new HashSet<String>();
                 StringBuilder buf = new StringBuilder();
                 buf.append("{");
-                for (Obj p = receiver; p != null; p = p.__proto__) {
-                    for (Map.Entry<String, Obj> e : p.values.entrySet()) {
-                        String key = e.getKey();
-                        if (!set.contains(key)) {
-                            set.add(key);
-                            buf.append(key);
-                            buf.append(": ");
-                            Obj value = e.getValue();
-                            Obj string = value.send("toString");
-                            if (stringProto.isPrototypeOf(value)) {
-                                buf.append("\"");
-                                buf.append(string.object);
-                                buf.append("\"");
-                            } else {
-                                buf.append(string.object);
-                            }
-                            buf.append(", ");
-                        }
+                for (Map.Entry<String, Obj> e : receiver.values.entrySet()) {
+                    String key = e.getKey();
+                    buf.append(key);
+                    buf.append(": ");
+                    Obj value = e.getValue();
+                    Obj string = value.send("toString");
+                    if (stringProto.isPrototypeOf(value)) {
+                        buf.append("\"");
+                        buf.append(string.object);
+                        buf.append("\"");
+                    } else {
+                        buf.append(string.object);
                     }
+                    buf.append(", ");
                 }
-                if (set.size() > 0) {
+                if (buf.length() > 3) {
                     buf.delete(buf.length() - 2, buf.length());
                 }
                 buf.append("}");
@@ -93,6 +91,7 @@ public class Runtime {
     }
 
     public void initArrayProto() {
+        arrayProto.put("__proto__", arrayProto);
         arrayProto.put("length", newInteger(0));
 
         arrayProto.addMethod("push", new Method("element") {
@@ -190,6 +189,8 @@ public class Runtime {
     }
 
     public void initFunProto() {
+        funProto.put("__proto__", funProto);
+
         funProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -209,20 +210,22 @@ public class Runtime {
                 return newString(buf.toString());
             }
         });
-
     }
 
     protected void initBoolProto() {
+        boolProto.put("__proto__", boolProto);
+
         boolProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 return newString(receiver.object.toString());
             }
         });
-
     }
 
     protected void initIntegerProto() {
+        integerProto.put("__proto__", integerProto);
+
         integerProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -232,17 +235,18 @@ public class Runtime {
     }
 
     protected void initStringProto() {
+        stringProto.put("__proto__", stringProto);
+
         stringProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 return receiver;
             }
         });
-
     }
 
-    protected void initNullObj() {
-        nullObj.addMethod("toString", new Method() {
+    protected void initNullProto() {
+        nullProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 return newString("null");

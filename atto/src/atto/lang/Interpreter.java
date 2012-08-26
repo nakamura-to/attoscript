@@ -123,8 +123,6 @@ public class Interpreter {
             return not(t);
         case UNARY_MINUS:
             return unary_minus(t);
-        case SEND:
-            return send(t);
         case CALL:
             return call(t);
         case INDEX:
@@ -296,16 +294,29 @@ public class Interpreter {
 
     protected Object call(AttoTree t) {
         Assert.treeType(t, CALL);
-        Object maybeFun = exec(t.getChild(0));
+        AttoTree target = t.getChild(0);
         Obj[] args = new Obj[t.getChildCount() - 1];
         for (int i = 0; i + 1 < t.getChildCount(); i++) {
             args[i] = (Obj) exec(t.getChild(i + 1));
         }
-        if (!(maybeFun instanceof Fun)) {
-            throw new RuntimeException("not function");
+        if (target.getType() == FIELD_ACCESS) {
+            Obj receiver = (Obj) exec(target.getChild(0));
+            String name = target.getChild(1).getText();
+            return receiver.send(name, args);
+        } else {
+            Object maybeFun = exec(target);
+            if (!(maybeFun instanceof Fun)) {
+                throw new RuntimeException("not function");
+            }
+            Fun fun = (Fun) maybeFun;
+            if (target.getType() == AT) {
+                Obj receiver = runtime.currentEnv.self;
+                String name = target.getChild(0).getText();
+                return receiver.send(name, args);
+            } else {
+                return fun.call(runtime.nullObj, args);
+            }
         }
-        Fun fun = (Fun) maybeFun;
-        return fun.call(runtime.nullObj, args);
     }
 
     protected Object index(AttoTree t) {

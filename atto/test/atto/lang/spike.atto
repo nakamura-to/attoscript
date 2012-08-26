@@ -1,0 +1,8 @@
+person = { 
+	name:"test"
+	hi: x -> @bye(x)
+	bye: x -> print("bye " + @name)
+}
+
+person.hi("hoge")
+

@@ -36,4 +36,34 @@ public abstract class BuiltinFun extends Fun {
         }
     }
 
+    public static class AssertFun extends BuiltinFun {
+
+        protected PrintWriter out;
+
+        public AssertFun(Runtime runtime, PrintWriter out) {
+            this(runtime, null, new String[] { "bool", "message" });
+            this.out = out;
+        }
+
+        protected AssertFun(Runtime runtime, Env env, String[] params) {
+            super(runtime, env, params);
+        }
+
+        @Override
+        protected Obj invoke(Obj receiver, Obj[] args) {
+            if (!runtime.isTrue(args[0])) {
+                Object message = args[1].send("toString").object;
+                out.println("ASSERT FAILED: " + message);
+                out.flush();
+                throw new AssertionError(message);
+            }
+            return runtime.nullObj;
+        }
+
+        @Override
+        protected Obj applyPartial(Env env, String[] params) {
+            return new PrintFun(runtime, env, params);
+        }
+    }
+
 }
