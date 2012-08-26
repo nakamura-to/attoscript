@@ -83,7 +83,15 @@ expr
 	;
 
 assign
-	: postfix ASSIGN^ body
+	: postfix 
+	  ( ASSIGN body -> ^(ASSIGN postfix body)
+	  | ( PLUS ASSIGN body -> ^(ASSIGN postfix ^(PLUS postfix body))
+	    | MINUS ASSIGN body -> ^(ASSIGN postfix ^(MINUS postfix body))
+	    | MUL ASSIGN body -> ^(ASSIGN postfix ^(MUL postfix body))
+	    | DIV ASSIGN body -> ^(ASSIGN postfix ^(DIV postfix body))
+	    | MOD ASSIGN body -> ^(ASSIGN postfix ^(MOD postfix body))
+	    ) 
+	  )
 	;
 
 fun

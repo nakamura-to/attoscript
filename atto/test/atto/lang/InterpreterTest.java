@@ -243,6 +243,31 @@ public class InterpreterTest extends TestCase {
         assertEquals(3, i.run("8 % 5\n").asInt());
     }
 
+    public void testINT_PLUS_ASSIGN() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(3, i.run("a=1\na+=2\na\n").asInt());
+    }
+
+    public void testINT_MINUS_ASSIGN() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(-1, i.run("a=1\na-=2\na\n").asInt());
+    }
+
+    public void testINT_MUL_ASSIGN() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(6, i.run("a=2\na*=3\na\n").asInt());
+    }
+
+    public void testINT_DIV_ASSIGN() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(5, i.run("a=10\na/=2\na\n").asInt());
+    }
+
+    public void testINT_MOD_ASSIGN() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(3, i.run("a=8\na%=5\na\n").asInt());
+    }
+
     public void testSTRING() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals("hoge", i.run("\"hoge\"\n").asObject());

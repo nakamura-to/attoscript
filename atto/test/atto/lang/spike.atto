@@ -1,8 +1,7 @@
-person = { 
-	name:"test"
-	hi: x -> @bye(x)
-	bye: x -> print("bye " + @name)
-}
+i = 1
+i += 2
+print(i)
 
-person.hi("hoge")
+i *= 3
 
+print(i)
