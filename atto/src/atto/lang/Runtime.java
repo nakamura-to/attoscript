@@ -61,6 +61,30 @@ public class Runtime {
     protected void initObjProto() {
         objProto.put("__proto__", objProto);
 
+        objProto.addMethod("==", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (receiver == rhs) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        objProto.addMethod("!=", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                if (receiver.send("==", args).asBoolean()) {
+                    return falseObj;
+                }
+                return trueObj;
+            }
+        });
+
         objProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -94,6 +118,31 @@ public class Runtime {
         arrayProto.put("__proto__", arrayProto);
         arrayProto.put("length", newInteger(0));
 
+        arrayProto.addMethod("==", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj other = args[0];
+                if (!arrayProto.isPrototypeOf(other)) {
+                    return falseObj;
+                }
+                int length = receiver.getInt("length");
+                if (length != other.getInt("length")) {
+                    return falseObj;
+                }
+                for (int i = 0; i < length; i++) {
+                    String key = String.valueOf(i);
+                    Obj element = receiver.values.get(key);
+                    Obj otherElement = other.values.get(key);
+                    Obj result = element.send("==", otherElement);
+                    if (!result.asBoolean()) {
+                        return falseObj;
+                    }
+                }
+                return trueObj;
+            }
+        });
+
         arrayProto.addMethod("push", new Method("element") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -107,7 +156,7 @@ public class Runtime {
         arrayProto.addMethod("set", new Method("index", "element") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                int index = args[0].getInt();
+                int index = args[0].asInt();
                 Obj element = args[1];
                 int length = receiver.getInt("length");
                 for (; length < index; length++) {
@@ -122,7 +171,7 @@ public class Runtime {
         arrayProto.addMethod("get", new Method("index") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                int index = args[0].getInt();
+                int index = args[0].asInt();
                 Obj element = receiver.get(String.valueOf(index));
                 return element == null ? nullObj : element;
             }
@@ -226,6 +275,141 @@ public class Runtime {
     protected void initIntegerProto() {
         integerProto.put("__proto__", integerProto);
 
+        integerProto.addMethod("+", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)) {
+                    return newInteger(receiver.asInt() + rhs.asInt());
+                } else {
+                    return newString(receiver.asInt() + rhs.asString());
+                }
+            }
+        });
+
+        integerProto.addMethod("-", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)) {
+                    return newInteger(receiver.asInt() - rhs.asInt());
+                } else {
+                    return nullObj;
+                }
+            }
+        });
+
+        integerProto.addMethod("*", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)) {
+                    return newInteger(receiver.asInt() * rhs.asInt());
+                } else {
+                    return nullObj;
+                }
+            }
+        });
+
+        integerProto.addMethod("/", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)) {
+                    return newInteger(receiver.asInt() / rhs.asInt());
+                } else {
+                    return nullObj;
+                }
+            }
+        });
+
+        integerProto.addMethod("%", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)) {
+                    return newInteger(receiver.asInt() % rhs.asInt());
+                } else {
+                    return nullObj;
+                }
+            }
+        });
+
+        integerProto.addMethod("==", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)
+                        && receiver.asInt() == rhs.asInt()) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        integerProto.addMethod("<", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)
+                        && receiver.asInt() < rhs.asInt()) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        integerProto.addMethod(">", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)
+                        && receiver.asInt() > rhs.asInt()) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        integerProto.addMethod("<=", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)
+                        && receiver.asInt() <= rhs.asInt()) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        integerProto.addMethod(">=", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (integerProto.isPrototypeOf(rhs)
+                        && receiver.asInt() >= rhs.asInt()) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
         integerProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -236,6 +420,89 @@ public class Runtime {
 
     protected void initStringProto() {
         stringProto.put("__proto__", stringProto);
+
+        stringProto.addMethod("+", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                String lhs = receiver.asString();
+                if (!args[0].isNull()) {
+                    String rhs = args[0].send("toString").asString();
+                    return newString(lhs + rhs);
+                }
+                return receiver;
+            }
+        });
+
+        stringProto.addMethod("==", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (stringProto.isPrototypeOf(rhs)
+                        && receiver.asString().equals(rhs.asString())) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        stringProto.addMethod("<", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (stringProto.isPrototypeOf(rhs)
+                        && receiver.asString().compareTo(rhs.asString()) < 0) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        stringProto.addMethod(">", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (stringProto.isPrototypeOf(rhs)
+                        && receiver.asString().compareTo(rhs.asString()) > 0) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        stringProto.addMethod("<=", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (stringProto.isPrototypeOf(rhs)
+                        && receiver.asString().compareTo(rhs.asString()) <= 0) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        stringProto.addMethod(">=", new Method("rhs") {
+
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (stringProto.isPrototypeOf(rhs)
+                        && receiver.asString().compareTo(rhs.asString()) >= 0) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
 
         stringProto.addMethod("toString", new Method() {
             @Override

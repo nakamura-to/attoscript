@@ -50,6 +50,7 @@ public class Obj {
             Fun fun = (Fun) method;
             return fun.call(this, args);
         }
+        // TODO dispatch to method missing
         throw new RuntimeException("not fun: " + name);
     }
 
@@ -80,12 +81,20 @@ public class Obj {
         return (Integer) obj.object;
     }
 
-    public Object getObject() {
+    public Object asObject() {
         return object;
     }
 
-    public int getInt() {
+    public int asInt() {
         return (Integer) object;
+    }
+
+    public boolean asBoolean() {
+        return (Boolean) object;
+    }
+
+    public String asString() {
+        return (String) object;
     }
 
     public boolean isPrototypeOf(Obj obj) {

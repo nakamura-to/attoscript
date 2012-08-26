@@ -25,79 +25,79 @@ public class ScriptTest extends TestCase {
     public void testWhile() throws Exception {
         InputStream stream = read("while.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(1000), i.run(stream).getObject());
+        assertEquals(new Integer(1000), i.run(stream).asObject());
     }
 
     public void testWhile_then() throws Exception {
         InputStream stream = read("while_then.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(1000), i.run(stream).getObject());
+        assertEquals(new Integer(1000), i.run(stream).asObject());
     }
 
     public void testFactorial() throws Exception {
         InputStream stream = read("factorial.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(3628800), i.run(stream).getObject());
+        assertEquals(new Integer(3628800), i.run(stream).asObject());
     }
 
     public void testIf() throws Exception {
         InputStream stream = read("if.atto");
         Interpreter i = new Interpreter();
-        assertEquals("foo", i.run(stream).getObject());
+        assertEquals("foo", i.run(stream).asObject());
     }
 
     public void testIf_then() throws Exception {
         InputStream stream = read("if_then.atto");
         Interpreter i = new Interpreter();
-        assertEquals("foo", i.run(stream).getObject());
+        assertEquals("foo", i.run(stream).asObject());
     }
 
     public void testCounter() throws Exception {
         InputStream stream = read("counter.atto");
         Interpreter i = new Interpreter();
-        assertEquals("3", i.run(stream).getObject());
+        assertEquals("3", i.run(stream).asObject());
     }
 
     public void testObj() throws Exception {
         InputStream stream = read("obj.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(20), i.run(stream).getObject());
+        assertEquals(new Integer(20), i.run(stream).asObject());
     }
 
     public void testLineJoining() throws Exception {
         InputStream stream = read("line_joining.atto");
         Interpreter i = new Interpreter();
-        assertEquals("4", i.run(stream).getObject());
+        assertEquals("4", i.run(stream).asObject());
     }
 
     public void testAssign() throws Exception {
         InputStream stream = read("assign.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(1), i.run(stream).getObject());
+        assertEquals(new Integer(1), i.run(stream).asObject());
     }
 
     public void testComposite() throws Exception {
         InputStream stream = read("composite.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(10), i.run(stream).getObject());
+        assertEquals(new Integer(10), i.run(stream).asObject());
     }
 
     public void testPartialApplication() throws Exception {
         InputStream stream = read("partial_application.atto");
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(7), i.run(stream).getObject());
+        assertEquals(new Integer(7), i.run(stream).asObject());
     }
 
     public void testDotChain() throws Exception {
         InputStream stream = read("dot_chain.atto");
         Interpreter i = new Interpreter();
-        assertEquals("hoge", i.run(stream).getObject());
+        assertEquals("hoge", i.run(stream).asObject());
     }
 
     public void testPipeline() throws Exception {
         InputStream stream = read("pipeline.atto");
         Interpreter i = new Interpreter();
-        assertEquals("20", i.run(stream).getObject());
+        assertEquals("20", i.run(stream).asObject());
     }
 
     public void testArrayMap() throws Exception {
