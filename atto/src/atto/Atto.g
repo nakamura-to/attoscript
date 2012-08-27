@@ -99,8 +99,8 @@ fun
 	;
 
 paramsdef
-	: (vardef (COMMA? vardef)*)? -> ^(PARAMS vardef*)
-	| LPAREN (vardef (COMMA? vardef)*)? RPAREN -> ^(PARAMS vardef*)
+	: (vardef (COMMA vardef)*)? -> ^(PARAMS vardef*)
+	| LPAREN (vardef (COMMA vardef)*)? RPAREN -> ^(PARAMS vardef*)
 	;
 
 body	
@@ -160,12 +160,14 @@ unary
 
 postfix 
 	: ( primary -> primary )
-	  ( LPAREN (expr (COMMA? expr)*)? RPAREN 
-	  	-> ^(CALL $postfix expr*)
+	  ( LPAREN (expr (COMMA expr)*)? COMMA? RPAREN 
+	  	-> ^(CALL $postfix expr*)	  	
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
 	  | DOT p=primary
 	  	-> ^(FIELD_ACCESS $postfix $p) 
+	  | p=primary
+	  	-> ^(CALL $postfix $p)
 	  )*
 	;
 
@@ -182,7 +184,7 @@ primary
 	;
 
 obj	
-	: LCURLY (pair (COMMA? pair)*)? COMMA? RCURLY -> ^(OBJ pair*)
+	: LCURLY (pair (COMMA pair)*)? COMMA? RCURLY -> ^(OBJ pair*)
 	;
 
 pair
@@ -190,7 +192,7 @@ pair
 	;
 
 array	
-	: LBRACK (expr (COMMA? expr)* )? COMMA? RBRACK -> ^(ARRAY expr*)
+	: LBRACK (expr (COMMA expr)* )? COMMA? RBRACK -> ^(ARRAY expr*)
 	;
 
 vardef
