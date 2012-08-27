@@ -163,24 +163,24 @@ public class InterpreterTest extends TestCase {
 
     public void testOR() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(Boolean.TRUE, i.run("1 || 1\n").asObject());
-        assertEquals(Boolean.TRUE, i.run("1 || 0\n").asObject());
-        assertEquals(Boolean.TRUE, i.run("1 || 0\n").asObject());
-        assertEquals(Boolean.FALSE, i.run("0 || 0\n").asObject());
+        assertTrue(i.run("true || true\n").asBoolean());
+        assertTrue(i.run("true || false\n").asBoolean());
+        assertTrue(i.run("true || false\n").asBoolean());
+        assertFalse(i.run("false || false\n").asBoolean());
     }
 
     public void testAND() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(Boolean.TRUE, i.run("1 && 1\n").asObject());
-        assertEquals(Boolean.FALSE, i.run("1 && 0\n").asObject());
+        assertTrue(i.run("true && true\n").asBoolean());
+        assertFalse(i.run("true && false\n").asBoolean());
+        assertFalse(i.run("false && true\n").asBoolean());
+        assertFalse(i.run("false && false\n").asBoolean());
     }
 
     public void testNOT() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals(Boolean.TRUE, i.run("!false\n").asObject());
-        assertEquals(Boolean.TRUE, i.run("!0\n").asObject());
         assertEquals(Boolean.FALSE, i.run("!true\n").asObject());
-        assertEquals(Boolean.FALSE, i.run("!1\n").asObject());
     }
 
     public void testUNARY_MINUS() throws Exception {

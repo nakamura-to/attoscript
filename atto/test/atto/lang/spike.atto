@@ -7,4 +7,5 @@ person = {
 }
 
 x = person.age
-print(x)
+
+x |> print

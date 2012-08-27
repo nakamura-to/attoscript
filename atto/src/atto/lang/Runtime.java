@@ -56,7 +56,7 @@ public class Runtime {
         trueObj = new Obj(this, boolProto, true);
         falseObj = new Obj(this, boolProto, false);
 
-        // builtin function
+        // built-in function
         currentEnv.put("print", new BuiltinFun.PrintFun(this, out));
         currentEnv.put("assert", new BuiltinFun.AssertFun(this, out));
     }
@@ -65,7 +65,6 @@ public class Runtime {
         objProto.put("__proto__", objProto);
 
         objProto.addMethod("==", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -78,7 +77,6 @@ public class Runtime {
         });
 
         objProto.addMethod("!=", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 if (receiver.send("==", args).asBoolean()) {
@@ -122,7 +120,6 @@ public class Runtime {
         arrayProto.put("length", newInteger(0));
 
         arrayProto.addMethod("==", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj other = args[0];
@@ -163,7 +160,7 @@ public class Runtime {
                 Obj element = args[1];
                 int length = receiver.getInt("length");
                 for (; length < index; length++) {
-                    receiver.send("push", newNull());
+                    receiver.send("push", nullObj);
                 }
                 receiver.put(String.valueOf(index), element);
                 receiver.put("length", newInteger(length + 1));
@@ -209,7 +206,7 @@ public class Runtime {
                     Obj element = receiver.values.get(String.valueOf(i));
                     Obj bool = fun.call(receiver, new Obj[] { element,
                             newInteger(i) });
-                    if (isTrue(bool)) {
+                    if (bool == trueObj) {
                         result.values.put(String.valueOf(index), element);
                         index++;
                     }
@@ -243,6 +240,26 @@ public class Runtime {
     public void initFunProto() {
         funProto.put("__proto__", funProto);
 
+        funProto.addMethod("|>", new Method("arg") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Fun fun = (Fun) receiver;
+                return fun.call(nullObj, args);
+            }
+        });
+
+        funProto.addMethod(">>", new Method("rhs") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Fun lhs = (Fun) receiver;
+                Obj rhs = args[0];
+                if (!(rhs instanceof Fun)) {
+                    throw new RuntimeException("not function: ");
+                }
+                return newCompositeFun(lhs, (Fun) rhs);
+            }
+        });
+
         funProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -267,6 +284,39 @@ public class Runtime {
     protected void initBoolProto() {
         boolProto.put("__proto__", boolProto);
 
+        boolProto.addMethod("!", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                if (receiver == trueObj) {
+                    return falseObj;
+                } else {
+                    return trueObj;
+                }
+            }
+        });
+
+        boolProto.addMethod("&&", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                if (receiver == trueObj && args[0] == trueObj) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
+        boolProto.addMethod("||", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                if (receiver == trueObj || args[0] == trueObj) {
+                    return trueObj;
+                } else {
+                    return falseObj;
+                }
+            }
+        });
+
         boolProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -279,7 +329,6 @@ public class Runtime {
         integerProto.put("__proto__", integerProto);
 
         integerProto.addMethod("+", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -292,7 +341,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("-", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -305,7 +353,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("*", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -318,7 +365,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("/", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -331,7 +377,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("%", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -344,7 +389,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("==", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -358,7 +402,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("<", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -372,7 +415,6 @@ public class Runtime {
         });
 
         integerProto.addMethod(">", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -386,7 +428,6 @@ public class Runtime {
         });
 
         integerProto.addMethod("<=", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -400,7 +441,6 @@ public class Runtime {
         });
 
         integerProto.addMethod(">=", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -410,6 +450,13 @@ public class Runtime {
                 } else {
                     return falseObj;
                 }
+            }
+        });
+
+        integerProto.addMethod("unary_minus", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                return newInteger(receiver.asInt() * -1);
             }
         });
 
@@ -425,7 +472,6 @@ public class Runtime {
         stringProto.put("__proto__", stringProto);
 
         stringProto.addMethod("+", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 String lhs = receiver.asString();
@@ -438,7 +484,6 @@ public class Runtime {
         });
 
         stringProto.addMethod("==", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -452,7 +497,6 @@ public class Runtime {
         });
 
         stringProto.addMethod("<", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -466,7 +510,6 @@ public class Runtime {
         });
 
         stringProto.addMethod(">", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -480,7 +523,6 @@ public class Runtime {
         });
 
         stringProto.addMethod("<=", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -494,7 +536,6 @@ public class Runtime {
         });
 
         stringProto.addMethod(">=", new Method("rhs") {
-
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
@@ -528,42 +569,6 @@ public class Runtime {
         });
     }
 
-    public Obj obj() {
-        return objProto;
-    }
-
-    public Obj bool() {
-        return boolProto;
-    }
-
-    public Obj fun() {
-        return funProto;
-    }
-
-    public Obj array() {
-        return arrayProto;
-    }
-
-    public Obj integer() {
-        return integerProto;
-    }
-
-    public Obj string() {
-        return stringProto;
-    }
-
-    public Obj _null() {
-        return nullObj;
-    }
-
-    public Obj _true() {
-        return trueObj;
-    }
-
-    public Obj _false() {
-        return falseObj;
-    }
-
     public Obj newObj() {
         return new Obj(this, objProto);
     }
@@ -589,16 +594,12 @@ public class Runtime {
     }
 
     public Obj newBool(Boolean bool) {
-        if (bool) {
-            return trueObj;
-        }
-        return falseObj;
+        return bool ? trueObj : falseObj;
     }
 
     public Obj newProp(Obj value) {
         Obj getter = value.get("get");
         Obj setter = value.get("set");
-        // TODO
         Obj prop = new Obj(this, propProto);
         if (funProto.isPrototypeOf(getter)) {
             prop.put("get", getter);
@@ -607,14 +608,6 @@ public class Runtime {
             prop.put("set", setter);
         }
         return prop;
-    }
-
-    public Obj newNull() {
-        return nullObj;
-    }
-
-    public boolean isTrue(Obj obj) {
-        return trueObj.isPrototypeOf(obj);
     }
 
     public Obj exec(AttoTree tree) {

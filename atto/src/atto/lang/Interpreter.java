@@ -5,8 +5,6 @@ import static atto.AttoParser.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -173,17 +171,13 @@ public class Interpreter {
         Assert.treeType(t, IF);
         AttoTree condition = t.getChild(0);
         AttoTree body = t.getChild(1);
-        List<AttoTree> otherConditions = new ArrayList<AttoTree>();
-        for (int i = 2; i < t.getChildCount(); i++) {
-            otherConditions.add(t.getChild(i));
-        }
         Object result = null;
-        if (toBoolean(exec(condition))) {
+        if (exec(condition) == runtime.trueObj) {
             result = exec(body);
         } else {
-            for (AttoTree c : otherConditions) {
+            for (int i = 2; i < t.getChildCount(); i++) {
                 Object[] otherResult = null;
-                otherResult = (Object[]) exec(c);
+                otherResult = (Object[]) exec(t.getChild(i));
                 if (otherResult.length > 0) {
                     result = otherResult[0];
                     break;
@@ -198,7 +192,7 @@ public class Interpreter {
         AttoTree condition = t.getChild(0);
         AttoTree body = t.getChild(1);
         Object result = null;
-        if (toBoolean(exec(condition))) {
+        if (exec(condition) == runtime.trueObj) {
             result = new Object[] { exec(body) };
         } else {
             result = new Object[] {};
@@ -209,8 +203,7 @@ public class Interpreter {
     protected Object else_(AttoTree t) {
         Assert.treeType(t, ELSE);
         AttoTree body = t.getChild(0);
-        Object result = new Object[] { exec(body) };
-        return result;
+        return new Object[] { exec(body) };
     }
 
     protected Object while_(AttoTree t) {
@@ -218,7 +211,7 @@ public class Interpreter {
         AttoTree condition = t.getChild(0);
         AttoTree body = t.getChild(1);
         Object result = null;
-        while (toBoolean(exec(condition))) {
+        while (exec(condition) == runtime.trueObj) {
             result = exec(body);
         }
         return result;
@@ -242,34 +235,25 @@ public class Interpreter {
         }
         case INDEX: {
             Obj array = (Obj) exec(postfix.getChild(0));
-            if (!runtime.array().isPrototypeOf(array)) {
-                throw new RuntimeException("not Array: " + array);
-            }
             Obj index = (Obj) exec(postfix.getChild(1));
-            if (!runtime.integer().isPrototypeOf(index)) {
-                throw new RuntimeException("not Number: " + index);
-            }
             return array.send("set", index, value);
         }
         case FIELD_ACCESS: {
-            Object maybeObj = exec(postfix.getChild(0));
-            if (!(maybeObj instanceof Obj)) {
-                throw new RuntimeException("not Obj: " + maybeObj);
-            }
-            Obj obj = (Obj) maybeObj;
-            String name = postfix.getChild(1).getText();
-            Obj maybeProp = obj.get(name);
-            if (runtime.propProto.isPrototypeOf(maybeProp)) {
-                Obj setter = maybeProp.get("set");
-                // TODO
-                ((Fun) setter).call(obj, new Obj[] { value });
+            Obj obj = (Obj) exec(postfix.getChild(0));
+            String field = postfix.getChild(1).getText();
+            Obj prop = obj.get(field);
+            if (runtime.propProto.isPrototypeOf(prop)) {
+                Obj setter = prop.get("set");
+                if (setter instanceof Fun) {
+                    ((Fun) setter).call(obj, new Obj[] { value });
+                }
             } else {
-                obj.put(name, value);
+                obj.put(field, value);
             }
             return value;
         }
         default:
-            throw new RuntimeException("can't assign: " + postfix.getToken());
+            throw new RuntimeException("can't assign to " + postfix.getToken());
         }
     }
 
@@ -310,42 +294,33 @@ public class Interpreter {
         }
         if (target.getType() == FIELD_ACCESS) {
             Obj receiver = (Obj) exec(target.getChild(0));
-            String name = target.getChild(1).getText();
-            return receiver.send(name, args);
+            String field = target.getChild(1).getText();
+            return receiver.send(field, args);
         } else {
-            Object maybeFun = exec(target);
-            if (!(maybeFun instanceof Fun)) {
-                throw new RuntimeException("not function");
-            }
-            Fun fun = (Fun) maybeFun;
             if (target.getType() == AT) {
                 Obj receiver = runtime.currentEnv.self;
                 String name = target.getChild(0).getText();
                 return receiver.send(name, args);
             } else {
-                return fun.call(runtime.nullObj, args);
+                Obj fun = (Obj) exec(target);
+                if (fun instanceof Fun) {
+                    return ((Fun) fun).call(runtime.nullObj, args);
+                }
+                throw new RuntimeException("not function: " + target);
             }
         }
     }
 
     protected Object index(AttoTree t) {
         Assert.treeType(t, INDEX);
-        Object maybeArray = exec(t.getChild(0));
-        if (!(maybeArray instanceof Obj)) {
-            throw new RuntimeException("not Array: " + maybeArray);
-        }
-        Obj array = (Obj) maybeArray;
+        Obj array = (Obj) exec(t.getChild(0));
         Obj index = (Obj) exec(t.getChild(1));
         return array.send("get", index);
     }
 
     protected Object field_access(AttoTree t) {
         Assert.treeType(t, FIELD_ACCESS);
-        Object maybeObj = exec(t.getChild(0));
-        if (!(maybeObj instanceof Obj)) {
-            throw new RuntimeException("not obj");
-        }
-        Obj obj = (Obj) maybeObj;
+        Obj obj = (Obj) exec(t.getChild(0));
         String name = t.getChild(1).getText();
         Obj result = obj.get(name);
         if (runtime.propProto.isPrototypeOf(result)) {
@@ -357,38 +332,16 @@ public class Interpreter {
 
     protected Object or(AttoTree t) {
         Assert.treeType(t, OR);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
-        return toBoolean(lhs) || toBoolean(rhs) ? runtime._true() : runtime
-                ._false();
+        Obj lhs = (Obj) exec(t.getChild(0));
+        Obj rhs = (Obj) exec(t.getChild(1));
+        return lhs.send(t.getText(), rhs);
     }
 
     protected Object and(AttoTree t) {
         Assert.treeType(t, AND);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
-        return toBoolean(lhs) && toBoolean(rhs) ? runtime._true() : runtime
-                ._false();
-    }
-
-    public boolean toBoolean(Object value) {
-        if (value == null) {
-            return false;
-        }
-        if (Boolean.FALSE.equals(value)) {
-            return false;
-        }
-        if (Integer.valueOf(0).equals(value)) {
-            return false;
-        }
-        if ("".equals(value)) {
-            return false;
-        }
-        if (value instanceof Obj) {
-            Obj o = (Obj) value;
-            return toBoolean(o.asObject());
-        }
-        return true;
+        Obj lhs = (Obj) exec(t.getChild(0));
+        Obj rhs = (Obj) exec(t.getChild(1));
+        return lhs.send(t.getText(), rhs);
     }
 
     protected Object eq(AttoTree t) {
@@ -435,28 +388,16 @@ public class Interpreter {
 
     protected Object composite(AttoTree t) {
         Assert.treeType(t, COMPOSITE);
-        Object lhs = exec(t.getChild(0));
-        Object rhs = exec(t.getChild(1));
-        if (!(lhs instanceof Fun)) {
-            throw new RuntimeException("not function");
-        }
-        Fun first = (Fun) lhs;
-        if (!(rhs instanceof Fun)) {
-            throw new RuntimeException("not function");
-        }
-        Fun second = (Fun) rhs;
-        return runtime.newCompositeFun(first, second);
+        Obj lhs = (Obj) exec(t.getChild(0));
+        Obj rhs = (Obj) exec(t.getChild(1));
+        return lhs.send(t.getText(), rhs);
     }
 
     protected Object pipeline(AttoTree t) {
         Assert.treeType(t, PIPELINE);
-        Obj[] args = new Obj[] { (Obj) exec(t.getChild(0)) };
-        Object maybeFun = exec(t.getChild(1));
-        if (!(maybeFun instanceof Fun)) {
-            throw new RuntimeException("not function");
-        }
-        Fun fun = (Fun) maybeFun;
-        return fun.call(runtime.nullObj, args);
+        Obj arg = (Obj) exec(t.getChild(0));
+        Obj fun = (Obj) exec(t.getChild(1));
+        return fun.send(t.getText(), arg);
     }
 
     protected Object plus(AttoTree t) {
@@ -496,19 +437,14 @@ public class Interpreter {
 
     protected Object not(AttoTree t) {
         Assert.treeType(t, NOT);
-        // TODO
-        Object expr = ((Obj) exec(t.getChild(0))).asObject();
-        return runtime.newBool(!toBoolean(expr));
+        Obj expr = (Obj) exec(t.getChild(0));
+        return expr.send(t.getText());
     }
 
     protected Object unary_minus(AttoTree t) {
         Assert.treeType(t, UNARY_MINUS);
-        Object expr = ((Obj) exec(t.getChild(0))).asObject();
-        if (expr instanceof Integer) {
-            Integer x = (Integer) expr;
-            return runtime.newInteger(Integer.valueOf(-x.intValue()));
-        }
-        return 0;
+        Obj expr = (Obj) exec(t.getChild(0));
+        return expr.send("unary_minus");
     }
 
     protected Object int_(AttoTree t) {
@@ -529,7 +465,7 @@ public class Interpreter {
 
     protected Object null_(AttoTree t) {
         Assert.treeType(t, NULL);
-        return runtime._null();
+        return runtime.nullObj;
     }
 
     protected Object name(AttoTree t) {
@@ -596,7 +532,7 @@ public class Interpreter {
     }
 
     protected Object unknown(AttoTree t) {
-        throw new RuntimeException("unknown node: " + t.getToken());
+        throw new RuntimeException("unknown tree: " + t);
     }
 
 }

@@ -7,7 +7,7 @@ public abstract class Fun extends Obj {
     protected String[] params;
 
     protected Fun(Runtime runtime, Env env, String[] params) {
-        super(runtime, runtime.fun());
+        super(runtime, runtime.funProto);
         this.env = env;
         this.params = params;
     }
