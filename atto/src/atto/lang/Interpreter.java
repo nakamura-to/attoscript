@@ -145,6 +145,8 @@ public class Interpreter {
             return obj(t);
         case COLON:
             return colon(t);
+        case PROP:
+            return prop(t);
         case ARRAY:
             return array(t);
         default:
@@ -256,7 +258,14 @@ public class Interpreter {
             }
             Obj obj = (Obj) maybeObj;
             String name = postfix.getChild(1).getText();
-            obj.put(name, value);
+            Obj maybeProp = obj.get(name);
+            if (runtime.propProto.isPrototypeOf(maybeProp)) {
+                Obj setter = maybeProp.get("set");
+                // TODO
+                ((Fun) setter).call(obj, new Obj[] { value });
+            } else {
+                obj.put(name, value);
+            }
             return value;
         }
         default:
@@ -338,7 +347,12 @@ public class Interpreter {
         }
         Obj obj = (Obj) maybeObj;
         String name = t.getChild(1).getText();
-        return obj.get(name);
+        Obj result = obj.get(name);
+        if (runtime.propProto.isPrototypeOf(result)) {
+            Fun getter = (Fun) result.get("get");
+            return getter.call(obj, new Obj[] {});
+        }
+        return result;
     }
 
     protected Object or(AttoTree t) {
@@ -561,6 +575,12 @@ public class Interpreter {
         String key = lhs.getText();
         Obj value = (Obj) exec(rhs);
         return new Object[] { key, value };
+    }
+
+    protected Object prop(AttoTree t) {
+        Assert.treeType(t, PROP);
+        Obj obj = (Obj) exec(t.getChild(0));
+        return runtime.newProp(obj);
     }
 
     protected Object array(AttoTree t) {

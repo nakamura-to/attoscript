@@ -41,7 +41,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
+	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND; PROP;
 }
 
 @lexer::header {
@@ -178,7 +178,8 @@ primary
 	| NULL
 	| LPAREN expr RPAREN -> expr
 	| obj
-	| array	
+	| array
+	| prop
 	;
 
 obj	
@@ -187,6 +188,10 @@ obj
 
 pair
 	: NAME COLON^ expr
+	;
+
+prop
+	: LCURLY obj RCURLY -> ^(PROP obj)
 	;
 
 array	

@@ -73,6 +73,20 @@ public class InterpreterTest extends TestCase {
         assertTrue(result.asBoolean());
     }
 
+    public void testOBJ_getter() throws Exception {
+        Interpreter i = new Interpreter();
+        i.run("x={fname:'hoge',lname:'foo',fullname:{{get:->@fname+@lname}}}\n");
+        Obj result = i.run("x.fullname");
+        assertEquals("hogefoo", result.asString());
+    }
+
+    public void testOBJ_setter() throws Exception {
+        Interpreter i = new Interpreter();
+        i.run("x={name:'hoge',age:{{set:y->@name+=y}}}\n");
+        Obj result = i.run("x.age=10\nx.name\n");
+        assertEquals("hoge10", result.asString());
+    }
+
     public void testARRAY_get() throws Exception {
         Interpreter i = new Interpreter();
         i.run("a=[1,2,3]\n");

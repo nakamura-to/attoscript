@@ -1,7 +1,10 @@
-i = 1
-i += 2
-print(i)
+person = {
+	name: 'test'
+	age: {{
+		get: -> @name + 'hoge'
+		set: x -> @name += x 
+	}}
+}
 
-i *= 3
-
-print(i)
+x = person.age
+print(x)

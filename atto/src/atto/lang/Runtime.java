@@ -19,6 +19,7 @@ public class Runtime {
     protected Obj integerProto;
     protected Obj arrayProto;
     protected Obj stringProto;
+    protected Obj propProto;
     protected Obj nullProto;
 
     protected Obj nullObj;
@@ -39,6 +40,7 @@ public class Runtime {
         boolProto = new Obj(this, objProto);
         integerProto = new Obj(this, objProto);
         stringProto = new Obj(this, objProto);
+        propProto = new Obj(this, objProto);
         nullProto = new Obj(this, objProto);
 
         initObjProto();
@@ -47,6 +49,7 @@ public class Runtime {
         initBoolProto();
         initIntegerProto();
         initStringProto();
+        initPropProto();
         initNullProto();
 
         nullObj = new Null(this, nullProto);
@@ -512,6 +515,10 @@ public class Runtime {
         });
     }
 
+    protected void initPropProto() {
+
+    }
+
     protected void initNullProto() {
         nullProto.addMethod("toString", new Method() {
             @Override
@@ -586,6 +593,20 @@ public class Runtime {
             return trueObj;
         }
         return falseObj;
+    }
+
+    public Obj newProp(Obj value) {
+        Obj getter = value.get("get");
+        Obj setter = value.get("set");
+        // TODO
+        Obj prop = new Obj(this, propProto);
+        if (funProto.isPrototypeOf(getter)) {
+            prop.put("get", getter);
+        }
+        if (funProto.isPrototypeOf(setter)) {
+            prop.put("set", setter);
+        }
+        return prop;
     }
 
     public Obj newNull() {
