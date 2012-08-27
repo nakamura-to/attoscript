@@ -1,11 +1,11 @@
 obj = {
-	name: 'hoge',
+	name: 'hoge' 
 	age: 10
 }
 
 x = ( ->
 	array = [
-		obj,
+		obj
 		2
 	]
 )()

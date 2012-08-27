@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Atto.g 2012-08-27 12:23:05
+// $ANTLR 3.4 Atto.g 2012-08-26 23:26:00
 
 package atto;
 
@@ -916,7 +916,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_body.add(body16.getTree());
 
                     // AST REWRITE
-                    // elements: ASSIGN, body, postfix
+                    // elements: postfix, ASSIGN, body
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1012,7 +1012,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body19.getTree());
 
                             // AST REWRITE
-                            // elements: body, postfix, ASSIGN, PLUS, postfix
+                            // elements: PLUS, body, ASSIGN, postfix, postfix
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1079,7 +1079,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body22.getTree());
 
                             // AST REWRITE
-                            // elements: postfix, body, ASSIGN, MINUS, postfix
+                            // elements: postfix, MINUS, body, ASSIGN, postfix
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1146,7 +1146,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body25.getTree());
 
                             // AST REWRITE
-                            // elements: body, ASSIGN, MUL, postfix, postfix
+                            // elements: postfix, postfix, ASSIGN, MUL, body
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1213,7 +1213,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body28.getTree());
 
                             // AST REWRITE
-                            // elements: postfix, body, DIV, ASSIGN, postfix
+                            // elements: postfix, ASSIGN, postfix, body, DIV
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1280,7 +1280,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body31.getTree());
 
                             // AST REWRITE
-                            // elements: body, MOD, ASSIGN, postfix, postfix
+                            // elements: ASSIGN, MOD, body, postfix, postfix
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1449,7 +1449,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "paramsdef"
-    // Atto.g:101:1: paramsdef : ( ( vardef ( COMMA vardef )* )? -> ^( PARAMS ( vardef )* ) | LPAREN ( vardef ( COMMA vardef )* )? RPAREN -> ^( PARAMS ( vardef )* ) );
+    // Atto.g:101:1: paramsdef : ( ( vardef ( ( COMMA )? vardef )* )? -> ^( PARAMS ( vardef )* ) | LPAREN ( vardef ( ( COMMA )? vardef )* )? RPAREN -> ^( PARAMS ( vardef )* ) );
     public final AttoParser.paramsdef_return paramsdef() throws RecognitionException {
         AttoParser.paramsdef_return retval = new AttoParser.paramsdef_return();
         retval.start = input.LT(1);
@@ -1479,38 +1479,38 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
         RewriteRuleSubtreeStream stream_vardef=new RewriteRuleSubtreeStream(adaptor,"rule vardef");
         try {
-            // Atto.g:102:2: ( ( vardef ( COMMA vardef )* )? -> ^( PARAMS ( vardef )* ) | LPAREN ( vardef ( COMMA vardef )* )? RPAREN -> ^( PARAMS ( vardef )* ) )
-            int alt11=2;
-            int LA11_0 = input.LA(1);
+            // Atto.g:102:2: ( ( vardef ( ( COMMA )? vardef )* )? -> ^( PARAMS ( vardef )* ) | LPAREN ( vardef ( ( COMMA )? vardef )* )? RPAREN -> ^( PARAMS ( vardef )* ) )
+            int alt13=2;
+            int LA13_0 = input.LA(1);
 
-            if ( (LA11_0==ARROW||LA11_0==NAME) ) {
-                alt11=1;
+            if ( (LA13_0==ARROW||LA13_0==NAME) ) {
+                alt13=1;
             }
-            else if ( (LA11_0==LPAREN) ) {
-                alt11=2;
+            else if ( (LA13_0==LPAREN) ) {
+                alt13=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 11, 0, input);
+                    new NoViableAltException("", 13, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt11) {
+            switch (alt13) {
                 case 1 :
-                    // Atto.g:102:4: ( vardef ( COMMA vardef )* )?
+                    // Atto.g:102:4: ( vardef ( ( COMMA )? vardef )* )?
                     {
-                    // Atto.g:102:4: ( vardef ( COMMA vardef )* )?
-                    int alt8=2;
-                    int LA8_0 = input.LA(1);
+                    // Atto.g:102:4: ( vardef ( ( COMMA )? vardef )* )?
+                    int alt9=2;
+                    int LA9_0 = input.LA(1);
 
-                    if ( (LA8_0==NAME) ) {
-                        alt8=1;
+                    if ( (LA9_0==NAME) ) {
+                        alt9=1;
                     }
-                    switch (alt8) {
+                    switch (alt9) {
                         case 1 :
-                            // Atto.g:102:5: vardef ( COMMA vardef )*
+                            // Atto.g:102:5: vardef ( ( COMMA )? vardef )*
                             {
                             pushFollow(FOLLOW_vardef_in_paramsdef451);
                             vardef35=vardef();
@@ -1519,26 +1519,43 @@ public TreeAdaptor getTreeAdaptor() {
                             if (state.failed) return retval;
                             if ( state.backtracking==0 ) stream_vardef.add(vardef35.getTree());
 
-                            // Atto.g:102:12: ( COMMA vardef )*
-                            loop7:
+                            // Atto.g:102:12: ( ( COMMA )? vardef )*
+                            loop8:
                             do {
-                                int alt7=2;
-                                int LA7_0 = input.LA(1);
+                                int alt8=2;
+                                int LA8_0 = input.LA(1);
 
-                                if ( (LA7_0==COMMA) ) {
-                                    alt7=1;
+                                if ( (LA8_0==COMMA||LA8_0==NAME) ) {
+                                    alt8=1;
                                 }
 
 
-                                switch (alt7) {
+                                switch (alt8) {
                             	case 1 :
-                            	    // Atto.g:102:13: COMMA vardef
+                            	    // Atto.g:102:13: ( COMMA )? vardef
                             	    {
-                            	    COMMA36=(Token)match(input,COMMA,FOLLOW_COMMA_in_paramsdef454); if (state.failed) return retval; 
-                            	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA36);
+                            	    // Atto.g:102:13: ( COMMA )?
+                            	    int alt7=2;
+                            	    int LA7_0 = input.LA(1);
+
+                            	    if ( (LA7_0==COMMA) ) {
+                            	        alt7=1;
+                            	    }
+                            	    switch (alt7) {
+                            	        case 1 :
+                            	            // Atto.g:102:13: COMMA
+                            	            {
+                            	            COMMA36=(Token)match(input,COMMA,FOLLOW_COMMA_in_paramsdef454); if (state.failed) return retval; 
+                            	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA36);
 
 
-                            	    pushFollow(FOLLOW_vardef_in_paramsdef456);
+                            	            }
+                            	            break;
+
+                            	    }
+
+
+                            	    pushFollow(FOLLOW_vardef_in_paramsdef457);
                             	    vardef37=vardef();
 
                             	    state._fsp--;
@@ -1549,7 +1566,7 @@ public TreeAdaptor getTreeAdaptor() {
                             	    break;
 
                             	default :
-                            	    break loop7;
+                            	    break loop8;
                                 }
                             } while (true);
 
@@ -1573,16 +1590,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (AttoTree)adaptor.nil();
-                    // 102:30: -> ^( PARAMS ( vardef )* )
+                    // 102:31: -> ^( PARAMS ( vardef )* )
                     {
-                        // Atto.g:102:33: ^( PARAMS ( vardef )* )
+                        // Atto.g:102:34: ^( PARAMS ( vardef )* )
                         {
                         AttoTree root_1 = (AttoTree)adaptor.nil();
                         root_1 = (AttoTree)adaptor.becomeRoot(
                         (AttoTree)adaptor.create(PARAMS, "PARAMS")
                         , root_1);
 
-                        // Atto.g:102:42: ( vardef )*
+                        // Atto.g:102:43: ( vardef )*
                         while ( stream_vardef.hasNext() ) {
                             adaptor.addChild(root_1, stream_vardef.nextTree());
 
@@ -1601,50 +1618,67 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 2 :
-                    // Atto.g:103:4: LPAREN ( vardef ( COMMA vardef )* )? RPAREN
+                    // Atto.g:103:4: LPAREN ( vardef ( ( COMMA )? vardef )* )? RPAREN
                     {
-                    LPAREN38=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_paramsdef474); if (state.failed) return retval; 
+                    LPAREN38=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_paramsdef475); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN38);
 
 
-                    // Atto.g:103:11: ( vardef ( COMMA vardef )* )?
-                    int alt10=2;
-                    int LA10_0 = input.LA(1);
+                    // Atto.g:103:11: ( vardef ( ( COMMA )? vardef )* )?
+                    int alt12=2;
+                    int LA12_0 = input.LA(1);
 
-                    if ( (LA10_0==NAME) ) {
-                        alt10=1;
+                    if ( (LA12_0==NAME) ) {
+                        alt12=1;
                     }
-                    switch (alt10) {
+                    switch (alt12) {
                         case 1 :
-                            // Atto.g:103:12: vardef ( COMMA vardef )*
+                            // Atto.g:103:12: vardef ( ( COMMA )? vardef )*
                             {
-                            pushFollow(FOLLOW_vardef_in_paramsdef477);
+                            pushFollow(FOLLOW_vardef_in_paramsdef478);
                             vardef39=vardef();
 
                             state._fsp--;
                             if (state.failed) return retval;
                             if ( state.backtracking==0 ) stream_vardef.add(vardef39.getTree());
 
-                            // Atto.g:103:19: ( COMMA vardef )*
-                            loop9:
+                            // Atto.g:103:19: ( ( COMMA )? vardef )*
+                            loop11:
                             do {
-                                int alt9=2;
-                                int LA9_0 = input.LA(1);
+                                int alt11=2;
+                                int LA11_0 = input.LA(1);
 
-                                if ( (LA9_0==COMMA) ) {
-                                    alt9=1;
+                                if ( (LA11_0==COMMA||LA11_0==NAME) ) {
+                                    alt11=1;
                                 }
 
 
-                                switch (alt9) {
+                                switch (alt11) {
                             	case 1 :
-                            	    // Atto.g:103:20: COMMA vardef
+                            	    // Atto.g:103:20: ( COMMA )? vardef
                             	    {
-                            	    COMMA40=(Token)match(input,COMMA,FOLLOW_COMMA_in_paramsdef480); if (state.failed) return retval; 
-                            	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA40);
+                            	    // Atto.g:103:20: ( COMMA )?
+                            	    int alt10=2;
+                            	    int LA10_0 = input.LA(1);
+
+                            	    if ( (LA10_0==COMMA) ) {
+                            	        alt10=1;
+                            	    }
+                            	    switch (alt10) {
+                            	        case 1 :
+                            	            // Atto.g:103:20: COMMA
+                            	            {
+                            	            COMMA40=(Token)match(input,COMMA,FOLLOW_COMMA_in_paramsdef481); if (state.failed) return retval; 
+                            	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA40);
 
 
-                            	    pushFollow(FOLLOW_vardef_in_paramsdef482);
+                            	            }
+                            	            break;
+
+                            	    }
+
+
+                            	    pushFollow(FOLLOW_vardef_in_paramsdef484);
                             	    vardef41=vardef();
 
                             	    state._fsp--;
@@ -1655,7 +1689,7 @@ public TreeAdaptor getTreeAdaptor() {
                             	    break;
 
                             	default :
-                            	    break loop9;
+                            	    break loop11;
                                 }
                             } while (true);
 
@@ -1666,7 +1700,7 @@ public TreeAdaptor getTreeAdaptor() {
                     }
 
 
-                    RPAREN42=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_paramsdef488); if (state.failed) return retval; 
+                    RPAREN42=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_paramsdef490); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN42);
 
 
@@ -1683,16 +1717,16 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (AttoTree)adaptor.nil();
-                    // 103:44: -> ^( PARAMS ( vardef )* )
+                    // 103:45: -> ^( PARAMS ( vardef )* )
                     {
-                        // Atto.g:103:47: ^( PARAMS ( vardef )* )
+                        // Atto.g:103:48: ^( PARAMS ( vardef )* )
                         {
                         AttoTree root_1 = (AttoTree)adaptor.nil();
                         root_1 = (AttoTree)adaptor.becomeRoot(
                         (AttoTree)adaptor.create(PARAMS, "PARAMS")
                         , root_1);
 
-                        // Atto.g:103:56: ( vardef )*
+                        // Atto.g:103:57: ( vardef )*
                         while ( stream_vardef.hasNext() ) {
                             adaptor.addChild(root_1, stream_vardef.nextTree());
 
@@ -1759,31 +1793,31 @@ public TreeAdaptor getTreeAdaptor() {
 
         try {
             // Atto.g:107:2: ( expr | block )
-            int alt12=2;
-            int LA12_0 = input.LA(1);
+            int alt14=2;
+            int LA14_0 = input.LA(1);
 
-            if ( (LA12_0==ARROW||LA12_0==AT||LA12_0==BOOL||LA12_0==IF||LA12_0==INT||(LA12_0 >= LBRACK && LA12_0 <= LCURLY)||LA12_0==LPAREN||LA12_0==MINUS||LA12_0==NAME||(LA12_0 >= NOT && LA12_0 <= NULL)||LA12_0==STRING||LA12_0==WHILE) ) {
-                alt12=1;
+            if ( (LA14_0==ARROW||LA14_0==AT||LA14_0==BOOL||LA14_0==IF||LA14_0==INT||(LA14_0 >= LBRACK && LA14_0 <= LCURLY)||LA14_0==LPAREN||LA14_0==MINUS||LA14_0==NAME||(LA14_0 >= NOT && LA14_0 <= NULL)||LA14_0==STRING||LA14_0==WHILE) ) {
+                alt14=1;
             }
-            else if ( (LA12_0==NEWLINE) ) {
-                alt12=2;
+            else if ( (LA14_0==NEWLINE) ) {
+                alt14=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 12, 0, input);
+                    new NoViableAltException("", 14, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt12) {
+            switch (alt14) {
                 case 1 :
                     // Atto.g:107:4: expr
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_expr_in_body509);
+                    pushFollow(FOLLOW_expr_in_body511);
                     expr43=expr();
 
                     state._fsp--;
@@ -1798,7 +1832,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_block_in_body514);
+                    pushFollow(FOLLOW_block_in_body516);
                     block44=block();
 
                     state._fsp--;
@@ -1878,11 +1912,11 @@ public TreeAdaptor getTreeAdaptor() {
             // Atto.g:112:2: ( 'if' cond_expr= expr ( block ( elif )* ( else_ )? -> ^( IF $cond_expr block ( elif )* ( else_ )? ) | 'then' then_expr= expr ( 'else' else_expr= expr )? -> ^( IF $cond_expr $then_expr ( ^( ELSE $else_expr) )? ) ) )
             // Atto.g:112:4: 'if' cond_expr= expr ( block ( elif )* ( else_ )? -> ^( IF $cond_expr block ( elif )* ( else_ )? ) | 'then' then_expr= expr ( 'else' else_expr= expr )? -> ^( IF $cond_expr $then_expr ( ^( ELSE $else_expr) )? ) )
             {
-            string_literal45=(Token)match(input,IF,FOLLOW_IF_in_if_527); if (state.failed) return retval; 
+            string_literal45=(Token)match(input,IF,FOLLOW_IF_in_if_529); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_IF.add(string_literal45);
 
 
-            pushFollow(FOLLOW_expr_in_if_531);
+            pushFollow(FOLLOW_expr_in_if_533);
             cond_expr=expr();
 
             state._fsp--;
@@ -1890,28 +1924,28 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_expr.add(cond_expr.getTree());
 
             // Atto.g:113:4: ( block ( elif )* ( else_ )? -> ^( IF $cond_expr block ( elif )* ( else_ )? ) | 'then' then_expr= expr ( 'else' else_expr= expr )? -> ^( IF $cond_expr $then_expr ( ^( ELSE $else_expr) )? ) )
-            int alt16=2;
-            int LA16_0 = input.LA(1);
+            int alt18=2;
+            int LA18_0 = input.LA(1);
 
-            if ( (LA16_0==NEWLINE) ) {
-                alt16=1;
+            if ( (LA18_0==NEWLINE) ) {
+                alt18=1;
             }
-            else if ( (LA16_0==67) ) {
-                alt16=2;
+            else if ( (LA18_0==67) ) {
+                alt18=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 16, 0, input);
+                    new NoViableAltException("", 18, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt16) {
+            switch (alt18) {
                 case 1 :
                     // Atto.g:113:6: block ( elif )* ( else_ )?
                     {
-                    pushFollow(FOLLOW_block_in_if_539);
+                    pushFollow(FOLLOW_block_in_if_541);
                     block46=block();
 
                     state._fsp--;
@@ -1919,21 +1953,21 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_block.add(block46.getTree());
 
                     // Atto.g:113:12: ( elif )*
-                    loop13:
+                    loop15:
                     do {
-                        int alt13=2;
-                        int LA13_0 = input.LA(1);
+                        int alt15=2;
+                        int LA15_0 = input.LA(1);
 
-                        if ( (LA13_0==ELIF) ) {
-                            alt13=1;
+                        if ( (LA15_0==ELIF) ) {
+                            alt15=1;
                         }
 
 
-                        switch (alt13) {
+                        switch (alt15) {
                     	case 1 :
                     	    // Atto.g:113:12: elif
                     	    {
-                    	    pushFollow(FOLLOW_elif_in_if_541);
+                    	    pushFollow(FOLLOW_elif_in_if_543);
                     	    elif47=elif();
 
                     	    state._fsp--;
@@ -1944,27 +1978,27 @@ public TreeAdaptor getTreeAdaptor() {
                     	    break;
 
                     	default :
-                    	    break loop13;
+                    	    break loop15;
                         }
                     } while (true);
 
 
                     // Atto.g:113:18: ( else_ )?
-                    int alt14=2;
-                    int LA14_0 = input.LA(1);
+                    int alt16=2;
+                    int LA16_0 = input.LA(1);
 
-                    if ( (LA14_0==ELSE) ) {
-                        int LA14_1 = input.LA(2);
+                    if ( (LA16_0==ELSE) ) {
+                        int LA16_1 = input.LA(2);
 
-                        if ( (LA14_1==NEWLINE) ) {
-                            alt14=1;
+                        if ( (LA16_1==NEWLINE) ) {
+                            alt16=1;
                         }
                     }
-                    switch (alt14) {
+                    switch (alt16) {
                         case 1 :
                             // Atto.g:113:18: else_
                             {
-                            pushFollow(FOLLOW_else__in_if_544);
+                            pushFollow(FOLLOW_else__in_if_546);
                             else_48=else_();
 
                             state._fsp--;
@@ -1978,7 +2012,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: cond_expr, elif, else_, block
+                    // elements: else_, elif, block, cond_expr
                     // token labels: 
                     // rule labels: cond_expr, retval
                     // token list labels: 
@@ -2032,11 +2066,11 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     // Atto.g:115:6: 'then' then_expr= expr ( 'else' else_expr= expr )?
                     {
-                    string_literal49=(Token)match(input,67,FOLLOW_67_in_if_574); if (state.failed) return retval; 
+                    string_literal49=(Token)match(input,67,FOLLOW_67_in_if_576); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_67.add(string_literal49);
 
 
-                    pushFollow(FOLLOW_expr_in_if_578);
+                    pushFollow(FOLLOW_expr_in_if_580);
                     then_expr=expr();
 
                     state._fsp--;
@@ -2044,21 +2078,21 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(then_expr.getTree());
 
                     // Atto.g:115:28: ( 'else' else_expr= expr )?
-                    int alt15=2;
-                    int LA15_0 = input.LA(1);
+                    int alt17=2;
+                    int LA17_0 = input.LA(1);
 
-                    if ( (LA15_0==ELSE) ) {
-                        alt15=1;
+                    if ( (LA17_0==ELSE) ) {
+                        alt17=1;
                     }
-                    switch (alt15) {
+                    switch (alt17) {
                         case 1 :
                             // Atto.g:115:29: 'else' else_expr= expr
                             {
-                            string_literal50=(Token)match(input,ELSE,FOLLOW_ELSE_in_if_581); if (state.failed) return retval; 
+                            string_literal50=(Token)match(input,ELSE,FOLLOW_ELSE_in_if_583); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_ELSE.add(string_literal50);
 
 
-                            pushFollow(FOLLOW_expr_in_if_585);
+                            pushFollow(FOLLOW_expr_in_if_587);
                             else_expr=expr();
 
                             state._fsp--;
@@ -2072,7 +2106,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: then_expr, else_expr, cond_expr
+                    // elements: else_expr, cond_expr, then_expr
                     // token labels: 
                     // rule labels: cond_expr, retval, else_expr, then_expr
                     // token list labels: 
@@ -2187,18 +2221,18 @@ public TreeAdaptor getTreeAdaptor() {
             // Atto.g:121:2: ( 'elif' expr block -> ^( ELIF expr block ) )
             // Atto.g:121:4: 'elif' expr block
             {
-            string_literal51=(Token)match(input,ELIF,FOLLOW_ELIF_in_elif629); if (state.failed) return retval; 
+            string_literal51=(Token)match(input,ELIF,FOLLOW_ELIF_in_elif631); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ELIF.add(string_literal51);
 
 
-            pushFollow(FOLLOW_expr_in_elif631);
+            pushFollow(FOLLOW_expr_in_elif633);
             expr52=expr();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_expr.add(expr52.getTree());
 
-            pushFollow(FOLLOW_block_in_elif633);
+            pushFollow(FOLLOW_block_in_elif635);
             block53=block();
 
             state._fsp--;
@@ -2292,11 +2326,11 @@ public TreeAdaptor getTreeAdaptor() {
             // Atto.g:125:2: ( 'else' block -> ^( ELSE block ) )
             // Atto.g:125:4: 'else' block
             {
-            string_literal54=(Token)match(input,ELSE,FOLLOW_ELSE_in_else_654); if (state.failed) return retval; 
+            string_literal54=(Token)match(input,ELSE,FOLLOW_ELSE_in_else_656); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_ELSE.add(string_literal54);
 
 
-            pushFollow(FOLLOW_block_in_else_656);
+            pushFollow(FOLLOW_block_in_else_658);
             block55=block();
 
             state._fsp--;
@@ -2396,11 +2430,11 @@ public TreeAdaptor getTreeAdaptor() {
             // Atto.g:129:2: ( 'while' cond_expr= expr ( block -> ^( WHILE $cond_expr block ) | 'then' then_expr= expr -> ^( WHILE $cond_expr $then_expr) ) )
             // Atto.g:129:4: 'while' cond_expr= expr ( block -> ^( WHILE $cond_expr block ) | 'then' then_expr= expr -> ^( WHILE $cond_expr $then_expr) )
             {
-            string_literal56=(Token)match(input,WHILE,FOLLOW_WHILE_in_while_676); if (state.failed) return retval; 
+            string_literal56=(Token)match(input,WHILE,FOLLOW_WHILE_in_while_678); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_WHILE.add(string_literal56);
 
 
-            pushFollow(FOLLOW_expr_in_while_680);
+            pushFollow(FOLLOW_expr_in_while_682);
             cond_expr=expr();
 
             state._fsp--;
@@ -2408,28 +2442,28 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_expr.add(cond_expr.getTree());
 
             // Atto.g:130:4: ( block -> ^( WHILE $cond_expr block ) | 'then' then_expr= expr -> ^( WHILE $cond_expr $then_expr) )
-            int alt17=2;
-            int LA17_0 = input.LA(1);
+            int alt19=2;
+            int LA19_0 = input.LA(1);
 
-            if ( (LA17_0==NEWLINE) ) {
-                alt17=1;
+            if ( (LA19_0==NEWLINE) ) {
+                alt19=1;
             }
-            else if ( (LA17_0==67) ) {
-                alt17=2;
+            else if ( (LA19_0==67) ) {
+                alt19=2;
             }
             else {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 17, 0, input);
+                    new NoViableAltException("", 19, 0, input);
 
                 throw nvae;
 
             }
-            switch (alt17) {
+            switch (alt19) {
                 case 1 :
                     // Atto.g:130:6: block
                     {
-                    pushFollow(FOLLOW_block_in_while_688);
+                    pushFollow(FOLLOW_block_in_while_690);
                     block57=block();
 
                     state._fsp--;
@@ -2477,11 +2511,11 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     // Atto.g:131:6: 'then' then_expr= expr
                     {
-                    string_literal58=(Token)match(input,67,FOLLOW_67_in_while_706); if (state.failed) return retval; 
+                    string_literal58=(Token)match(input,67,FOLLOW_67_in_while_708); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_67.add(string_literal58);
 
 
-                    pushFollow(FOLLOW_expr_in_while_710);
+                    pushFollow(FOLLOW_expr_in_while_712);
                     then_expr=expr();
 
                     state._fsp--;
@@ -2587,7 +2621,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_and_in_or738);
+            pushFollow(FOLLOW_and_in_or740);
             and59=and();
 
             state._fsp--;
@@ -2595,21 +2629,21 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) adaptor.addChild(root_0, and59.getTree());
 
             // Atto.g:136:8: ( OR ^ and )*
-            loop18:
+            loop20:
             do {
-                int alt18=2;
-                int LA18_0 = input.LA(1);
+                int alt20=2;
+                int LA20_0 = input.LA(1);
 
-                if ( (LA18_0==OR) ) {
-                    alt18=1;
+                if ( (LA20_0==OR) ) {
+                    alt20=1;
                 }
 
 
-                switch (alt18) {
+                switch (alt20) {
             	case 1 :
             	    // Atto.g:136:9: OR ^ and
             	    {
-            	    OR60=(Token)match(input,OR,FOLLOW_OR_in_or741); if (state.failed) return retval;
+            	    OR60=(Token)match(input,OR,FOLLOW_OR_in_or743); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    OR60_tree = 
             	    (AttoTree)adaptor.create(OR60)
@@ -2617,7 +2651,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    root_0 = (AttoTree)adaptor.becomeRoot(OR60_tree, root_0);
             	    }
 
-            	    pushFollow(FOLLOW_and_in_or744);
+            	    pushFollow(FOLLOW_and_in_or746);
             	    and61=and();
 
             	    state._fsp--;
@@ -2628,7 +2662,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop18;
+            	    break loop20;
                 }
             } while (true);
 
@@ -2689,7 +2723,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_rel_in_and757);
+            pushFollow(FOLLOW_rel_in_and759);
             rel62=rel();
 
             state._fsp--;
@@ -2697,21 +2731,21 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) adaptor.addChild(root_0, rel62.getTree());
 
             // Atto.g:140:8: ( AND ^ rel )*
-            loop19:
+            loop21:
             do {
-                int alt19=2;
-                int LA19_0 = input.LA(1);
+                int alt21=2;
+                int LA21_0 = input.LA(1);
 
-                if ( (LA19_0==AND) ) {
-                    alt19=1;
+                if ( (LA21_0==AND) ) {
+                    alt21=1;
                 }
 
 
-                switch (alt19) {
+                switch (alt21) {
             	case 1 :
             	    // Atto.g:140:9: AND ^ rel
             	    {
-            	    AND63=(Token)match(input,AND,FOLLOW_AND_in_and760); if (state.failed) return retval;
+            	    AND63=(Token)match(input,AND,FOLLOW_AND_in_and762); if (state.failed) return retval;
             	    if ( state.backtracking==0 ) {
             	    AND63_tree = 
             	    (AttoTree)adaptor.create(AND63)
@@ -2719,7 +2753,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    root_0 = (AttoTree)adaptor.becomeRoot(AND63_tree, root_0);
             	    }
 
-            	    pushFollow(FOLLOW_rel_in_and763);
+            	    pushFollow(FOLLOW_rel_in_and765);
             	    rel64=rel();
 
             	    state._fsp--;
@@ -2730,7 +2764,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop19;
+            	    break loop21;
                 }
             } while (true);
 
@@ -2791,7 +2825,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_add_in_rel776);
+            pushFollow(FOLLOW_add_in_rel778);
             add65=add();
 
             state._fsp--;
@@ -2799,17 +2833,17 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) adaptor.addChild(root_0, add65.getTree());
 
             // Atto.g:144:8: ( ( EQ | NE | LE | GE | LT | GT | COMPOSITE | PIPELINE ) ^ add )*
-            loop20:
+            loop22:
             do {
-                int alt20=2;
-                int LA20_0 = input.LA(1);
+                int alt22=2;
+                int LA22_0 = input.LA(1);
 
-                if ( (LA20_0==COMPOSITE||LA20_0==EQ||(LA20_0 >= GE && LA20_0 <= GT)||LA20_0==LE||LA20_0==LT||LA20_0==NE||LA20_0==PIPELINE) ) {
-                    alt20=1;
+                if ( (LA22_0==COMPOSITE||LA22_0==EQ||(LA22_0 >= GE && LA22_0 <= GT)||LA22_0==LE||LA22_0==LT||LA22_0==NE||LA22_0==PIPELINE) ) {
+                    alt22=1;
                 }
 
 
-                switch (alt20) {
+                switch (alt22) {
             	case 1 :
             	    // Atto.g:144:9: ( EQ | NE | LE | GE | LT | GT | COMPOSITE | PIPELINE ) ^ add
             	    {
@@ -2832,7 +2866,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_add_in_rel798);
+            	    pushFollow(FOLLOW_add_in_rel800);
             	    add67=add();
 
             	    state._fsp--;
@@ -2843,7 +2877,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop20;
+            	    break loop22;
                 }
             } while (true);
 
@@ -2904,7 +2938,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_mul_in_add811);
+            pushFollow(FOLLOW_mul_in_add813);
             mul68=mul();
 
             state._fsp--;
@@ -2912,20 +2946,20 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) adaptor.addChild(root_0, mul68.getTree());
 
             // Atto.g:148:8: ( ( PLUS | MINUS ) ^ mul )*
-            loop21:
+            loop23:
             do {
-                int alt21=2;
-                int LA21_0 = input.LA(1);
+                int alt23=2;
+                int LA23_0 = input.LA(1);
 
-                if ( (LA21_0==MINUS) ) {
-                    alt21=1;
+                if ( (LA23_0==MINUS) ) {
+                    alt23=1;
                 }
-                else if ( (LA21_0==PLUS) ) {
-                    alt21=1;
+                else if ( (LA23_0==PLUS) ) {
+                    alt23=1;
                 }
 
 
-                switch (alt21) {
+                switch (alt23) {
             	case 1 :
             	    // Atto.g:148:9: ( PLUS | MINUS ) ^ mul
             	    {
@@ -2948,7 +2982,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_mul_in_add821);
+            	    pushFollow(FOLLOW_mul_in_add823);
             	    mul70=mul();
 
             	    state._fsp--;
@@ -2959,7 +2993,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop21;
+            	    break loop23;
                 }
             } while (true);
 
@@ -3020,7 +3054,7 @@ public TreeAdaptor getTreeAdaptor() {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            pushFollow(FOLLOW_unary_in_mul834);
+            pushFollow(FOLLOW_unary_in_mul836);
             unary71=unary();
 
             state._fsp--;
@@ -3028,17 +3062,17 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) adaptor.addChild(root_0, unary71.getTree());
 
             // Atto.g:152:10: ( ( MUL | DIV | MOD ) ^ unary )*
-            loop22:
+            loop24:
             do {
-                int alt22=2;
-                int LA22_0 = input.LA(1);
+                int alt24=2;
+                int LA24_0 = input.LA(1);
 
-                if ( (LA22_0==DIV||(LA22_0 >= MOD && LA22_0 <= MUL)) ) {
-                    alt22=1;
+                if ( (LA24_0==DIV||(LA24_0 >= MOD && LA24_0 <= MUL)) ) {
+                    alt24=1;
                 }
 
 
-                switch (alt22) {
+                switch (alt24) {
             	case 1 :
             	    // Atto.g:152:11: ( MUL | DIV | MOD ) ^ unary
             	    {
@@ -3061,7 +3095,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    pushFollow(FOLLOW_unary_in_mul846);
+            	    pushFollow(FOLLOW_unary_in_mul848);
             	    unary73=unary();
 
             	    state._fsp--;
@@ -3072,7 +3106,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    break;
 
             	default :
-            	    break loop22;
+            	    break loop24;
                 }
             } while (true);
 
@@ -3133,7 +3167,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_postfix=new RewriteRuleSubtreeStream(adaptor,"rule postfix");
         try {
             // Atto.g:156:2: ( postfix | NOT ^ postfix | MINUS postfix -> ^( UNARY_MINUS postfix ) )
-            int alt23=3;
+            int alt25=3;
             switch ( input.LA(1) ) {
             case AT:
             case BOOL:
@@ -3145,36 +3179,36 @@ public TreeAdaptor getTreeAdaptor() {
             case NULL:
             case STRING:
                 {
-                alt23=1;
+                alt25=1;
                 }
                 break;
             case NOT:
                 {
-                alt23=2;
+                alt25=2;
                 }
                 break;
             case MINUS:
                 {
-                alt23=3;
+                alt25=3;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 23, 0, input);
+                    new NoViableAltException("", 25, 0, input);
 
                 throw nvae;
 
             }
 
-            switch (alt23) {
+            switch (alt25) {
                 case 1 :
                     // Atto.g:156:4: postfix
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_postfix_in_unary860);
+                    pushFollow(FOLLOW_postfix_in_unary862);
                     postfix74=postfix();
 
                     state._fsp--;
@@ -3189,7 +3223,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    NOT75=(Token)match(input,NOT,FOLLOW_NOT_in_unary865); if (state.failed) return retval;
+                    NOT75=(Token)match(input,NOT,FOLLOW_NOT_in_unary867); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
                     NOT75_tree = 
                     (AttoTree)adaptor.create(NOT75)
@@ -3197,7 +3231,7 @@ public TreeAdaptor getTreeAdaptor() {
                     root_0 = (AttoTree)adaptor.becomeRoot(NOT75_tree, root_0);
                     }
 
-                    pushFollow(FOLLOW_postfix_in_unary868);
+                    pushFollow(FOLLOW_postfix_in_unary870);
                     postfix76=postfix();
 
                     state._fsp--;
@@ -3209,11 +3243,11 @@ public TreeAdaptor getTreeAdaptor() {
                 case 3 :
                     // Atto.g:158:4: MINUS postfix
                     {
-                    MINUS77=(Token)match(input,MINUS,FOLLOW_MINUS_in_unary873); if (state.failed) return retval; 
+                    MINUS77=(Token)match(input,MINUS,FOLLOW_MINUS_in_unary875); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_MINUS.add(MINUS77);
 
 
-                    pushFollow(FOLLOW_postfix_in_unary875);
+                    pushFollow(FOLLOW_postfix_in_unary877);
                     postfix78=postfix();
 
                     state._fsp--;
@@ -3288,7 +3322,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "postfix"
-    // Atto.g:161:1: postfix : ( primary -> primary ) ( LPAREN ( expr ( COMMA expr )* )? ( COMMA )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) |p= primary -> ^( CALL $postfix $p) )* ;
+    // Atto.g:161:1: postfix : ( primary -> primary ) ( LPAREN ( expr ( ( COMMA )? expr )* )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) )* ;
     public final AttoParser.postfix_return postfix() throws RecognitionException {
         AttoParser.postfix_return retval = new AttoParser.postfix_return();
         retval.start = input.LT(1);
@@ -3298,11 +3332,10 @@ public TreeAdaptor getTreeAdaptor() {
 
         Token LPAREN80=null;
         Token COMMA82=null;
-        Token COMMA84=null;
-        Token RPAREN85=null;
-        Token LBRACK86=null;
-        Token RBRACK88=null;
-        Token DOT89=null;
+        Token RPAREN84=null;
+        Token LBRACK85=null;
+        Token RBRACK87=null;
+        Token DOT88=null;
         AttoParser.primary_return p =null;
 
         AttoParser.primary_return primary79 =null;
@@ -3311,16 +3344,15 @@ public TreeAdaptor getTreeAdaptor() {
 
         AttoParser.expr_return expr83 =null;
 
-        AttoParser.expr_return expr87 =null;
+        AttoParser.expr_return expr86 =null;
 
 
         AttoTree LPAREN80_tree=null;
         AttoTree COMMA82_tree=null;
-        AttoTree COMMA84_tree=null;
-        AttoTree RPAREN85_tree=null;
-        AttoTree LBRACK86_tree=null;
-        AttoTree RBRACK88_tree=null;
-        AttoTree DOT89_tree=null;
+        AttoTree RPAREN84_tree=null;
+        AttoTree LBRACK85_tree=null;
+        AttoTree RBRACK87_tree=null;
+        AttoTree DOT88_tree=null;
         RewriteRuleTokenStream stream_RBRACK=new RewriteRuleTokenStream(adaptor,"token RBRACK");
         RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
         RewriteRuleTokenStream stream_LBRACK=new RewriteRuleTokenStream(adaptor,"token LBRACK");
@@ -3330,13 +3362,13 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleSubtreeStream stream_primary=new RewriteRuleSubtreeStream(adaptor,"rule primary");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // Atto.g:162:2: ( ( primary -> primary ) ( LPAREN ( expr ( COMMA expr )* )? ( COMMA )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) |p= primary -> ^( CALL $postfix $p) )* )
-            // Atto.g:162:4: ( primary -> primary ) ( LPAREN ( expr ( COMMA expr )* )? ( COMMA )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) |p= primary -> ^( CALL $postfix $p) )*
+            // Atto.g:162:2: ( ( primary -> primary ) ( LPAREN ( expr ( ( COMMA )? expr )* )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) )* )
+            // Atto.g:162:4: ( primary -> primary ) ( LPAREN ( expr ( ( COMMA )? expr )* )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) )*
             {
             // Atto.g:162:4: ( primary -> primary )
             // Atto.g:162:6: primary
             {
-            pushFollow(FOLLOW_primary_in_postfix897);
+            pushFollow(FOLLOW_primary_in_postfix899);
             primary79=primary();
 
             state._fsp--;
@@ -3369,116 +3401,92 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // Atto.g:163:4: ( LPAREN ( expr ( COMMA expr )* )? ( COMMA )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) |p= primary -> ^( CALL $postfix $p) )*
-            loop27:
+            // Atto.g:163:4: ( LPAREN ( expr ( ( COMMA )? expr )* )? RPAREN -> ^( CALL $postfix ( expr )* ) | LBRACK expr RBRACK -> ^( INDEX $postfix expr ) | DOT p= primary -> ^( FIELD_ACCESS $postfix $p) )*
+            loop29:
             do {
-                int alt27=5;
+                int alt29=4;
                 switch ( input.LA(1) ) {
-                case NAME:
-                    {
-                    alt27=4;
-                    }
-                    break;
-                case AT:
-                    {
-                    alt27=4;
-                    }
-                    break;
-                case INT:
-                    {
-                    alt27=4;
-                    }
-                    break;
-                case STRING:
-                    {
-                    alt27=4;
-                    }
-                    break;
-                case BOOL:
-                    {
-                    alt27=4;
-                    }
-                    break;
-                case NULL:
-                    {
-                    alt27=4;
-                    }
-                    break;
                 case LPAREN:
                     {
-                    alt27=1;
-                    }
-                    break;
-                case LCURLY:
-                    {
-                    alt27=4;
+                    alt29=1;
                     }
                     break;
                 case LBRACK:
                     {
-                    alt27=2;
+                    alt29=2;
                     }
                     break;
                 case DOT:
                     {
-                    alt27=3;
+                    alt29=3;
                     }
                     break;
 
                 }
 
-                switch (alt27) {
+                switch (alt29) {
             	case 1 :
-            	    // Atto.g:163:6: LPAREN ( expr ( COMMA expr )* )? ( COMMA )? RPAREN
+            	    // Atto.g:163:6: LPAREN ( expr ( ( COMMA )? expr )* )? RPAREN
             	    {
-            	    LPAREN80=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_postfix910); if (state.failed) return retval; 
+            	    LPAREN80=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_postfix912); if (state.failed) return retval; 
             	    if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN80);
 
 
-            	    // Atto.g:163:13: ( expr ( COMMA expr )* )?
-            	    int alt25=2;
-            	    int LA25_0 = input.LA(1);
+            	    // Atto.g:163:13: ( expr ( ( COMMA )? expr )* )?
+            	    int alt28=2;
+            	    int LA28_0 = input.LA(1);
 
-            	    if ( (LA25_0==ARROW||LA25_0==AT||LA25_0==BOOL||LA25_0==IF||LA25_0==INT||(LA25_0 >= LBRACK && LA25_0 <= LCURLY)||LA25_0==LPAREN||LA25_0==MINUS||LA25_0==NAME||(LA25_0 >= NOT && LA25_0 <= NULL)||LA25_0==STRING||LA25_0==WHILE) ) {
-            	        alt25=1;
+            	    if ( (LA28_0==ARROW||LA28_0==AT||LA28_0==BOOL||LA28_0==IF||LA28_0==INT||(LA28_0 >= LBRACK && LA28_0 <= LCURLY)||LA28_0==LPAREN||LA28_0==MINUS||LA28_0==NAME||(LA28_0 >= NOT && LA28_0 <= NULL)||LA28_0==STRING||LA28_0==WHILE) ) {
+            	        alt28=1;
             	    }
-            	    switch (alt25) {
+            	    switch (alt28) {
             	        case 1 :
-            	            // Atto.g:163:14: expr ( COMMA expr )*
+            	            // Atto.g:163:14: expr ( ( COMMA )? expr )*
             	            {
-            	            pushFollow(FOLLOW_expr_in_postfix913);
+            	            pushFollow(FOLLOW_expr_in_postfix915);
             	            expr81=expr();
 
             	            state._fsp--;
             	            if (state.failed) return retval;
             	            if ( state.backtracking==0 ) stream_expr.add(expr81.getTree());
 
-            	            // Atto.g:163:19: ( COMMA expr )*
-            	            loop24:
+            	            // Atto.g:163:19: ( ( COMMA )? expr )*
+            	            loop27:
             	            do {
-            	                int alt24=2;
-            	                int LA24_0 = input.LA(1);
+            	                int alt27=2;
+            	                int LA27_0 = input.LA(1);
 
-            	                if ( (LA24_0==COMMA) ) {
-            	                    int LA24_1 = input.LA(2);
-
-            	                    if ( (LA24_1==ARROW||LA24_1==AT||LA24_1==BOOL||LA24_1==IF||LA24_1==INT||(LA24_1 >= LBRACK && LA24_1 <= LCURLY)||LA24_1==LPAREN||LA24_1==MINUS||LA24_1==NAME||(LA24_1 >= NOT && LA24_1 <= NULL)||LA24_1==STRING||LA24_1==WHILE) ) {
-            	                        alt24=1;
-            	                    }
-
-
+            	                if ( (LA27_0==ARROW||LA27_0==AT||LA27_0==BOOL||LA27_0==COMMA||LA27_0==IF||LA27_0==INT||(LA27_0 >= LBRACK && LA27_0 <= LCURLY)||LA27_0==LPAREN||LA27_0==MINUS||LA27_0==NAME||(LA27_0 >= NOT && LA27_0 <= NULL)||LA27_0==STRING||LA27_0==WHILE) ) {
+            	                    alt27=1;
             	                }
 
 
-            	                switch (alt24) {
+            	                switch (alt27) {
             	            	case 1 :
-            	            	    // Atto.g:163:20: COMMA expr
+            	            	    // Atto.g:163:20: ( COMMA )? expr
             	            	    {
-            	            	    COMMA82=(Token)match(input,COMMA,FOLLOW_COMMA_in_postfix916); if (state.failed) return retval; 
-            	            	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA82);
+            	            	    // Atto.g:163:20: ( COMMA )?
+            	            	    int alt26=2;
+            	            	    int LA26_0 = input.LA(1);
+
+            	            	    if ( (LA26_0==COMMA) ) {
+            	            	        alt26=1;
+            	            	    }
+            	            	    switch (alt26) {
+            	            	        case 1 :
+            	            	            // Atto.g:163:20: COMMA
+            	            	            {
+            	            	            COMMA82=(Token)match(input,COMMA,FOLLOW_COMMA_in_postfix918); if (state.failed) return retval; 
+            	            	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA82);
 
 
-            	            	    pushFollow(FOLLOW_expr_in_postfix918);
+            	            	            }
+            	            	            break;
+
+            	            	    }
+
+
+            	            	    pushFollow(FOLLOW_expr_in_postfix921);
             	            	    expr83=expr();
 
             	            	    state._fsp--;
@@ -3489,7 +3497,7 @@ public TreeAdaptor getTreeAdaptor() {
             	            	    break;
 
             	            	default :
-            	            	    break loop24;
+            	            	    break loop27;
             	                }
             	            } while (true);
 
@@ -3500,33 +3508,12 @@ public TreeAdaptor getTreeAdaptor() {
             	    }
 
 
-            	    // Atto.g:163:35: ( COMMA )?
-            	    int alt26=2;
-            	    int LA26_0 = input.LA(1);
-
-            	    if ( (LA26_0==COMMA) ) {
-            	        alt26=1;
-            	    }
-            	    switch (alt26) {
-            	        case 1 :
-            	            // Atto.g:163:35: COMMA
-            	            {
-            	            COMMA84=(Token)match(input,COMMA,FOLLOW_COMMA_in_postfix924); if (state.failed) return retval; 
-            	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA84);
-
-
-            	            }
-            	            break;
-
-            	    }
-
-
-            	    RPAREN85=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_postfix927); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN85);
+            	    RPAREN84=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_postfix927); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN84);
 
 
             	    // AST REWRITE
-            	    // elements: postfix, expr
+            	    // elements: expr, postfix
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -3570,23 +3557,23 @@ public TreeAdaptor getTreeAdaptor() {
             	case 2 :
             	    // Atto.g:165:6: LBRACK expr RBRACK
             	    {
-            	    LBRACK86=(Token)match(input,LBRACK,FOLLOW_LBRACK_in_postfix955); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_LBRACK.add(LBRACK86);
+            	    LBRACK85=(Token)match(input,LBRACK,FOLLOW_LBRACK_in_postfix951); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_LBRACK.add(LBRACK85);
 
 
-            	    pushFollow(FOLLOW_expr_in_postfix957);
-            	    expr87=expr();
+            	    pushFollow(FOLLOW_expr_in_postfix953);
+            	    expr86=expr();
 
             	    state._fsp--;
             	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_expr.add(expr87.getTree());
+            	    if ( state.backtracking==0 ) stream_expr.add(expr86.getTree());
 
-            	    RBRACK88=(Token)match(input,RBRACK,FOLLOW_RBRACK_in_postfix959); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_RBRACK.add(RBRACK88);
+            	    RBRACK87=(Token)match(input,RBRACK,FOLLOW_RBRACK_in_postfix955); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_RBRACK.add(RBRACK87);
 
 
             	    // AST REWRITE
-            	    // elements: expr, postfix
+            	    // elements: postfix, expr
             	    // token labels: 
             	    // rule labels: retval
             	    // token list labels: 
@@ -3625,11 +3612,11 @@ public TreeAdaptor getTreeAdaptor() {
             	case 3 :
             	    // Atto.g:167:6: DOT p= primary
             	    {
-            	    DOT89=(Token)match(input,DOT,FOLLOW_DOT_in_postfix982); if (state.failed) return retval; 
-            	    if ( state.backtracking==0 ) stream_DOT.add(DOT89);
+            	    DOT88=(Token)match(input,DOT,FOLLOW_DOT_in_postfix978); if (state.failed) return retval; 
+            	    if ( state.backtracking==0 ) stream_DOT.add(DOT88);
 
 
-            	    pushFollow(FOLLOW_primary_in_postfix986);
+            	    pushFollow(FOLLOW_primary_in_postfix982);
             	    p=primary();
 
             	    state._fsp--;
@@ -3637,7 +3624,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_primary.add(p.getTree());
 
             	    // AST REWRITE
-            	    // elements: postfix, p
+            	    // elements: p, postfix
             	    // token labels: 
             	    // rule labels: retval, p
             	    // token list labels: 
@@ -3674,57 +3661,9 @@ public TreeAdaptor getTreeAdaptor() {
 
             	    }
             	    break;
-            	case 4 :
-            	    // Atto.g:169:6: p= primary
-            	    {
-            	    pushFollow(FOLLOW_primary_in_postfix1012);
-            	    p=primary();
-
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_primary.add(p.getTree());
-
-            	    // AST REWRITE
-            	    // elements: p, postfix
-            	    // token labels: 
-            	    // rule labels: retval, p
-            	    // token list labels: 
-            	    // rule list labels: 
-            	    // wildcard labels: 
-            	    if ( state.backtracking==0 ) {
-
-            	    retval.tree = root_0;
-            	    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
-            	    RewriteRuleSubtreeStream stream_p=new RewriteRuleSubtreeStream(adaptor,"rule p",p!=null?p.tree:null);
-
-            	    root_0 = (AttoTree)adaptor.nil();
-            	    // 170:5: -> ^( CALL $postfix $p)
-            	    {
-            	        // Atto.g:170:8: ^( CALL $postfix $p)
-            	        {
-            	        AttoTree root_1 = (AttoTree)adaptor.nil();
-            	        root_1 = (AttoTree)adaptor.becomeRoot(
-            	        (AttoTree)adaptor.create(CALL, "CALL")
-            	        , root_1);
-
-            	        adaptor.addChild(root_1, stream_retval.nextTree());
-
-            	        adaptor.addChild(root_1, stream_p.nextTree());
-
-            	        adaptor.addChild(root_0, root_1);
-            	        }
-
-            	    }
-
-
-            	    retval.tree = root_0;
-            	    }
-
-            	    }
-            	    break;
 
             	default :
-            	    break loop27;
+            	    break loop29;
                 }
             } while (true);
 
@@ -3762,7 +3701,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "primary"
-    // Atto.g:174:1: primary : ( NAME | AT ^ NAME | INT | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array );
+    // Atto.g:172:1: primary : ( NAME | AT ^ NAME | INT | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array );
     public final AttoParser.primary_return primary() throws RecognitionException {
         AttoParser.primary_return retval = new AttoParser.primary_return();
         retval.start = input.LT(1);
@@ -3770,213 +3709,213 @@ public TreeAdaptor getTreeAdaptor() {
 
         AttoTree root_0 = null;
 
-        Token NAME90=null;
-        Token AT91=null;
-        Token NAME92=null;
-        Token INT93=null;
-        Token STRING94=null;
-        Token BOOL95=null;
-        Token NULL96=null;
-        Token LPAREN97=null;
-        Token RPAREN99=null;
-        AttoParser.expr_return expr98 =null;
+        Token NAME89=null;
+        Token AT90=null;
+        Token NAME91=null;
+        Token INT92=null;
+        Token STRING93=null;
+        Token BOOL94=null;
+        Token NULL95=null;
+        Token LPAREN96=null;
+        Token RPAREN98=null;
+        AttoParser.expr_return expr97 =null;
 
-        AttoParser.obj_return obj100 =null;
+        AttoParser.obj_return obj99 =null;
 
-        AttoParser.array_return array101 =null;
+        AttoParser.array_return array100 =null;
 
 
-        AttoTree NAME90_tree=null;
-        AttoTree AT91_tree=null;
-        AttoTree NAME92_tree=null;
-        AttoTree INT93_tree=null;
-        AttoTree STRING94_tree=null;
-        AttoTree BOOL95_tree=null;
-        AttoTree NULL96_tree=null;
-        AttoTree LPAREN97_tree=null;
-        AttoTree RPAREN99_tree=null;
+        AttoTree NAME89_tree=null;
+        AttoTree AT90_tree=null;
+        AttoTree NAME91_tree=null;
+        AttoTree INT92_tree=null;
+        AttoTree STRING93_tree=null;
+        AttoTree BOOL94_tree=null;
+        AttoTree NULL95_tree=null;
+        AttoTree LPAREN96_tree=null;
+        AttoTree RPAREN98_tree=null;
         RewriteRuleTokenStream stream_RPAREN=new RewriteRuleTokenStream(adaptor,"token RPAREN");
         RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // Atto.g:175:2: ( NAME | AT ^ NAME | INT | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array )
-            int alt28=9;
+            // Atto.g:173:2: ( NAME | AT ^ NAME | INT | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array )
+            int alt30=9;
             switch ( input.LA(1) ) {
             case NAME:
                 {
-                alt28=1;
+                alt30=1;
                 }
                 break;
             case AT:
                 {
-                alt28=2;
+                alt30=2;
                 }
                 break;
             case INT:
                 {
-                alt28=3;
+                alt30=3;
                 }
                 break;
             case STRING:
                 {
-                alt28=4;
+                alt30=4;
                 }
                 break;
             case BOOL:
                 {
-                alt28=5;
+                alt30=5;
                 }
                 break;
             case NULL:
                 {
-                alt28=6;
+                alt30=6;
                 }
                 break;
             case LPAREN:
                 {
-                alt28=7;
+                alt30=7;
                 }
                 break;
             case LCURLY:
                 {
-                alt28=8;
+                alt30=8;
                 }
                 break;
             case LBRACK:
                 {
-                alt28=9;
+                alt30=9;
                 }
                 break;
             default:
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 NoViableAltException nvae =
-                    new NoViableAltException("", 28, 0, input);
+                    new NoViableAltException("", 30, 0, input);
 
                 throw nvae;
 
             }
 
-            switch (alt28) {
+            switch (alt30) {
                 case 1 :
-                    // Atto.g:175:4: NAME
+                    // Atto.g:173:4: NAME
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    NAME90=(Token)match(input,NAME,FOLLOW_NAME_in_primary1046); if (state.failed) return retval;
+                    NAME89=(Token)match(input,NAME,FOLLOW_NAME_in_primary1017); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    NAME90_tree = 
-                    (AttoTree)adaptor.create(NAME90)
+                    NAME89_tree = 
+                    (AttoTree)adaptor.create(NAME89)
                     ;
-                    adaptor.addChild(root_0, NAME90_tree);
+                    adaptor.addChild(root_0, NAME89_tree);
                     }
 
                     }
                     break;
                 case 2 :
-                    // Atto.g:176:4: AT ^ NAME
+                    // Atto.g:174:4: AT ^ NAME
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    AT91=(Token)match(input,AT,FOLLOW_AT_in_primary1051); if (state.failed) return retval;
+                    AT90=(Token)match(input,AT,FOLLOW_AT_in_primary1022); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    AT91_tree = 
-                    (AttoTree)adaptor.create(AT91)
+                    AT90_tree = 
+                    (AttoTree)adaptor.create(AT90)
                     ;
-                    root_0 = (AttoTree)adaptor.becomeRoot(AT91_tree, root_0);
+                    root_0 = (AttoTree)adaptor.becomeRoot(AT90_tree, root_0);
                     }
 
-                    NAME92=(Token)match(input,NAME,FOLLOW_NAME_in_primary1054); if (state.failed) return retval;
+                    NAME91=(Token)match(input,NAME,FOLLOW_NAME_in_primary1025); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    NAME92_tree = 
-                    (AttoTree)adaptor.create(NAME92)
+                    NAME91_tree = 
+                    (AttoTree)adaptor.create(NAME91)
                     ;
-                    adaptor.addChild(root_0, NAME92_tree);
+                    adaptor.addChild(root_0, NAME91_tree);
                     }
 
                     }
                     break;
                 case 3 :
-                    // Atto.g:177:4: INT
+                    // Atto.g:175:4: INT
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    INT93=(Token)match(input,INT,FOLLOW_INT_in_primary1060); if (state.failed) return retval;
+                    INT92=(Token)match(input,INT,FOLLOW_INT_in_primary1031); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    INT93_tree = 
-                    (AttoTree)adaptor.create(INT93)
+                    INT92_tree = 
+                    (AttoTree)adaptor.create(INT92)
                     ;
-                    adaptor.addChild(root_0, INT93_tree);
+                    adaptor.addChild(root_0, INT92_tree);
                     }
 
                     }
                     break;
                 case 4 :
-                    // Atto.g:178:4: STRING
+                    // Atto.g:176:4: STRING
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    STRING94=(Token)match(input,STRING,FOLLOW_STRING_in_primary1065); if (state.failed) return retval;
+                    STRING93=(Token)match(input,STRING,FOLLOW_STRING_in_primary1036); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    STRING94_tree = 
-                    (AttoTree)adaptor.create(STRING94)
+                    STRING93_tree = 
+                    (AttoTree)adaptor.create(STRING93)
                     ;
-                    adaptor.addChild(root_0, STRING94_tree);
+                    adaptor.addChild(root_0, STRING93_tree);
                     }
 
                     }
                     break;
                 case 5 :
-                    // Atto.g:179:4: BOOL
+                    // Atto.g:177:4: BOOL
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    BOOL95=(Token)match(input,BOOL,FOLLOW_BOOL_in_primary1070); if (state.failed) return retval;
+                    BOOL94=(Token)match(input,BOOL,FOLLOW_BOOL_in_primary1041); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    BOOL95_tree = 
-                    (AttoTree)adaptor.create(BOOL95)
+                    BOOL94_tree = 
+                    (AttoTree)adaptor.create(BOOL94)
                     ;
-                    adaptor.addChild(root_0, BOOL95_tree);
+                    adaptor.addChild(root_0, BOOL94_tree);
                     }
 
                     }
                     break;
                 case 6 :
-                    // Atto.g:180:4: NULL
+                    // Atto.g:178:4: NULL
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    NULL96=(Token)match(input,NULL,FOLLOW_NULL_in_primary1075); if (state.failed) return retval;
+                    NULL95=(Token)match(input,NULL,FOLLOW_NULL_in_primary1046); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    NULL96_tree = 
-                    (AttoTree)adaptor.create(NULL96)
+                    NULL95_tree = 
+                    (AttoTree)adaptor.create(NULL95)
                     ;
-                    adaptor.addChild(root_0, NULL96_tree);
+                    adaptor.addChild(root_0, NULL95_tree);
                     }
 
                     }
                     break;
                 case 7 :
-                    // Atto.g:181:4: LPAREN expr RPAREN
+                    // Atto.g:179:4: LPAREN expr RPAREN
                     {
-                    LPAREN97=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_primary1080); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN97);
+                    LPAREN96=(Token)match(input,LPAREN,FOLLOW_LPAREN_in_primary1051); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_LPAREN.add(LPAREN96);
 
 
-                    pushFollow(FOLLOW_expr_in_primary1082);
-                    expr98=expr();
+                    pushFollow(FOLLOW_expr_in_primary1053);
+                    expr97=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr98.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr97.getTree());
 
-                    RPAREN99=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_primary1084); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN99);
+                    RPAREN98=(Token)match(input,RPAREN,FOLLOW_RPAREN_in_primary1055); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_RPAREN.add(RPAREN98);
 
 
                     // AST REWRITE
@@ -3992,7 +3931,7 @@ public TreeAdaptor getTreeAdaptor() {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (AttoTree)adaptor.nil();
-                    // 181:23: -> expr
+                    // 179:23: -> expr
                     {
                         adaptor.addChild(root_0, stream_expr.nextTree());
 
@@ -4005,32 +3944,32 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 8 :
-                    // Atto.g:182:4: obj
+                    // Atto.g:180:4: obj
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_obj_in_primary1093);
-                    obj100=obj();
+                    pushFollow(FOLLOW_obj_in_primary1064);
+                    obj99=obj();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, obj100.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, obj99.getTree());
 
                     }
                     break;
                 case 9 :
-                    // Atto.g:183:4: array
+                    // Atto.g:181:4: array
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    pushFollow(FOLLOW_array_in_primary1098);
-                    array101=array();
+                    pushFollow(FOLLOW_array_in_primary1069);
+                    array100=array();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, array101.getTree());
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, array100.getTree());
 
                     }
                     break;
@@ -4067,7 +4006,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "obj"
-    // Atto.g:186:1: obj : LCURLY ( pair ( COMMA pair )* )? ( COMMA )? RCURLY -> ^( OBJ ( pair )* ) ;
+    // Atto.g:184:1: obj : LCURLY ( pair ( ( COMMA )? pair )* )? ( COMMA )? RCURLY -> ^( OBJ ( pair )* ) ;
     public final AttoParser.obj_return obj() throws RecognitionException {
         AttoParser.obj_return retval = new AttoParser.obj_return();
         retval.start = input.LT(1);
@@ -4075,86 +4014,106 @@ public TreeAdaptor getTreeAdaptor() {
 
         AttoTree root_0 = null;
 
-        Token LCURLY102=null;
-        Token COMMA104=null;
-        Token COMMA106=null;
-        Token RCURLY107=null;
-        AttoParser.pair_return pair103 =null;
+        Token LCURLY101=null;
+        Token COMMA103=null;
+        Token COMMA105=null;
+        Token RCURLY106=null;
+        AttoParser.pair_return pair102 =null;
 
-        AttoParser.pair_return pair105 =null;
+        AttoParser.pair_return pair104 =null;
 
 
-        AttoTree LCURLY102_tree=null;
-        AttoTree COMMA104_tree=null;
-        AttoTree COMMA106_tree=null;
-        AttoTree RCURLY107_tree=null;
+        AttoTree LCURLY101_tree=null;
+        AttoTree COMMA103_tree=null;
+        AttoTree COMMA105_tree=null;
+        AttoTree RCURLY106_tree=null;
         RewriteRuleTokenStream stream_LCURLY=new RewriteRuleTokenStream(adaptor,"token LCURLY");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleTokenStream stream_RCURLY=new RewriteRuleTokenStream(adaptor,"token RCURLY");
         RewriteRuleSubtreeStream stream_pair=new RewriteRuleSubtreeStream(adaptor,"rule pair");
         try {
-            // Atto.g:187:2: ( LCURLY ( pair ( COMMA pair )* )? ( COMMA )? RCURLY -> ^( OBJ ( pair )* ) )
-            // Atto.g:187:4: LCURLY ( pair ( COMMA pair )* )? ( COMMA )? RCURLY
+            // Atto.g:185:2: ( LCURLY ( pair ( ( COMMA )? pair )* )? ( COMMA )? RCURLY -> ^( OBJ ( pair )* ) )
+            // Atto.g:185:4: LCURLY ( pair ( ( COMMA )? pair )* )? ( COMMA )? RCURLY
             {
-            LCURLY102=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_obj1111); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_LCURLY.add(LCURLY102);
+            LCURLY101=(Token)match(input,LCURLY,FOLLOW_LCURLY_in_obj1082); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_LCURLY.add(LCURLY101);
 
 
-            // Atto.g:187:11: ( pair ( COMMA pair )* )?
-            int alt30=2;
-            int LA30_0 = input.LA(1);
+            // Atto.g:185:11: ( pair ( ( COMMA )? pair )* )?
+            int alt33=2;
+            int LA33_0 = input.LA(1);
 
-            if ( (LA30_0==NAME) ) {
-                alt30=1;
+            if ( (LA33_0==NAME) ) {
+                alt33=1;
             }
-            switch (alt30) {
+            switch (alt33) {
                 case 1 :
-                    // Atto.g:187:12: pair ( COMMA pair )*
+                    // Atto.g:185:12: pair ( ( COMMA )? pair )*
                     {
-                    pushFollow(FOLLOW_pair_in_obj1114);
-                    pair103=pair();
+                    pushFollow(FOLLOW_pair_in_obj1085);
+                    pair102=pair();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_pair.add(pair103.getTree());
+                    if ( state.backtracking==0 ) stream_pair.add(pair102.getTree());
 
-                    // Atto.g:187:17: ( COMMA pair )*
-                    loop29:
+                    // Atto.g:185:17: ( ( COMMA )? pair )*
+                    loop32:
                     do {
-                        int alt29=2;
-                        int LA29_0 = input.LA(1);
+                        int alt32=2;
+                        int LA32_0 = input.LA(1);
 
-                        if ( (LA29_0==COMMA) ) {
-                            int LA29_1 = input.LA(2);
+                        if ( (LA32_0==COMMA) ) {
+                            int LA32_1 = input.LA(2);
 
-                            if ( (LA29_1==NAME) ) {
-                                alt29=1;
+                            if ( (LA32_1==NAME) ) {
+                                alt32=1;
                             }
 
 
                         }
+                        else if ( (LA32_0==NAME) ) {
+                            alt32=1;
+                        }
 
 
-                        switch (alt29) {
+                        switch (alt32) {
                     	case 1 :
-                    	    // Atto.g:187:18: COMMA pair
+                    	    // Atto.g:185:18: ( COMMA )? pair
                     	    {
-                    	    COMMA104=(Token)match(input,COMMA,FOLLOW_COMMA_in_obj1117); if (state.failed) return retval; 
-                    	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA104);
+                    	    // Atto.g:185:18: ( COMMA )?
+                    	    int alt31=2;
+                    	    int LA31_0 = input.LA(1);
+
+                    	    if ( (LA31_0==COMMA) ) {
+                    	        alt31=1;
+                    	    }
+                    	    switch (alt31) {
+                    	        case 1 :
+                    	            // Atto.g:185:18: COMMA
+                    	            {
+                    	            COMMA103=(Token)match(input,COMMA,FOLLOW_COMMA_in_obj1088); if (state.failed) return retval; 
+                    	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA103);
 
 
-                    	    pushFollow(FOLLOW_pair_in_obj1119);
-                    	    pair105=pair();
+                    	            }
+                    	            break;
+
+                    	    }
+
+
+                    	    pushFollow(FOLLOW_pair_in_obj1091);
+                    	    pair104=pair();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
-                    	    if ( state.backtracking==0 ) stream_pair.add(pair105.getTree());
+                    	    if ( state.backtracking==0 ) stream_pair.add(pair104.getTree());
 
                     	    }
                     	    break;
 
                     	default :
-                    	    break loop29;
+                    	    break loop32;
                         }
                     } while (true);
 
@@ -4165,19 +4124,19 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // Atto.g:187:33: ( COMMA )?
-            int alt31=2;
-            int LA31_0 = input.LA(1);
+            // Atto.g:185:34: ( COMMA )?
+            int alt34=2;
+            int LA34_0 = input.LA(1);
 
-            if ( (LA31_0==COMMA) ) {
-                alt31=1;
+            if ( (LA34_0==COMMA) ) {
+                alt34=1;
             }
-            switch (alt31) {
+            switch (alt34) {
                 case 1 :
-                    // Atto.g:187:33: COMMA
+                    // Atto.g:185:34: COMMA
                     {
-                    COMMA106=(Token)match(input,COMMA,FOLLOW_COMMA_in_obj1125); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_COMMA.add(COMMA106);
+                    COMMA105=(Token)match(input,COMMA,FOLLOW_COMMA_in_obj1097); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_COMMA.add(COMMA105);
 
 
                     }
@@ -4186,8 +4145,8 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            RCURLY107=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_obj1128); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_RCURLY.add(RCURLY107);
+            RCURLY106=(Token)match(input,RCURLY,FOLLOW_RCURLY_in_obj1100); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_RCURLY.add(RCURLY106);
 
 
             // AST REWRITE
@@ -4203,16 +4162,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (AttoTree)adaptor.nil();
-            // 187:47: -> ^( OBJ ( pair )* )
+            // 185:48: -> ^( OBJ ( pair )* )
             {
-                // Atto.g:187:50: ^( OBJ ( pair )* )
+                // Atto.g:185:51: ^( OBJ ( pair )* )
                 {
                 AttoTree root_1 = (AttoTree)adaptor.nil();
                 root_1 = (AttoTree)adaptor.becomeRoot(
                 (AttoTree)adaptor.create(OBJ, "OBJ")
                 , root_1);
 
-                // Atto.g:187:56: ( pair )*
+                // Atto.g:185:57: ( pair )*
                 while ( stream_pair.hasNext() ) {
                     adaptor.addChild(root_1, stream_pair.nextTree());
 
@@ -4261,7 +4220,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "pair"
-    // Atto.g:190:1: pair : NAME COLON ^ expr ;
+    // Atto.g:188:1: pair : NAME COLON ^ expr ;
     public final AttoParser.pair_return pair() throws RecognitionException {
         AttoParser.pair_return retval = new AttoParser.pair_return();
         retval.start = input.LT(1);
@@ -4269,43 +4228,43 @@ public TreeAdaptor getTreeAdaptor() {
 
         AttoTree root_0 = null;
 
-        Token NAME108=null;
-        Token COLON109=null;
-        AttoParser.expr_return expr110 =null;
+        Token NAME107=null;
+        Token COLON108=null;
+        AttoParser.expr_return expr109 =null;
 
 
-        AttoTree NAME108_tree=null;
-        AttoTree COLON109_tree=null;
+        AttoTree NAME107_tree=null;
+        AttoTree COLON108_tree=null;
 
         try {
-            // Atto.g:191:2: ( NAME COLON ^ expr )
-            // Atto.g:191:4: NAME COLON ^ expr
+            // Atto.g:189:2: ( NAME COLON ^ expr )
+            // Atto.g:189:4: NAME COLON ^ expr
             {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            NAME108=(Token)match(input,NAME,FOLLOW_NAME_in_pair1148); if (state.failed) return retval;
+            NAME107=(Token)match(input,NAME,FOLLOW_NAME_in_pair1120); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            NAME108_tree = 
-            (AttoTree)adaptor.create(NAME108)
+            NAME107_tree = 
+            (AttoTree)adaptor.create(NAME107)
             ;
-            adaptor.addChild(root_0, NAME108_tree);
+            adaptor.addChild(root_0, NAME107_tree);
             }
 
-            COLON109=(Token)match(input,COLON,FOLLOW_COLON_in_pair1150); if (state.failed) return retval;
+            COLON108=(Token)match(input,COLON,FOLLOW_COLON_in_pair1122); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            COLON109_tree = 
-            (AttoTree)adaptor.create(COLON109)
+            COLON108_tree = 
+            (AttoTree)adaptor.create(COLON108)
             ;
-            root_0 = (AttoTree)adaptor.becomeRoot(COLON109_tree, root_0);
+            root_0 = (AttoTree)adaptor.becomeRoot(COLON108_tree, root_0);
             }
 
-            pushFollow(FOLLOW_expr_in_pair1153);
-            expr110=expr();
+            pushFollow(FOLLOW_expr_in_pair1125);
+            expr109=expr();
 
             state._fsp--;
             if (state.failed) return retval;
-            if ( state.backtracking==0 ) adaptor.addChild(root_0, expr110.getTree());
+            if ( state.backtracking==0 ) adaptor.addChild(root_0, expr109.getTree());
 
             }
 
@@ -4340,7 +4299,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "array"
-    // Atto.g:194:1: array : LBRACK ( expr ( COMMA expr )* )? ( COMMA )? RBRACK -> ^( ARRAY ( expr )* ) ;
+    // Atto.g:192:1: array : LBRACK ( expr ( ( COMMA )? expr )* )? ( COMMA )? RBRACK -> ^( ARRAY ( expr )* ) ;
     public final AttoParser.array_return array() throws RecognitionException {
         AttoParser.array_return retval = new AttoParser.array_return();
         retval.start = input.LT(1);
@@ -4348,86 +4307,106 @@ public TreeAdaptor getTreeAdaptor() {
 
         AttoTree root_0 = null;
 
-        Token LBRACK111=null;
-        Token COMMA113=null;
-        Token COMMA115=null;
-        Token RBRACK116=null;
-        AttoParser.expr_return expr112 =null;
+        Token LBRACK110=null;
+        Token COMMA112=null;
+        Token COMMA114=null;
+        Token RBRACK115=null;
+        AttoParser.expr_return expr111 =null;
 
-        AttoParser.expr_return expr114 =null;
+        AttoParser.expr_return expr113 =null;
 
 
-        AttoTree LBRACK111_tree=null;
-        AttoTree COMMA113_tree=null;
-        AttoTree COMMA115_tree=null;
-        AttoTree RBRACK116_tree=null;
+        AttoTree LBRACK110_tree=null;
+        AttoTree COMMA112_tree=null;
+        AttoTree COMMA114_tree=null;
+        AttoTree RBRACK115_tree=null;
         RewriteRuleTokenStream stream_RBRACK=new RewriteRuleTokenStream(adaptor,"token RBRACK");
         RewriteRuleTokenStream stream_LBRACK=new RewriteRuleTokenStream(adaptor,"token LBRACK");
         RewriteRuleTokenStream stream_COMMA=new RewriteRuleTokenStream(adaptor,"token COMMA");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // Atto.g:195:2: ( LBRACK ( expr ( COMMA expr )* )? ( COMMA )? RBRACK -> ^( ARRAY ( expr )* ) )
-            // Atto.g:195:4: LBRACK ( expr ( COMMA expr )* )? ( COMMA )? RBRACK
+            // Atto.g:193:2: ( LBRACK ( expr ( ( COMMA )? expr )* )? ( COMMA )? RBRACK -> ^( ARRAY ( expr )* ) )
+            // Atto.g:193:4: LBRACK ( expr ( ( COMMA )? expr )* )? ( COMMA )? RBRACK
             {
-            LBRACK111=(Token)match(input,LBRACK,FOLLOW_LBRACK_in_array1165); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_LBRACK.add(LBRACK111);
+            LBRACK110=(Token)match(input,LBRACK,FOLLOW_LBRACK_in_array1137); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_LBRACK.add(LBRACK110);
 
 
-            // Atto.g:195:11: ( expr ( COMMA expr )* )?
-            int alt33=2;
-            int LA33_0 = input.LA(1);
+            // Atto.g:193:11: ( expr ( ( COMMA )? expr )* )?
+            int alt37=2;
+            int LA37_0 = input.LA(1);
 
-            if ( (LA33_0==ARROW||LA33_0==AT||LA33_0==BOOL||LA33_0==IF||LA33_0==INT||(LA33_0 >= LBRACK && LA33_0 <= LCURLY)||LA33_0==LPAREN||LA33_0==MINUS||LA33_0==NAME||(LA33_0 >= NOT && LA33_0 <= NULL)||LA33_0==STRING||LA33_0==WHILE) ) {
-                alt33=1;
+            if ( (LA37_0==ARROW||LA37_0==AT||LA37_0==BOOL||LA37_0==IF||LA37_0==INT||(LA37_0 >= LBRACK && LA37_0 <= LCURLY)||LA37_0==LPAREN||LA37_0==MINUS||LA37_0==NAME||(LA37_0 >= NOT && LA37_0 <= NULL)||LA37_0==STRING||LA37_0==WHILE) ) {
+                alt37=1;
             }
-            switch (alt33) {
+            switch (alt37) {
                 case 1 :
-                    // Atto.g:195:12: expr ( COMMA expr )*
+                    // Atto.g:193:12: expr ( ( COMMA )? expr )*
                     {
-                    pushFollow(FOLLOW_expr_in_array1168);
-                    expr112=expr();
+                    pushFollow(FOLLOW_expr_in_array1140);
+                    expr111=expr();
 
                     state._fsp--;
                     if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_expr.add(expr112.getTree());
+                    if ( state.backtracking==0 ) stream_expr.add(expr111.getTree());
 
-                    // Atto.g:195:17: ( COMMA expr )*
-                    loop32:
+                    // Atto.g:193:17: ( ( COMMA )? expr )*
+                    loop36:
                     do {
-                        int alt32=2;
-                        int LA32_0 = input.LA(1);
+                        int alt36=2;
+                        int LA36_0 = input.LA(1);
 
-                        if ( (LA32_0==COMMA) ) {
-                            int LA32_1 = input.LA(2);
+                        if ( (LA36_0==COMMA) ) {
+                            int LA36_1 = input.LA(2);
 
-                            if ( (LA32_1==ARROW||LA32_1==AT||LA32_1==BOOL||LA32_1==IF||LA32_1==INT||(LA32_1 >= LBRACK && LA32_1 <= LCURLY)||LA32_1==LPAREN||LA32_1==MINUS||LA32_1==NAME||(LA32_1 >= NOT && LA32_1 <= NULL)||LA32_1==STRING||LA32_1==WHILE) ) {
-                                alt32=1;
+                            if ( (LA36_1==ARROW||LA36_1==AT||LA36_1==BOOL||LA36_1==IF||LA36_1==INT||(LA36_1 >= LBRACK && LA36_1 <= LCURLY)||LA36_1==LPAREN||LA36_1==MINUS||LA36_1==NAME||(LA36_1 >= NOT && LA36_1 <= NULL)||LA36_1==STRING||LA36_1==WHILE) ) {
+                                alt36=1;
                             }
 
 
                         }
+                        else if ( (LA36_0==ARROW||LA36_0==AT||LA36_0==BOOL||LA36_0==IF||LA36_0==INT||(LA36_0 >= LBRACK && LA36_0 <= LCURLY)||LA36_0==LPAREN||LA36_0==MINUS||LA36_0==NAME||(LA36_0 >= NOT && LA36_0 <= NULL)||LA36_0==STRING||LA36_0==WHILE) ) {
+                            alt36=1;
+                        }
 
 
-                        switch (alt32) {
+                        switch (alt36) {
                     	case 1 :
-                    	    // Atto.g:195:18: COMMA expr
+                    	    // Atto.g:193:18: ( COMMA )? expr
                     	    {
-                    	    COMMA113=(Token)match(input,COMMA,FOLLOW_COMMA_in_array1171); if (state.failed) return retval; 
-                    	    if ( state.backtracking==0 ) stream_COMMA.add(COMMA113);
+                    	    // Atto.g:193:18: ( COMMA )?
+                    	    int alt35=2;
+                    	    int LA35_0 = input.LA(1);
+
+                    	    if ( (LA35_0==COMMA) ) {
+                    	        alt35=1;
+                    	    }
+                    	    switch (alt35) {
+                    	        case 1 :
+                    	            // Atto.g:193:18: COMMA
+                    	            {
+                    	            COMMA112=(Token)match(input,COMMA,FOLLOW_COMMA_in_array1143); if (state.failed) return retval; 
+                    	            if ( state.backtracking==0 ) stream_COMMA.add(COMMA112);
 
 
-                    	    pushFollow(FOLLOW_expr_in_array1173);
-                    	    expr114=expr();
+                    	            }
+                    	            break;
+
+                    	    }
+
+
+                    	    pushFollow(FOLLOW_expr_in_array1146);
+                    	    expr113=expr();
 
                     	    state._fsp--;
                     	    if (state.failed) return retval;
-                    	    if ( state.backtracking==0 ) stream_expr.add(expr114.getTree());
+                    	    if ( state.backtracking==0 ) stream_expr.add(expr113.getTree());
 
                     	    }
                     	    break;
 
                     	default :
-                    	    break loop32;
+                    	    break loop36;
                         }
                     } while (true);
 
@@ -4438,19 +4417,19 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            // Atto.g:195:34: ( COMMA )?
-            int alt34=2;
-            int LA34_0 = input.LA(1);
+            // Atto.g:193:35: ( COMMA )?
+            int alt38=2;
+            int LA38_0 = input.LA(1);
 
-            if ( (LA34_0==COMMA) ) {
-                alt34=1;
+            if ( (LA38_0==COMMA) ) {
+                alt38=1;
             }
-            switch (alt34) {
+            switch (alt38) {
                 case 1 :
-                    // Atto.g:195:34: COMMA
+                    // Atto.g:193:35: COMMA
                     {
-                    COMMA115=(Token)match(input,COMMA,FOLLOW_COMMA_in_array1180); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_COMMA.add(COMMA115);
+                    COMMA114=(Token)match(input,COMMA,FOLLOW_COMMA_in_array1153); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_COMMA.add(COMMA114);
 
 
                     }
@@ -4459,8 +4438,8 @@ public TreeAdaptor getTreeAdaptor() {
             }
 
 
-            RBRACK116=(Token)match(input,RBRACK,FOLLOW_RBRACK_in_array1183); if (state.failed) return retval; 
-            if ( state.backtracking==0 ) stream_RBRACK.add(RBRACK116);
+            RBRACK115=(Token)match(input,RBRACK,FOLLOW_RBRACK_in_array1156); if (state.failed) return retval; 
+            if ( state.backtracking==0 ) stream_RBRACK.add(RBRACK115);
 
 
             // AST REWRITE
@@ -4476,16 +4455,16 @@ public TreeAdaptor getTreeAdaptor() {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (AttoTree)adaptor.nil();
-            // 195:48: -> ^( ARRAY ( expr )* )
+            // 193:49: -> ^( ARRAY ( expr )* )
             {
-                // Atto.g:195:51: ^( ARRAY ( expr )* )
+                // Atto.g:193:52: ^( ARRAY ( expr )* )
                 {
                 AttoTree root_1 = (AttoTree)adaptor.nil();
                 root_1 = (AttoTree)adaptor.becomeRoot(
                 (AttoTree)adaptor.create(ARRAY, "ARRAY")
                 , root_1);
 
-                // Atto.g:195:59: ( expr )*
+                // Atto.g:193:60: ( expr )*
                 while ( stream_expr.hasNext() ) {
                     adaptor.addChild(root_1, stream_expr.nextTree());
 
@@ -4534,7 +4513,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "vardef"
-    // Atto.g:198:1: vardef : NAME ;
+    // Atto.g:196:1: vardef : NAME ;
     public final AttoParser.vardef_return vardef() throws RecognitionException {
         AttoParser.vardef_return retval = new AttoParser.vardef_return();
         retval.start = input.LT(1);
@@ -4542,23 +4521,23 @@ public TreeAdaptor getTreeAdaptor() {
 
         AttoTree root_0 = null;
 
-        Token NAME117=null;
+        Token NAME116=null;
 
-        AttoTree NAME117_tree=null;
+        AttoTree NAME116_tree=null;
 
         try {
-            // Atto.g:199:2: ( NAME )
-            // Atto.g:199:4: NAME
+            // Atto.g:197:2: ( NAME )
+            // Atto.g:197:4: NAME
             {
             root_0 = (AttoTree)adaptor.nil();
 
 
-            NAME117=(Token)match(input,NAME,FOLLOW_NAME_in_vardef1203); if (state.failed) return retval;
+            NAME116=(Token)match(input,NAME,FOLLOW_NAME_in_vardef1176); if (state.failed) return retval;
             if ( state.backtracking==0 ) {
-            NAME117_tree = 
-            (AttoTree)adaptor.create(NAME117)
+            NAME116_tree = 
+            (AttoTree)adaptor.create(NAME116)
             ;
-            adaptor.addChild(root_0, NAME117_tree);
+            adaptor.addChild(root_0, NAME116_tree);
             }
 
             }
@@ -4686,96 +4665,94 @@ public TreeAdaptor getTreeAdaptor() {
     public static final BitSet FOLLOW_paramsdef_in_fun434 = new BitSet(new long[]{0x0000000000000040L});
     public static final BitSet FOLLOW_ARROW_in_fun436 = new BitSet(new long[]{0x4003A50D20000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_fun439 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef451 = new BitSet(new long[]{0x0000000000002002L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef451 = new BitSet(new long[]{0x0000200000002002L});
     public static final BitSet FOLLOW_COMMA_in_paramsdef454 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef456 = new BitSet(new long[]{0x0000000000002002L});
-    public static final BitSet FOLLOW_LPAREN_in_paramsdef474 = new BitSet(new long[]{0x0200200000000000L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef477 = new BitSet(new long[]{0x0200000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_paramsdef480 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef482 = new BitSet(new long[]{0x0200000000002000L});
-    public static final BitSet FOLLOW_RPAREN_in_paramsdef488 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_body509 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_block_in_body514 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IF_in_if_527 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_if_531 = new BitSet(new long[]{0x0000800000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_block_in_if_539 = new BitSet(new long[]{0x0000000000600002L});
-    public static final BitSet FOLLOW_elif_in_if_541 = new BitSet(new long[]{0x0000000000600002L});
-    public static final BitSet FOLLOW_else__in_if_544 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_if_574 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_if_578 = new BitSet(new long[]{0x0000000000400002L});
-    public static final BitSet FOLLOW_ELSE_in_if_581 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_if_585 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ELIF_in_elif629 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_elif631 = new BitSet(new long[]{0x0000800000000000L});
-    public static final BitSet FOLLOW_block_in_elif633 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ELSE_in_else_654 = new BitSet(new long[]{0x0000800000000000L});
-    public static final BitSet FOLLOW_block_in_else_656 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_WHILE_in_while_676 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_while_680 = new BitSet(new long[]{0x0000800000000000L,0x0000000000000008L});
-    public static final BitSet FOLLOW_block_in_while_688 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_67_in_while_706 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_while_710 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_in_or738 = new BitSet(new long[]{0x0008000000000002L});
-    public static final BitSet FOLLOW_OR_in_or741 = new BitSet(new long[]{0x4003250D00000500L});
-    public static final BitSet FOLLOW_and_in_or744 = new BitSet(new long[]{0x0008000000000002L});
-    public static final BitSet FOLLOW_rel_in_and757 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_AND_in_and760 = new BitSet(new long[]{0x4003250D00000500L});
-    public static final BitSet FOLLOW_rel_in_and763 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_add_in_rel776 = new BitSet(new long[]{0x002042100C808002L});
-    public static final BitSet FOLLOW_set_in_rel779 = new BitSet(new long[]{0x4003250D00000500L});
-    public static final BitSet FOLLOW_add_in_rel798 = new BitSet(new long[]{0x002042100C808002L});
-    public static final BitSet FOLLOW_mul_in_add811 = new BitSet(new long[]{0x0040040000000002L});
-    public static final BitSet FOLLOW_set_in_add814 = new BitSet(new long[]{0x4003250D00000500L});
-    public static final BitSet FOLLOW_mul_in_add821 = new BitSet(new long[]{0x0040040000000002L});
-    public static final BitSet FOLLOW_unary_in_mul834 = new BitSet(new long[]{0x0000180000080002L});
-    public static final BitSet FOLLOW_set_in_mul837 = new BitSet(new long[]{0x4003250D00000500L});
-    public static final BitSet FOLLOW_unary_in_mul846 = new BitSet(new long[]{0x0000180000080002L});
-    public static final BitSet FOLLOW_postfix_in_unary860 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NOT_in_unary865 = new BitSet(new long[]{0x4002210D00000500L});
-    public static final BitSet FOLLOW_postfix_in_unary868 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_unary873 = new BitSet(new long[]{0x4002210D00000500L});
-    public static final BitSet FOLLOW_postfix_in_unary875 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primary_in_postfix897 = new BitSet(new long[]{0x4002210D00100502L});
-    public static final BitSet FOLLOW_LPAREN_in_postfix910 = new BitSet(new long[]{0x4203250D20002540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_postfix913 = new BitSet(new long[]{0x0200000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_postfix916 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_postfix918 = new BitSet(new long[]{0x0200000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_postfix924 = new BitSet(new long[]{0x0200000000000000L});
-    public static final BitSet FOLLOW_RPAREN_in_postfix927 = new BitSet(new long[]{0x4002210D00100502L});
-    public static final BitSet FOLLOW_LBRACK_in_postfix955 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_postfix957 = new BitSet(new long[]{0x0080000000000000L});
-    public static final BitSet FOLLOW_RBRACK_in_postfix959 = new BitSet(new long[]{0x4002210D00100502L});
-    public static final BitSet FOLLOW_DOT_in_postfix982 = new BitSet(new long[]{0x4002210D00000500L});
-    public static final BitSet FOLLOW_primary_in_postfix986 = new BitSet(new long[]{0x4002210D00100502L});
-    public static final BitSet FOLLOW_primary_in_postfix1012 = new BitSet(new long[]{0x4002210D00100502L});
-    public static final BitSet FOLLOW_NAME_in_primary1046 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_AT_in_primary1051 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_NAME_in_primary1054 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_primary1060 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_primary1065 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_primary1070 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_primary1075 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LPAREN_in_primary1080 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_primary1082 = new BitSet(new long[]{0x0200000000000000L});
-    public static final BitSet FOLLOW_RPAREN_in_primary1084 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_obj_in_primary1093 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_array_in_primary1098 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LCURLY_in_obj1111 = new BitSet(new long[]{0x0100200000002000L});
-    public static final BitSet FOLLOW_pair_in_obj1114 = new BitSet(new long[]{0x0100000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_obj1117 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_pair_in_obj1119 = new BitSet(new long[]{0x0100000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_obj1125 = new BitSet(new long[]{0x0100000000000000L});
-    public static final BitSet FOLLOW_RCURLY_in_obj1128 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_pair1148 = new BitSet(new long[]{0x0000000000001000L});
-    public static final BitSet FOLLOW_COLON_in_pair1150 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_pair1153 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LBRACK_in_array1165 = new BitSet(new long[]{0x4083250D20002540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_array1168 = new BitSet(new long[]{0x0080000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_array1171 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
-    public static final BitSet FOLLOW_expr_in_array1173 = new BitSet(new long[]{0x0080000000002000L});
-    public static final BitSet FOLLOW_COMMA_in_array1180 = new BitSet(new long[]{0x0080000000000000L});
-    public static final BitSet FOLLOW_RBRACK_in_array1183 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_vardef1203 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef457 = new BitSet(new long[]{0x0000200000002002L});
+    public static final BitSet FOLLOW_LPAREN_in_paramsdef475 = new BitSet(new long[]{0x0200200000000000L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef478 = new BitSet(new long[]{0x0200200000002000L});
+    public static final BitSet FOLLOW_COMMA_in_paramsdef481 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef484 = new BitSet(new long[]{0x0200200000002000L});
+    public static final BitSet FOLLOW_RPAREN_in_paramsdef490 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_body511 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_block_in_body516 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_IF_in_if_529 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_if_533 = new BitSet(new long[]{0x0000800000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_block_in_if_541 = new BitSet(new long[]{0x0000000000600002L});
+    public static final BitSet FOLLOW_elif_in_if_543 = new BitSet(new long[]{0x0000000000600002L});
+    public static final BitSet FOLLOW_else__in_if_546 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_67_in_if_576 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_if_580 = new BitSet(new long[]{0x0000000000400002L});
+    public static final BitSet FOLLOW_ELSE_in_if_583 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_if_587 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ELIF_in_elif631 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_elif633 = new BitSet(new long[]{0x0000800000000000L});
+    public static final BitSet FOLLOW_block_in_elif635 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ELSE_in_else_656 = new BitSet(new long[]{0x0000800000000000L});
+    public static final BitSet FOLLOW_block_in_else_658 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_WHILE_in_while_678 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_while_682 = new BitSet(new long[]{0x0000800000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_block_in_while_690 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_67_in_while_708 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_while_712 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_in_or740 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_OR_in_or743 = new BitSet(new long[]{0x4003250D00000500L});
+    public static final BitSet FOLLOW_and_in_or746 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_rel_in_and759 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_AND_in_and762 = new BitSet(new long[]{0x4003250D00000500L});
+    public static final BitSet FOLLOW_rel_in_and765 = new BitSet(new long[]{0x0000000000000012L});
+    public static final BitSet FOLLOW_add_in_rel778 = new BitSet(new long[]{0x002042100C808002L});
+    public static final BitSet FOLLOW_set_in_rel781 = new BitSet(new long[]{0x4003250D00000500L});
+    public static final BitSet FOLLOW_add_in_rel800 = new BitSet(new long[]{0x002042100C808002L});
+    public static final BitSet FOLLOW_mul_in_add813 = new BitSet(new long[]{0x0040040000000002L});
+    public static final BitSet FOLLOW_set_in_add816 = new BitSet(new long[]{0x4003250D00000500L});
+    public static final BitSet FOLLOW_mul_in_add823 = new BitSet(new long[]{0x0040040000000002L});
+    public static final BitSet FOLLOW_unary_in_mul836 = new BitSet(new long[]{0x0000180000080002L});
+    public static final BitSet FOLLOW_set_in_mul839 = new BitSet(new long[]{0x4003250D00000500L});
+    public static final BitSet FOLLOW_unary_in_mul848 = new BitSet(new long[]{0x0000180000080002L});
+    public static final BitSet FOLLOW_postfix_in_unary862 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NOT_in_unary867 = new BitSet(new long[]{0x4002210D00000500L});
+    public static final BitSet FOLLOW_postfix_in_unary870 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_unary875 = new BitSet(new long[]{0x4002210D00000500L});
+    public static final BitSet FOLLOW_postfix_in_unary877 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primary_in_postfix899 = new BitSet(new long[]{0x0000010400100002L});
+    public static final BitSet FOLLOW_LPAREN_in_postfix912 = new BitSet(new long[]{0x4203250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_postfix915 = new BitSet(new long[]{0x4203250D20002540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_postfix918 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_postfix921 = new BitSet(new long[]{0x4203250D20002540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_RPAREN_in_postfix927 = new BitSet(new long[]{0x0000010400100002L});
+    public static final BitSet FOLLOW_LBRACK_in_postfix951 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_postfix953 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_RBRACK_in_postfix955 = new BitSet(new long[]{0x0000010400100002L});
+    public static final BitSet FOLLOW_DOT_in_postfix978 = new BitSet(new long[]{0x4002210D00000500L});
+    public static final BitSet FOLLOW_primary_in_postfix982 = new BitSet(new long[]{0x0000010400100002L});
+    public static final BitSet FOLLOW_NAME_in_primary1017 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_AT_in_primary1022 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_NAME_in_primary1025 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_primary1031 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_primary1036 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_primary1041 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_primary1046 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LPAREN_in_primary1051 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_primary1053 = new BitSet(new long[]{0x0200000000000000L});
+    public static final BitSet FOLLOW_RPAREN_in_primary1055 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_obj_in_primary1064 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_array_in_primary1069 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LCURLY_in_obj1082 = new BitSet(new long[]{0x0100200000002000L});
+    public static final BitSet FOLLOW_pair_in_obj1085 = new BitSet(new long[]{0x0100200000002000L});
+    public static final BitSet FOLLOW_COMMA_in_obj1088 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_pair_in_obj1091 = new BitSet(new long[]{0x0100200000002000L});
+    public static final BitSet FOLLOW_COMMA_in_obj1097 = new BitSet(new long[]{0x0100000000000000L});
+    public static final BitSet FOLLOW_RCURLY_in_obj1100 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_pair1120 = new BitSet(new long[]{0x0000000000001000L});
+    public static final BitSet FOLLOW_COLON_in_pair1122 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_pair1125 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LBRACK_in_array1137 = new BitSet(new long[]{0x4083250D20002540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_array1140 = new BitSet(new long[]{0x4083250D20002540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_array1143 = new BitSet(new long[]{0x4003250D20000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_array1146 = new BitSet(new long[]{0x4083250D20002540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_array1153 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_RBRACK_in_array1156 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_vardef1176 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_assign_in_synpred1_Atto205 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_fun_in_synpred2_Atto215 = new BitSet(new long[]{0x0000000000000002L});
 

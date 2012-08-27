@@ -1,5 +1,5 @@
 i = 0
 while i < 10
-	print i
+	print i * 3
 	i = i + 1
 	if i < 5 then print(i + " is less than 5") else print("foo")

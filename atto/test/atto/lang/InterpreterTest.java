@@ -139,12 +139,6 @@ public class InterpreterTest extends TestCase {
         assertEquals(new Integer(3), i.run("(x,y->x+y)(1,2)\n").asObject());
     }
 
-    public void testCALL_like_Fsharp() throws Exception {
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(3), i.run("f=x,y->x+y\nf 1 2\n").asObject());
-        assertEquals(new Integer(3), i.run("(x,y->x+y) 1 2\n").asObject());
-    }
-
     public void testPRINT() throws Exception {
         StringWriter writer = new StringWriter();
         Interpreter i = new Interpreter();
