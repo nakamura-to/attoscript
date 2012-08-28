@@ -1,11 +1,8 @@
-person = {
-	name: 'test'
-	age: {{
-		get: -> @name + 'hoge'
-		set: x -> @name += x 
-	}}
-}
+person = 
+	test:'test'	
+	aabb: 
+		get: 'aaa'
+		set: '333'
+	ccc: 123
 
-x = person.age
-
-x |> print
+print(person)

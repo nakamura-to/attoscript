@@ -64,6 +64,12 @@ public class ScriptTest extends TestCase {
         assertEquals(new Integer(20), i.run(stream).asObject());
     }
 
+    public void testObjBlock() throws Exception {
+        InputStream stream = read("obj_block.atto");
+        Interpreter i = new Interpreter();
+        i.run(stream);
+    }
+
     public void testLineJoining() throws Exception {
         InputStream stream = read("line_joining.atto");
         Interpreter i = new Interpreter();

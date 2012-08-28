@@ -71,7 +71,11 @@ stmt
 	;
 
 block	 
-	: NEWLINE INDENT stmt* DEDENT -> ^(BLOCK stmt*)
+	: INDENT 
+	  ( stmt* -> ^(BLOCK stmt*)
+	  | pair NEWLINE? (COMMA? pair NEWLINE?)* -> ^(OBJ pair+)
+	  ) 
+	  DEDENT
 	;
 
 expr
@@ -104,13 +108,13 @@ paramsdef
 	;
 
 body	
-	: expr
-	| block
+	:  expr
+	|  NEWLINE block -> block
 	;
 	
 if_	
 	: 'if' cond_expr=expr 
-	  ( block elif* else_? 
+	  ( NEWLINE block elif* else_? 
 	  	-> ^(IF $cond_expr block elif* else_?)
 	  | 'then' then_expr=expr ('else' else_expr=expr)? 
 	  	-> ^(IF $cond_expr $then_expr ^(ELSE $else_expr)?)
@@ -118,16 +122,16 @@ if_
 	;
 
 elif	
-	: 'elif' expr block -> ^(ELIF expr block)
+	: 'elif' expr NEWLINE block -> ^(ELIF expr block)
 	;
 
 else_
-	: 'else' block -> ^(ELSE block)
+	: 'else' NEWLINE block -> ^(ELSE block)
 	;
 
 while_	
 	: 'while' cond_expr=expr 
-	  ( block -> ^(WHILE $cond_expr block)
+	  ( NEWLINE block -> ^(WHILE $cond_expr block)
 	  | 'then' then_expr=expr -> ^(WHILE $cond_expr $then_expr)
 	  )
 	;
@@ -187,7 +191,7 @@ obj
 	;
 
 pair
-	: NAME COLON^ expr
+	: NAME COLON^ body
 	;
 
 prop
