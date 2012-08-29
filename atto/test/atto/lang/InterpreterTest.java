@@ -341,7 +341,8 @@ public class InterpreterTest extends TestCase {
 
     public void testNULL() throws Exception {
         Interpreter i = new Interpreter();
-        assertTrue(i.run("null\n").isNull());
+        Object result = i.run("null\n");
+        assertEquals(i.runtime.nullObj, result);
     }
 
     public void testPARENTHESES() throws Exception {

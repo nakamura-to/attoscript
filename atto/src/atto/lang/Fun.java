@@ -2,12 +2,15 @@ package atto.lang;
 
 public abstract class Fun extends Obj {
 
+    protected Runtime runtime;
+
     protected Env env;
 
     protected String[] params;
 
     protected Fun(Runtime runtime, Env env, String[] params) {
         super(runtime, runtime.funProto);
+        this.runtime = runtime;
         this.env = env;
         this.params = params;
     }

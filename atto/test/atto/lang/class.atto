@@ -1,0 +1,11 @@
+class Parent
+	hello: -> 'hello ' + @name
+	
+class Child extends Parent
+	constructor: name ->
+		@name = name
+
+child = Child('hoge')
+
+assert(child.hello() == 'hello hoge', 'hello')
+

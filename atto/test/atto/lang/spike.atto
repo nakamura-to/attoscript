@@ -1,8 +1,3 @@
-person = 
-	test:'test'	
-	aabb: 
-		get: 'aaa'
-		set: '333'
-	ccc: 123
-
-print(person)
+x = (-> 2)
+x.y = 'a'
+print(x)

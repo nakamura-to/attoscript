@@ -111,10 +111,10 @@ public class ScriptTest extends TestCase {
         Interpreter i = new Interpreter();
         Obj result = i.run(stream);
         assertEquals(4, result.values.size());
-        assertEquals(new Integer(3), result.get("length").object);
-        assertEquals(new Integer(10), result.get("0").object);
-        assertEquals(new Integer(20), result.get("1").object);
-        assertEquals(new Integer(30), result.get("2").object);
+        assertEquals(new Integer(3), result.get("length").asObject());
+        assertEquals(new Integer(10), result.get("0").asObject());
+        assertEquals(new Integer(20), result.get("1").asObject());
+        assertEquals(new Integer(30), result.get("2").asObject());
     }
 
     public void testArrayFilter() throws Exception {
@@ -122,16 +122,22 @@ public class ScriptTest extends TestCase {
         Interpreter i = new Interpreter();
         Obj result = i.run(stream);
         assertEquals(4, result.values.size());
-        assertEquals(new Integer(3), result.get("length").object);
-        assertEquals(new Integer(2), result.get("0").object);
-        assertEquals(new Integer(4), result.get("1").object);
-        assertEquals(new Integer(6), result.get("2").object);
+        assertEquals(new Integer(3), result.get("length").asObject());
+        assertEquals(new Integer(2), result.get("0").asObject());
+        assertEquals(new Integer(4), result.get("1").asObject());
+        assertEquals(new Integer(6), result.get("2").asObject());
     }
 
     public void testAt() throws Exception {
         InputStream stream = read("at.atto");
         Interpreter i = new Interpreter();
-        assertEquals("hogefoo", i.run(stream).object);
+        assertEquals("hogefoo", i.run(stream).asObject());
+    }
+
+    public void testClass() throws Exception {
+        InputStream stream = read("class.atto");
+        Interpreter i = new Interpreter();
+        i.run(stream);
     }
 
     private InputStream read(String fileName) throws Exception {

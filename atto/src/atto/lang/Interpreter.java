@@ -73,6 +73,10 @@ public class Interpreter {
             return block(t);
         case STMT:
             return stmt(t);
+        case CLASS:
+            return class_(t);
+        case EXTENDS:
+            return extends_(t);
         case IF:
             return if_(t);
         case ELIF:
@@ -165,6 +169,26 @@ public class Interpreter {
         Assert.treeType(t, STMT);
         Assert.equals(1, t.getChildCount());
         return exec(t.getChild(0));
+    }
+
+    protected Object class_(AttoTree t) {
+        Assert.treeType(t, CLASS);
+        String className = t.getChild(0).getText();
+        Obj superclass = (Obj) exec(t.getChild(1));
+        Obj prototype = (Obj) exec(t.getChild(2));
+        prototype.__proto__ = superclass.get("prototype");
+        Obj clazz = runtime.newClass(className, prototype);
+        runtime.currentEnv.put(className, clazz);
+        return clazz;
+    }
+
+    protected Object extends_(AttoTree t) {
+        Assert.treeType(t, EXTENDS);
+        if (t.getChildCount() > 0) {
+            String constructor = t.getChild(0).getText();
+            return runtime.currentEnv.get(constructor);
+        }
+        return runtime.objClass;
     }
 
     protected Object if_(AttoTree t) {
@@ -327,6 +351,9 @@ public class Interpreter {
             Fun getter = (Fun) result.get("get");
             return getter.call(obj, new Obj[] {});
         }
+        if (result == null) {
+            return runtime.nullObj;
+        }
         return result;
     }
 
@@ -460,7 +487,11 @@ public class Interpreter {
 
     protected Object bool(AttoTree t) {
         Assert.treeType(t, BOOL);
-        return runtime.newBool(Boolean.valueOf(t.getText()));
+        if (Boolean.valueOf(t.getText())) {
+            return runtime.trueObj;
+        } else {
+            return runtime.falseObj;
+        }
     }
 
     protected Object null_(AttoTree t) {

@@ -2,31 +2,21 @@ package atto.lang;
 
 import java.util.LinkedHashMap;
 
-import atto.lang.util.Assert;
-
 public class Obj {
 
-    protected LinkedHashMap<String, Obj> values = new LinkedHashMap<String, Obj>();
-
-    protected Obj __proto__;
-
-    protected Object object;
+    protected LinkedHashMap<String, Obj> values;
 
     protected Runtime runtime;
 
-    public Obj(Runtime runtime) {
-        this(runtime, null, null);
+    protected Obj __proto__;
+
+    protected Obj() {
     }
 
     public Obj(Runtime runtime, Obj __proto__) {
-        this(runtime, __proto__, null);
-    }
-
-    public Obj(Runtime runtime, Obj __proto__, Object object) {
-        Assert.notNull(runtime);
         this.runtime = runtime;
         this.__proto__ = __proto__;
-        this.object = object;
+        values = new LinkedHashMap<String, Obj>();
     }
 
     public void put(String name, Obj value) {
@@ -35,8 +25,8 @@ public class Obj {
 
     public Obj get(String name) {
         Obj value = values.get(name);
-        if (value != null) {
-            return value;
+        if (value instanceof Obj) {
+            return (Obj) value;
         }
         if (__proto__ == null) {
             return null;
@@ -60,14 +50,15 @@ public class Obj {
     }
 
     public String getString(String name) {
-        Obj obj = get("name");
+        Obj obj = get(name);
         if (obj == null) {
             throw new IllegalArgumentException("name=" + name);
         }
-        if (obj.object == null) {
-            throw new IllegalArgumentException("name=" + name);
+        Obj v = obj.get("__value__");
+        if (v instanceof Value) {
+            return (String) ((Value) v).value;
         }
-        return (String) obj.object;
+        throw new IllegalArgumentException("name=" + name);
     }
 
     public int getInt(String name) {
@@ -75,26 +66,43 @@ public class Obj {
         if (obj == null) {
             throw new IllegalArgumentException("name=" + name);
         }
-        if (obj.object == null) {
-            throw new IllegalArgumentException("name=" + name);
+        Obj v = obj.get("__value__");
+        if (v instanceof Value) {
+            return (Integer) ((Value) v).value;
         }
-        return (Integer) obj.object;
+        throw new IllegalArgumentException("name=" + name);
     }
 
     public Object asObject() {
-        return object;
+        Obj v = get("__value__");
+        if (v instanceof Value) {
+            return ((Value) v).value;
+        }
+        throw new RuntimeException();
     }
 
     public int asInt() {
-        return (Integer) object;
+        Obj v = get("__value__");
+        if (v instanceof Value) {
+            return (Integer) ((Value) v).value;
+        }
+        throw new RuntimeException();
     }
 
     public boolean asBoolean() {
-        return (Boolean) object;
+        Obj v = get("__value__");
+        if (v instanceof Value) {
+            return (Boolean) ((Value) v).value;
+        }
+        throw new RuntimeException();
     }
 
     public String asString() {
-        return (String) object;
+        Obj v = get("__value__");
+        if (v instanceof Value) {
+            return (String) ((Value) v).value;
+        }
+        throw new RuntimeException();
     }
 
     public boolean isPrototypeOf(Obj obj) {
@@ -106,10 +114,6 @@ public class Obj {
                 return true;
             }
         }
-        return false;
-    }
-
-    public boolean isNull() {
         return false;
     }
 

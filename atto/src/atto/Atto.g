@@ -42,6 +42,7 @@ tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND; PROP;
+	CLASS='class'; EXTENDS='extends';
 }
 
 @lexer::header {
@@ -67,7 +68,11 @@ root
 	;
 
 stmt	
-	: expr (NEWLINE)? -> ^(STMT expr)
+	: expr (NEWLINE)? 
+		-> ^(STMT expr)
+	| 'class' c=NAME ('extends' e=NAME)? NEWLINE 
+	  INDENT pair NEWLINE? (COMMA? pair NEWLINE?)* DEDENT 
+		-> ^(CLASS $c ^(EXTENDS $e?) ^(OBJ pair+)) 
 	;
 
 block	 
@@ -220,8 +225,7 @@ INT		: DIGIT+;
 STRING		: '"' ~('\\' | '"')* '"' | '\'' ~('\\' | '\'')* '\'' ;
 BOOL		: 'true' | 'false';
 NULL		: 'null';
-NAME		: (LOWER | '_') ID_CHAR*;
-CONSTANT	: UPPER ID_CHAR*;
+NAME		: ( UPPER | LOWER | '_') ID_CHAR*;
 
 SEMICOLON	: ';';
 COLON		: ':';

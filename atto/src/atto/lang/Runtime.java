@@ -20,11 +20,17 @@ public class Runtime {
     protected Obj arrayProto;
     protected Obj stringProto;
     protected Obj propProto;
-    protected Obj nullProto;
 
     protected Obj nullObj;
     protected Obj trueObj;
     protected Obj falseObj;
+
+    protected ClassFun objClass;
+    protected ClassFun boolClass;
+    protected ClassFun funClass;
+    protected ClassFun arrayClass;
+    protected ClassFun integerClass;
+    protected ClassFun stringClass;
 
     public Runtime(Interpreter interpreter, PrintWriter out) {
         this.interpreter = interpreter;
@@ -40,8 +46,20 @@ public class Runtime {
         boolProto = new Obj(this, objProto);
         integerProto = new Obj(this, objProto);
         stringProto = new Obj(this, objProto);
-        propProto = new Obj(this, objProto);
-        nullProto = new Obj(this, objProto);
+        propProto = new Obj(this, objProto); // TODO
+
+        objClass = new ClassFun(this, currentEnv, new String[] {}, "Object",
+                objProto);
+        funClass = new ClassFun(this, currentEnv, new String[] {}, "Function",
+                funProto);
+        arrayClass = new ClassFun(this, currentEnv, new String[] {}, "Array",
+                arrayProto);
+        boolClass = new ClassFun(this, currentEnv,
+                new String[] { "__value__" }, "Boolean", boolProto);
+        integerClass = new ClassFun(this, currentEnv,
+                new String[] { "__value__" }, "Integer", integerProto);
+        stringClass = new ClassFun(this, currentEnv, new String[] {}, "String",
+                stringProto);
 
         initObjProto();
         initFunProto();
@@ -50,11 +68,26 @@ public class Runtime {
         initIntegerProto();
         initStringProto();
         initPropProto();
-        initNullProto();
 
-        nullObj = new Null(this, nullProto);
-        trueObj = new Obj(this, boolProto, true);
-        falseObj = new Obj(this, boolProto, false);
+        nullObj = new Obj(this, objProto);
+        nullObj.addMethod("toString", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                return newString("null");
+            }
+        });
+        trueObj = new Obj(this, boolProto);
+        trueObj.put("__value__", new Value(true));
+        falseObj = new Obj(this, boolProto);
+        falseObj.put("__value__", new Value(false));
+
+        // built-in constructors
+        currentEnv.put(objClass.name, objClass);
+        currentEnv.put(funClass.name, funClass);
+        currentEnv.put(arrayClass.name, arrayClass);
+        currentEnv.put(boolClass.name, boolClass);
+        currentEnv.put(integerClass.name, integerClass);
+        currentEnv.put(stringClass.name, stringClass);
 
         // built-in function
         currentEnv.put("print", new BuiltinFun.PrintFun(this, out));
@@ -62,8 +95,6 @@ public class Runtime {
     }
 
     protected void initObjProto() {
-        objProto.put("__proto__", objProto);
-
         objProto.addMethod("==", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -99,10 +130,10 @@ public class Runtime {
                     Obj string = value.send("toString");
                     if (stringProto.isPrototypeOf(value)) {
                         buf.append("\"");
-                        buf.append(string.object);
+                        buf.append(string.get("__value__"));
                         buf.append("\"");
                     } else {
-                        buf.append(string.object);
+                        buf.append(string.get("__value__"));
                     }
                     buf.append(", ");
                 }
@@ -225,7 +256,7 @@ public class Runtime {
                 for (int i = 0; i < length; i++) {
                     Obj element = receiver.values.get(String.valueOf(i));
                     Obj string = element.send("toString");
-                    buf.append(string.object);
+                    buf.append(string.get("__value__"));
                     buf.append(", ");
                 }
                 if (length > 0) {
@@ -238,8 +269,6 @@ public class Runtime {
     }
 
     public void initFunProto() {
-        funProto.put("__proto__", funProto);
-
         funProto.addMethod("|>", new Method("arg") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -282,8 +311,6 @@ public class Runtime {
     }
 
     protected void initBoolProto() {
-        boolProto.put("__proto__", boolProto);
-
         boolProto.addMethod("!", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -320,13 +347,26 @@ public class Runtime {
         boolProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                return newString(receiver.object.toString());
+                return newString(receiver.get("__value__").toString());
             }
         });
     }
 
     protected void initIntegerProto() {
-        integerProto.put("__proto__", integerProto);
+        integerProto.addMethod("constructor", new Method("__value__") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj v = args[0].get("__value__");
+                if (v instanceof Value) {
+                    Object object = ((Value) v).value;
+                    if (object instanceof Integer) {
+                        receiver.put("__value__", v);
+                        return nullObj;
+                    }
+                }
+                throw new RuntimeException("not implemented");
+            }
+        });
 
         integerProto.addMethod("+", new Method("rhs") {
             @Override
@@ -463,19 +503,29 @@ public class Runtime {
         integerProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                return newString(receiver.object.toString());
+                return newString(receiver.get("__value__").toString());
             }
         });
     }
 
     protected void initStringProto() {
-        stringProto.put("__proto__", stringProto);
+        stringProto.addMethod("constructor", new Method("__value__") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj s = args[0].send("toString");
+                Obj value = s.get("__value__");
+                if (value instanceof Value) {
+                    receiver.put("__value__", value);
+                }
+                return nullObj;
+            }
+        });
 
         stringProto.addMethod("+", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 String lhs = receiver.asString();
-                if (!args[0].isNull()) {
+                if (args[0] != nullObj) {
                     String rhs = args[0].send("toString").asString();
                     return newString(lhs + rhs);
                 }
@@ -560,15 +610,6 @@ public class Runtime {
 
     }
 
-    protected void initNullProto() {
-        nullProto.addMethod("toString", new Method() {
-            @Override
-            public Obj call(Obj receiver, Obj[] args) {
-                return newString("null");
-            }
-        });
-    }
-
     public Obj newObj() {
         return new Obj(this, objProto);
     }
@@ -586,15 +627,17 @@ public class Runtime {
     }
 
     public Obj newString(String s) {
-        return new Obj(this, stringProto, s);
+        Value value = s == null ? new Value("") : new Value(s);
+        Obj obj = new Obj(this, stringProto);
+        obj.put("__value__", value);
+        return obj;
     }
 
     public Obj newInteger(Integer i) {
-        return new Obj(this, integerProto, i);
-    }
-
-    public Obj newBool(Boolean bool) {
-        return bool ? trueObj : falseObj;
+        Value value = i == null ? new Value(0) : new Value(i);
+        Obj obj = new Obj(this, integerProto);
+        obj.put("__value__", value);
+        return obj;
     }
 
     public Obj newProp(Obj value) {
@@ -608,6 +651,15 @@ public class Runtime {
             prop.put("set", setter);
         }
         return prop;
+    }
+
+    public Obj newClass(String name, Obj prototype) {
+        String[] params = new String[] {};
+        Obj constructor = prototype.get("constructor");
+        if (constructor instanceof Fun) {
+            params = ((Fun) constructor).params;
+        }
+        return new ClassFun(this, currentEnv, params, name, prototype);
     }
 
     public Obj exec(AttoTree tree) {
