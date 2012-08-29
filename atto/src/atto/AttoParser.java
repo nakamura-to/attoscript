@@ -1,4 +1,4 @@
-// $ANTLR 3.4 Atto.g 2012-08-29 21:33:42
+// $ANTLR 3.4 Atto.g 2012-08-29 21:51:40
 
 package atto;
 
@@ -16,11 +16,11 @@ import org.antlr.runtime.tree.*;
 @SuppressWarnings({"all", "warnings", "unchecked"})
 public class AttoParser extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "AND", "ARRAY", "ARROW", "ASSIGN", "AT", "BLOCK", "BOOL", "CALL", "CLASS", "COLON", "COMMA", "COMMENT", "COMPOSITE", "DEDENT", "DIGIT", "DIV", "DOT", "ELIF", "ELSE", "EQ", "EXTENDS", "FIELD_ACCESS", "FLOAT", "GE", "GT", "ID_CHAR", "IF", "INDENT", "INDEX", "INT", "INTEGER", "LBRACK", "LCURLY", "LE", "LEADING_WS", "LETTER", "LOWER", "LPAREN", "LT", "MINUS", "MOD", "MUL", "NAME", "NE", "NEWLINE", "NOT", "NULL", "OBJ", "OR", "PARAMS", "PIPELINE", "PLUS", "PROP", "RBRACK", "RCURLY", "RPAREN", "SEMICOLON", "SEND", "SPACE", "STMT", "STRING", "UNARY_MINUS", "UPPER", "WHILE", "WS", "'then'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "AND", "ARRAY", "ARROW", "ASSIGN", "AT", "BLOCK", "BOOL", "CALL", "CLASS", "COLON", "COMMA", "COMMENT", "COMPOSITE", "DEDENT", "DIGIT", "DIV", "DOT", "ELIF", "ELSE", "EQ", "EXTENDS", "FIELD_ACCESS", "GE", "GT", "ID_CHAR", "IF", "INDENT", "INDEX", "LBRACK", "LCURLY", "LE", "LEADING_WS", "LETTER", "LOWER", "LPAREN", "LT", "MINUS", "MOD", "MUL", "NAME", "NE", "NEWLINE", "NOT", "NULL", "NUMBER", "OBJ", "OR", "PARAMS", "PIPELINE", "PLUS", "PROP", "RBRACK", "RCURLY", "RPAREN", "SEMICOLON", "SEND", "SPACE", "STMT", "STRING", "UNARY_MINUS", "UPPER", "WHILE", "WS", "'then'"
     };
 
     public static final int EOF=-1;
-    public static final int T__69=69;
+    public static final int T__67=67;
     public static final int AND=4;
     public static final int ARRAY=5;
     public static final int ARROW=6;
@@ -43,49 +43,47 @@ public class AttoParser extends Parser {
     public static final int EQ=23;
     public static final int EXTENDS=24;
     public static final int FIELD_ACCESS=25;
-    public static final int FLOAT=26;
-    public static final int GE=27;
-    public static final int GT=28;
-    public static final int ID_CHAR=29;
-    public static final int IF=30;
-    public static final int INDENT=31;
-    public static final int INDEX=32;
-    public static final int INT=33;
-    public static final int INTEGER=34;
-    public static final int LBRACK=35;
-    public static final int LCURLY=36;
-    public static final int LE=37;
-    public static final int LEADING_WS=38;
-    public static final int LETTER=39;
-    public static final int LOWER=40;
-    public static final int LPAREN=41;
-    public static final int LT=42;
-    public static final int MINUS=43;
-    public static final int MOD=44;
-    public static final int MUL=45;
-    public static final int NAME=46;
-    public static final int NE=47;
-    public static final int NEWLINE=48;
-    public static final int NOT=49;
-    public static final int NULL=50;
-    public static final int OBJ=51;
-    public static final int OR=52;
-    public static final int PARAMS=53;
-    public static final int PIPELINE=54;
-    public static final int PLUS=55;
-    public static final int PROP=56;
-    public static final int RBRACK=57;
-    public static final int RCURLY=58;
-    public static final int RPAREN=59;
-    public static final int SEMICOLON=60;
-    public static final int SEND=61;
-    public static final int SPACE=62;
-    public static final int STMT=63;
-    public static final int STRING=64;
-    public static final int UNARY_MINUS=65;
-    public static final int UPPER=66;
-    public static final int WHILE=67;
-    public static final int WS=68;
+    public static final int GE=26;
+    public static final int GT=27;
+    public static final int ID_CHAR=28;
+    public static final int IF=29;
+    public static final int INDENT=30;
+    public static final int INDEX=31;
+    public static final int LBRACK=32;
+    public static final int LCURLY=33;
+    public static final int LE=34;
+    public static final int LEADING_WS=35;
+    public static final int LETTER=36;
+    public static final int LOWER=37;
+    public static final int LPAREN=38;
+    public static final int LT=39;
+    public static final int MINUS=40;
+    public static final int MOD=41;
+    public static final int MUL=42;
+    public static final int NAME=43;
+    public static final int NE=44;
+    public static final int NEWLINE=45;
+    public static final int NOT=46;
+    public static final int NULL=47;
+    public static final int NUMBER=48;
+    public static final int OBJ=49;
+    public static final int OR=50;
+    public static final int PARAMS=51;
+    public static final int PIPELINE=52;
+    public static final int PLUS=53;
+    public static final int PROP=54;
+    public static final int RBRACK=55;
+    public static final int RCURLY=56;
+    public static final int RPAREN=57;
+    public static final int SEMICOLON=58;
+    public static final int SEND=59;
+    public static final int SPACE=60;
+    public static final int STMT=61;
+    public static final int STRING=62;
+    public static final int UNARY_MINUS=63;
+    public static final int UPPER=64;
+    public static final int WHILE=65;
+    public static final int WS=66;
 
     // delegates
     public Parser[] getDelegates() {
@@ -143,7 +141,7 @@ public TreeAdaptor getTreeAdaptor() {
                 int alt1=2;
                 int LA1_0 = input.LA(1);
 
-                if ( (LA1_0==ARROW||LA1_0==AT||LA1_0==BOOL||LA1_0==CLASS||LA1_0==IF||LA1_0==INT||(LA1_0 >= LBRACK && LA1_0 <= LCURLY)||LA1_0==LPAREN||LA1_0==MINUS||LA1_0==NAME||(LA1_0 >= NOT && LA1_0 <= NULL)||LA1_0==STRING||LA1_0==WHILE) ) {
+                if ( (LA1_0==ARROW||LA1_0==AT||LA1_0==BOOL||LA1_0==CLASS||LA1_0==IF||(LA1_0 >= LBRACK && LA1_0 <= LCURLY)||LA1_0==LPAREN||LA1_0==MINUS||LA1_0==NAME||(LA1_0 >= NOT && LA1_0 <= NUMBER)||LA1_0==STRING||LA1_0==WHILE) ) {
                     alt1=1;
                 }
 
@@ -293,7 +291,7 @@ public TreeAdaptor getTreeAdaptor() {
             int alt9=2;
             int LA9_0 = input.LA(1);
 
-            if ( (LA9_0==ARROW||LA9_0==AT||LA9_0==BOOL||LA9_0==IF||LA9_0==INT||(LA9_0 >= LBRACK && LA9_0 <= LCURLY)||LA9_0==LPAREN||LA9_0==MINUS||LA9_0==NAME||(LA9_0 >= NOT && LA9_0 <= NULL)||LA9_0==STRING||LA9_0==WHILE) ) {
+            if ( (LA9_0==ARROW||LA9_0==AT||LA9_0==BOOL||LA9_0==IF||(LA9_0 >= LBRACK && LA9_0 <= LCURLY)||LA9_0==LPAREN||LA9_0==MINUS||LA9_0==NAME||(LA9_0 >= NOT && LA9_0 <= NUMBER)||LA9_0==STRING||LA9_0==WHILE) ) {
                 alt9=1;
             }
             else if ( (LA9_0==CLASS) ) {
@@ -545,7 +543,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: c, pair, e
+                    // elements: pair, e, c
                     // token labels: e, c
                     // rule labels: retval
                     // token list labels: 
@@ -699,7 +697,7 @@ public TreeAdaptor getTreeAdaptor() {
                 if ( (LA15_1==COLON) ) {
                     alt15=2;
                 }
-                else if ( (LA15_1==AND||(LA15_1 >= ARROW && LA15_1 <= AT)||LA15_1==BOOL||LA15_1==CLASS||LA15_1==COMMA||(LA15_1 >= COMPOSITE && LA15_1 <= DEDENT)||(LA15_1 >= DIV && LA15_1 <= DOT)||LA15_1==EQ||(LA15_1 >= GE && LA15_1 <= GT)||LA15_1==IF||LA15_1==INT||(LA15_1 >= LBRACK && LA15_1 <= LE)||(LA15_1 >= LPAREN && LA15_1 <= NULL)||LA15_1==OR||(LA15_1 >= PIPELINE && LA15_1 <= PLUS)||LA15_1==SEMICOLON||LA15_1==STRING||LA15_1==WHILE) ) {
+                else if ( (LA15_1==AND||(LA15_1 >= ARROW && LA15_1 <= AT)||LA15_1==BOOL||LA15_1==CLASS||LA15_1==COMMA||(LA15_1 >= COMPOSITE && LA15_1 <= DEDENT)||(LA15_1 >= DIV && LA15_1 <= DOT)||LA15_1==EQ||(LA15_1 >= GE && LA15_1 <= GT)||LA15_1==IF||(LA15_1 >= LBRACK && LA15_1 <= LE)||(LA15_1 >= LPAREN && LA15_1 <= NUMBER)||LA15_1==OR||(LA15_1 >= PIPELINE && LA15_1 <= PLUS)||LA15_1==SEMICOLON||LA15_1==STRING||LA15_1==WHILE) ) {
                     alt15=1;
                 }
                 else {
@@ -711,7 +709,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 }
             }
-            else if ( (LA15_0==ARROW||LA15_0==AT||LA15_0==BOOL||LA15_0==CLASS||LA15_0==DEDENT||LA15_0==IF||LA15_0==INT||(LA15_0 >= LBRACK && LA15_0 <= LCURLY)||LA15_0==LPAREN||LA15_0==MINUS||(LA15_0 >= NOT && LA15_0 <= NULL)||LA15_0==STRING||LA15_0==WHILE) ) {
+            else if ( (LA15_0==ARROW||LA15_0==AT||LA15_0==BOOL||LA15_0==CLASS||LA15_0==DEDENT||LA15_0==IF||(LA15_0 >= LBRACK && LA15_0 <= LCURLY)||LA15_0==LPAREN||LA15_0==MINUS||(LA15_0 >= NOT && LA15_0 <= NUMBER)||LA15_0==STRING||LA15_0==WHILE) ) {
                 alt15=1;
             }
             else {
@@ -732,7 +730,7 @@ public TreeAdaptor getTreeAdaptor() {
                         int alt10=2;
                         int LA10_0 = input.LA(1);
 
-                        if ( (LA10_0==ARROW||LA10_0==AT||LA10_0==BOOL||LA10_0==CLASS||LA10_0==IF||LA10_0==INT||(LA10_0 >= LBRACK && LA10_0 <= LCURLY)||LA10_0==LPAREN||LA10_0==MINUS||LA10_0==NAME||(LA10_0 >= NOT && LA10_0 <= NULL)||LA10_0==STRING||LA10_0==WHILE) ) {
+                        if ( (LA10_0==ARROW||LA10_0==AT||LA10_0==BOOL||LA10_0==CLASS||LA10_0==IF||(LA10_0 >= LBRACK && LA10_0 <= LCURLY)||LA10_0==LPAREN||LA10_0==MINUS||LA10_0==NAME||(LA10_0 >= NOT && LA10_0 <= NUMBER)||LA10_0==STRING||LA10_0==WHILE) ) {
                             alt10=1;
                         }
 
@@ -1048,7 +1046,7 @@ public TreeAdaptor getTreeAdaptor() {
 
                 }
             }
-            else if ( (LA16_0==INT) ) {
+            else if ( (LA16_0==NUMBER) ) {
                 int LA16_3 = input.LA(2);
 
                 if ( (synpred1_Atto()) ) {
@@ -1404,7 +1402,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_body.add(body30.getTree());
 
                     // AST REWRITE
-                    // elements: postfix, ASSIGN, body
+                    // elements: body, ASSIGN, postfix
                     // token labels: 
                     // rule labels: retval
                     // token list labels: 
@@ -1500,7 +1498,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body33.getTree());
 
                             // AST REWRITE
-                            // elements: body, PLUS, ASSIGN, postfix, postfix
+                            // elements: body, postfix, postfix, PLUS, ASSIGN
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1567,7 +1565,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body36.getTree());
 
                             // AST REWRITE
-                            // elements: body, postfix, MINUS, ASSIGN, postfix
+                            // elements: postfix, MINUS, body, postfix, ASSIGN
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1634,7 +1632,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body39.getTree());
 
                             // AST REWRITE
-                            // elements: MUL, postfix, body, postfix, ASSIGN
+                            // elements: postfix, MUL, postfix, body, ASSIGN
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1701,7 +1699,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body42.getTree());
 
                             // AST REWRITE
-                            // elements: DIV, ASSIGN, postfix, body, postfix
+                            // elements: postfix, body, DIV, postfix, ASSIGN
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -1768,7 +1766,7 @@ public TreeAdaptor getTreeAdaptor() {
                             if ( state.backtracking==0 ) stream_body.add(body45.getTree());
 
                             // AST REWRITE
-                            // elements: postfix, MOD, postfix, body, ASSIGN
+                            // elements: ASSIGN, postfix, MOD, postfix, body
                             // token labels: 
                             // rule labels: retval
                             // token list labels: 
@@ -2287,7 +2285,7 @@ public TreeAdaptor getTreeAdaptor() {
             int alt26=2;
             int LA26_0 = input.LA(1);
 
-            if ( (LA26_0==ARROW||LA26_0==AT||LA26_0==BOOL||LA26_0==IF||LA26_0==INT||(LA26_0 >= LBRACK && LA26_0 <= LCURLY)||LA26_0==LPAREN||LA26_0==MINUS||LA26_0==NAME||(LA26_0 >= NOT && LA26_0 <= NULL)||LA26_0==STRING||LA26_0==WHILE) ) {
+            if ( (LA26_0==ARROW||LA26_0==AT||LA26_0==BOOL||LA26_0==IF||(LA26_0 >= LBRACK && LA26_0 <= LCURLY)||LA26_0==LPAREN||LA26_0==MINUS||LA26_0==NAME||(LA26_0 >= NOT && LA26_0 <= NUMBER)||LA26_0==STRING||LA26_0==WHILE) ) {
                 alt26=1;
             }
             else if ( (LA26_0==NEWLINE) ) {
@@ -2418,7 +2416,7 @@ public TreeAdaptor getTreeAdaptor() {
         AttoTree NEWLINE61_tree=null;
         AttoTree string_literal65_tree=null;
         AttoTree string_literal66_tree=null;
-        RewriteRuleTokenStream stream_69=new RewriteRuleTokenStream(adaptor,"token 69");
+        RewriteRuleTokenStream stream_67=new RewriteRuleTokenStream(adaptor,"token 67");
         RewriteRuleTokenStream stream_NEWLINE=new RewriteRuleTokenStream(adaptor,"token NEWLINE");
         RewriteRuleTokenStream stream_IF=new RewriteRuleTokenStream(adaptor,"token IF");
         RewriteRuleTokenStream stream_ELSE=new RewriteRuleTokenStream(adaptor,"token ELSE");
@@ -2448,7 +2446,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( (LA30_0==NEWLINE) ) {
                 alt30=1;
             }
-            else if ( (LA30_0==69) ) {
+            else if ( (LA30_0==67) ) {
                 alt30=2;
             }
             else {
@@ -2534,7 +2532,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: block, elif, else_, cond_expr
+                    // elements: cond_expr, else_, block, elif
                     // token labels: 
                     // rule labels: cond_expr, retval
                     // token list labels: 
@@ -2588,8 +2586,8 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     // Atto.g:124:6: 'then' then_expr= expr ( 'else' else_expr= expr )?
                     {
-                    string_literal65=(Token)match(input,69,FOLLOW_69_in_if_721); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_69.add(string_literal65);
+                    string_literal65=(Token)match(input,67,FOLLOW_67_in_if_721); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_67.add(string_literal65);
 
 
                     pushFollow(FOLLOW_expr_in_if_725);
@@ -2628,7 +2626,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
                     // AST REWRITE
-                    // elements: then_expr, cond_expr, else_expr
+                    // elements: else_expr, cond_expr, then_expr
                     // token labels: 
                     // rule labels: cond_expr, retval, else_expr, then_expr
                     // token list labels: 
@@ -2769,7 +2767,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( state.backtracking==0 ) stream_block.add(block70.getTree());
 
             // AST REWRITE
-            // elements: block, expr
+            // elements: expr, block
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -2960,7 +2958,7 @@ public TreeAdaptor getTreeAdaptor() {
         AttoTree string_literal74_tree=null;
         AttoTree NEWLINE75_tree=null;
         AttoTree string_literal77_tree=null;
-        RewriteRuleTokenStream stream_69=new RewriteRuleTokenStream(adaptor,"token 69");
+        RewriteRuleTokenStream stream_67=new RewriteRuleTokenStream(adaptor,"token 67");
         RewriteRuleTokenStream stream_NEWLINE=new RewriteRuleTokenStream(adaptor,"token NEWLINE");
         RewriteRuleTokenStream stream_WHILE=new RewriteRuleTokenStream(adaptor,"token WHILE");
         RewriteRuleSubtreeStream stream_block=new RewriteRuleSubtreeStream(adaptor,"rule block");
@@ -2987,7 +2985,7 @@ public TreeAdaptor getTreeAdaptor() {
             if ( (LA31_0==NEWLINE) ) {
                 alt31=1;
             }
-            else if ( (LA31_0==69) ) {
+            else if ( (LA31_0==67) ) {
                 alt31=2;
             }
             else {
@@ -3014,7 +3012,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_block.add(block76.getTree());
 
                     // AST REWRITE
-                    // elements: block, cond_expr
+                    // elements: cond_expr, block
                     // token labels: 
                     // rule labels: cond_expr, retval
                     // token list labels: 
@@ -3054,8 +3052,8 @@ public TreeAdaptor getTreeAdaptor() {
                 case 2 :
                     // Atto.g:140:6: 'then' then_expr= expr
                     {
-                    string_literal77=(Token)match(input,69,FOLLOW_69_in_while_859); if (state.failed) return retval; 
-                    if ( state.backtracking==0 ) stream_69.add(string_literal77);
+                    string_literal77=(Token)match(input,67,FOLLOW_67_in_while_859); if (state.failed) return retval; 
+                    if ( state.backtracking==0 ) stream_67.add(string_literal77);
 
 
                     pushFollow(FOLLOW_expr_in_while_863);
@@ -3066,7 +3064,7 @@ public TreeAdaptor getTreeAdaptor() {
                     if ( state.backtracking==0 ) stream_expr.add(then_expr.getTree());
 
                     // AST REWRITE
-                    // elements: then_expr, cond_expr
+                    // elements: cond_expr, then_expr
                     // token labels: 
                     // rule labels: cond_expr, retval, then_expr
                     // token list labels: 
@@ -3714,12 +3712,12 @@ public TreeAdaptor getTreeAdaptor() {
             switch ( input.LA(1) ) {
             case AT:
             case BOOL:
-            case INT:
             case LBRACK:
             case LCURLY:
             case LPAREN:
             case NAME:
             case NULL:
+            case NUMBER:
             case STRING:
                 {
                 alt37=1;
@@ -3979,7 +3977,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    int alt40=2;
             	    int LA40_0 = input.LA(1);
 
-            	    if ( (LA40_0==ARROW||LA40_0==AT||LA40_0==BOOL||LA40_0==IF||LA40_0==INT||(LA40_0 >= LBRACK && LA40_0 <= LCURLY)||LA40_0==LPAREN||LA40_0==MINUS||LA40_0==NAME||(LA40_0 >= NOT && LA40_0 <= NULL)||LA40_0==STRING||LA40_0==WHILE) ) {
+            	    if ( (LA40_0==ARROW||LA40_0==AT||LA40_0==BOOL||LA40_0==IF||(LA40_0 >= LBRACK && LA40_0 <= LCURLY)||LA40_0==LPAREN||LA40_0==MINUS||LA40_0==NAME||(LA40_0 >= NOT && LA40_0 <= NUMBER)||LA40_0==STRING||LA40_0==WHILE) ) {
             	        alt40=1;
             	    }
             	    switch (alt40) {
@@ -3999,7 +3997,7 @@ public TreeAdaptor getTreeAdaptor() {
             	                int alt39=2;
             	                int LA39_0 = input.LA(1);
 
-            	                if ( (LA39_0==ARROW||LA39_0==AT||LA39_0==BOOL||LA39_0==COMMA||LA39_0==IF||LA39_0==INT||(LA39_0 >= LBRACK && LA39_0 <= LCURLY)||LA39_0==LPAREN||LA39_0==MINUS||LA39_0==NAME||(LA39_0 >= NOT && LA39_0 <= NULL)||LA39_0==STRING||LA39_0==WHILE) ) {
+            	                if ( (LA39_0==ARROW||LA39_0==AT||LA39_0==BOOL||LA39_0==COMMA||LA39_0==IF||(LA39_0 >= LBRACK && LA39_0 <= LCURLY)||LA39_0==LPAREN||LA39_0==MINUS||LA39_0==NAME||(LA39_0 >= NOT && LA39_0 <= NUMBER)||LA39_0==STRING||LA39_0==WHILE) ) {
             	                    alt39=1;
             	                }
 
@@ -4167,7 +4165,7 @@ public TreeAdaptor getTreeAdaptor() {
             	    if ( state.backtracking==0 ) stream_primary.add(p.getTree());
 
             	    // AST REWRITE
-            	    // elements: p, postfix
+            	    // elements: postfix, p
             	    // token labels: 
             	    // rule labels: retval, p
             	    // token list labels: 
@@ -4244,7 +4242,7 @@ public TreeAdaptor getTreeAdaptor() {
 
 
     // $ANTLR start "primary"
-    // Atto.g:181:1: primary : ( NAME | AT ^ NAME | INT | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array | prop );
+    // Atto.g:181:1: primary : ( NAME | AT ^ NAME | NUMBER | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array | prop );
     public final AttoParser.primary_return primary() throws RecognitionException {
         AttoParser.primary_return retval = new AttoParser.primary_return();
         retval.start = input.LT(1);
@@ -4255,7 +4253,7 @@ public TreeAdaptor getTreeAdaptor() {
         Token NAME108=null;
         Token AT109=null;
         Token NAME110=null;
-        Token INT111=null;
+        Token NUMBER111=null;
         Token STRING112=null;
         Token BOOL113=null;
         Token NULL114=null;
@@ -4273,7 +4271,7 @@ public TreeAdaptor getTreeAdaptor() {
         AttoTree NAME108_tree=null;
         AttoTree AT109_tree=null;
         AttoTree NAME110_tree=null;
-        AttoTree INT111_tree=null;
+        AttoTree NUMBER111_tree=null;
         AttoTree STRING112_tree=null;
         AttoTree BOOL113_tree=null;
         AttoTree NULL114_tree=null;
@@ -4283,7 +4281,7 @@ public TreeAdaptor getTreeAdaptor() {
         RewriteRuleTokenStream stream_LPAREN=new RewriteRuleTokenStream(adaptor,"token LPAREN");
         RewriteRuleSubtreeStream stream_expr=new RewriteRuleSubtreeStream(adaptor,"rule expr");
         try {
-            // Atto.g:182:2: ( NAME | AT ^ NAME | INT | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array | prop )
+            // Atto.g:182:2: ( NAME | AT ^ NAME | NUMBER | STRING | BOOL | NULL | LPAREN expr RPAREN -> expr | obj | array | prop )
             int alt42=10;
             switch ( input.LA(1) ) {
             case NAME:
@@ -4296,7 +4294,7 @@ public TreeAdaptor getTreeAdaptor() {
                 alt42=2;
                 }
                 break;
-            case INT:
+            case NUMBER:
                 {
                 alt42=3;
                 }
@@ -4397,17 +4395,17 @@ public TreeAdaptor getTreeAdaptor() {
                     }
                     break;
                 case 3 :
-                    // Atto.g:184:4: INT
+                    // Atto.g:184:4: NUMBER
                     {
                     root_0 = (AttoTree)adaptor.nil();
 
 
-                    INT111=(Token)match(input,INT,FOLLOW_INT_in_primary1182); if (state.failed) return retval;
+                    NUMBER111=(Token)match(input,NUMBER,FOLLOW_NUMBER_in_primary1182); if (state.failed) return retval;
                     if ( state.backtracking==0 ) {
-                    INT111_tree = 
-                    (AttoTree)adaptor.create(INT111)
+                    NUMBER111_tree = 
+                    (AttoTree)adaptor.create(NUMBER111)
                     ;
-                    adaptor.addChild(root_0, INT111_tree);
+                    adaptor.addChild(root_0, NUMBER111_tree);
                     }
 
                     }
@@ -5014,7 +5012,7 @@ public TreeAdaptor getTreeAdaptor() {
             int alt49=2;
             int LA49_0 = input.LA(1);
 
-            if ( (LA49_0==ARROW||LA49_0==AT||LA49_0==BOOL||LA49_0==IF||LA49_0==INT||(LA49_0 >= LBRACK && LA49_0 <= LCURLY)||LA49_0==LPAREN||LA49_0==MINUS||LA49_0==NAME||(LA49_0 >= NOT && LA49_0 <= NULL)||LA49_0==STRING||LA49_0==WHILE) ) {
+            if ( (LA49_0==ARROW||LA49_0==AT||LA49_0==BOOL||LA49_0==IF||(LA49_0 >= LBRACK && LA49_0 <= LCURLY)||LA49_0==LPAREN||LA49_0==MINUS||LA49_0==NAME||(LA49_0 >= NOT && LA49_0 <= NUMBER)||LA49_0==STRING||LA49_0==WHILE) ) {
                 alt49=1;
             }
             switch (alt49) {
@@ -5037,13 +5035,13 @@ public TreeAdaptor getTreeAdaptor() {
                         if ( (LA48_0==COMMA) ) {
                             int LA48_1 = input.LA(2);
 
-                            if ( (LA48_1==ARROW||LA48_1==AT||LA48_1==BOOL||LA48_1==IF||LA48_1==INT||(LA48_1 >= LBRACK && LA48_1 <= LCURLY)||LA48_1==LPAREN||LA48_1==MINUS||LA48_1==NAME||(LA48_1 >= NOT && LA48_1 <= NULL)||LA48_1==STRING||LA48_1==WHILE) ) {
+                            if ( (LA48_1==ARROW||LA48_1==AT||LA48_1==BOOL||LA48_1==IF||(LA48_1 >= LBRACK && LA48_1 <= LCURLY)||LA48_1==LPAREN||LA48_1==MINUS||LA48_1==NAME||(LA48_1 >= NOT && LA48_1 <= NUMBER)||LA48_1==STRING||LA48_1==WHILE) ) {
                                 alt48=1;
                             }
 
 
                         }
-                        else if ( (LA48_0==ARROW||LA48_0==AT||LA48_0==BOOL||LA48_0==IF||LA48_0==INT||(LA48_0 >= LBRACK && LA48_0 <= LCURLY)||LA48_0==LPAREN||LA48_0==MINUS||LA48_0==NAME||(LA48_0 >= NOT && LA48_0 <= NULL)||LA48_0==STRING||LA48_0==WHILE) ) {
+                        else if ( (LA48_0==ARROW||LA48_0==AT||LA48_0==BOOL||LA48_0==IF||(LA48_0 >= LBRACK && LA48_0 <= LCURLY)||LA48_0==LPAREN||LA48_0==MINUS||LA48_0==NAME||(LA48_0 >= NOT && LA48_0 <= NUMBER)||LA48_0==STRING||LA48_0==WHILE) ) {
                             alt48=1;
                         }
 
@@ -5309,151 +5307,151 @@ public TreeAdaptor getTreeAdaptor() {
 
  
 
-    public static final BitSet FOLLOW_stmt_in_root141 = new BitSet(new long[]{0x00064A1A40001542L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_stmt163 = new BitSet(new long[]{0x1001000000000002L});
-    public static final BitSet FOLLOW_SEMICOLON_in_stmt166 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_stmt_in_root141 = new BitSet(new long[]{0x4001C94320001542L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_stmt163 = new BitSet(new long[]{0x0400200000000002L});
+    public static final BitSet FOLLOW_SEMICOLON_in_stmt166 = new BitSet(new long[]{0x0000200000000002L});
     public static final BitSet FOLLOW_NEWLINE_in_stmt171 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_CLASS_in_stmt189 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_NAME_in_stmt193 = new BitSet(new long[]{0x0001000001000000L});
-    public static final BitSet FOLLOW_EXTENDS_in_stmt196 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_NAME_in_stmt200 = new BitSet(new long[]{0x0001000000000000L});
-    public static final BitSet FOLLOW_NEWLINE_in_stmt204 = new BitSet(new long[]{0x0000000080000000L});
-    public static final BitSet FOLLOW_INDENT_in_stmt210 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_pair_in_stmt212 = new BitSet(new long[]{0x0001400000024000L});
-    public static final BitSet FOLLOW_NEWLINE_in_stmt214 = new BitSet(new long[]{0x0000400000024000L});
-    public static final BitSet FOLLOW_COMMA_in_stmt218 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_pair_in_stmt221 = new BitSet(new long[]{0x0001400000024000L});
-    public static final BitSet FOLLOW_NEWLINE_in_stmt223 = new BitSet(new long[]{0x0000400000024000L});
+    public static final BitSet FOLLOW_CLASS_in_stmt189 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_NAME_in_stmt193 = new BitSet(new long[]{0x0000200001000000L});
+    public static final BitSet FOLLOW_EXTENDS_in_stmt196 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_NAME_in_stmt200 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_NEWLINE_in_stmt204 = new BitSet(new long[]{0x0000000040000000L});
+    public static final BitSet FOLLOW_INDENT_in_stmt210 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_pair_in_stmt212 = new BitSet(new long[]{0x0000280000024000L});
+    public static final BitSet FOLLOW_NEWLINE_in_stmt214 = new BitSet(new long[]{0x0000080000024000L});
+    public static final BitSet FOLLOW_COMMA_in_stmt218 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_pair_in_stmt221 = new BitSet(new long[]{0x0000280000024000L});
+    public static final BitSet FOLLOW_NEWLINE_in_stmt223 = new BitSet(new long[]{0x0000080000024000L});
     public static final BitSet FOLLOW_DEDENT_in_stmt228 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INDENT_in_block269 = new BitSet(new long[]{0x00064A1A40021540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_stmt_in_block277 = new BitSet(new long[]{0x00064A1A40021540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_pair_in_block294 = new BitSet(new long[]{0x0001400000024000L});
-    public static final BitSet FOLLOW_NEWLINE_in_block296 = new BitSet(new long[]{0x0000400000024000L});
-    public static final BitSet FOLLOW_COMMA_in_block300 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_pair_in_block303 = new BitSet(new long[]{0x0001400000024000L});
-    public static final BitSet FOLLOW_NEWLINE_in_block305 = new BitSet(new long[]{0x0000400000024000L});
+    public static final BitSet FOLLOW_INDENT_in_block269 = new BitSet(new long[]{0x4001C94320021540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_stmt_in_block277 = new BitSet(new long[]{0x4001C94320021540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_pair_in_block294 = new BitSet(new long[]{0x0000280000024000L});
+    public static final BitSet FOLLOW_NEWLINE_in_block296 = new BitSet(new long[]{0x0000080000024000L});
+    public static final BitSet FOLLOW_COMMA_in_block300 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_pair_in_block303 = new BitSet(new long[]{0x0000280000024000L});
+    public static final BitSet FOLLOW_NEWLINE_in_block305 = new BitSet(new long[]{0x0000080000024000L});
     public static final BitSet FOLLOW_DEDENT_in_block328 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_assign_in_expr344 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_fun_in_expr354 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_if__in_expr359 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_while__in_expr364 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_or_in_expr369 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_postfix_in_assign380 = new BitSet(new long[]{0x0080380000080080L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign388 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_postfix_in_assign380 = new BitSet(new long[]{0x0020070000080080L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign388 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_assign390 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_PLUS_in_assign409 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign411 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign411 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_assign413 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_MINUS_in_assign438 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign440 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign440 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_assign442 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_MUL_in_assign467 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign469 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign469 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_assign471 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_DIV_in_assign496 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign498 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign498 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_assign500 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_MOD_in_assign525 = new BitSet(new long[]{0x0000000000000080L});
-    public static final BitSet FOLLOW_ASSIGN_in_assign527 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ASSIGN_in_assign527 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_assign529 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_paramsdef_in_fun569 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_ARROW_in_fun571 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ARROW_in_fun571 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_fun574 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef586 = new BitSet(new long[]{0x0000400000004002L});
-    public static final BitSet FOLLOW_COMMA_in_paramsdef589 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef592 = new BitSet(new long[]{0x0000400000004002L});
-    public static final BitSet FOLLOW_LPAREN_in_paramsdef610 = new BitSet(new long[]{0x0800400000000000L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef613 = new BitSet(new long[]{0x0800400000004000L});
-    public static final BitSet FOLLOW_COMMA_in_paramsdef616 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_vardef_in_paramsdef619 = new BitSet(new long[]{0x0800400000004000L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef586 = new BitSet(new long[]{0x0000080000004002L});
+    public static final BitSet FOLLOW_COMMA_in_paramsdef589 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef592 = new BitSet(new long[]{0x0000080000004002L});
+    public static final BitSet FOLLOW_LPAREN_in_paramsdef610 = new BitSet(new long[]{0x0200080000000000L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef613 = new BitSet(new long[]{0x0200080000004000L});
+    public static final BitSet FOLLOW_COMMA_in_paramsdef616 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_vardef_in_paramsdef619 = new BitSet(new long[]{0x0200080000004000L});
     public static final BitSet FOLLOW_RPAREN_in_paramsdef625 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expr_in_body647 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NEWLINE_in_body653 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_NEWLINE_in_body653 = new BitSet(new long[]{0x0000000040000000L});
     public static final BitSet FOLLOW_block_in_body655 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_IF_in_if_672 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_if_676 = new BitSet(new long[]{0x0001000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_NEWLINE_in_if_684 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_IF_in_if_672 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_if_676 = new BitSet(new long[]{0x0000200000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_NEWLINE_in_if_684 = new BitSet(new long[]{0x0000000040000000L});
     public static final BitSet FOLLOW_block_in_if_686 = new BitSet(new long[]{0x0000000000600002L});
     public static final BitSet FOLLOW_elif_in_if_688 = new BitSet(new long[]{0x0000000000600002L});
     public static final BitSet FOLLOW_else__in_if_691 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_69_in_if_721 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_67_in_if_721 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_expr_in_if_725 = new BitSet(new long[]{0x0000000000400002L});
-    public static final BitSet FOLLOW_ELSE_in_if_728 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_ELSE_in_if_728 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_expr_in_if_732 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ELIF_in_elif776 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_elif778 = new BitSet(new long[]{0x0001000000000000L});
-    public static final BitSet FOLLOW_NEWLINE_in_elif780 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ELIF_in_elif776 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_elif778 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_NEWLINE_in_elif780 = new BitSet(new long[]{0x0000000040000000L});
     public static final BitSet FOLLOW_block_in_elif782 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ELSE_in_else_803 = new BitSet(new long[]{0x0001000000000000L});
-    public static final BitSet FOLLOW_NEWLINE_in_else_805 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_ELSE_in_else_803 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_NEWLINE_in_else_805 = new BitSet(new long[]{0x0000000040000000L});
     public static final BitSet FOLLOW_block_in_else_807 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_WHILE_in_while_827 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_while_831 = new BitSet(new long[]{0x0001000000000000L,0x0000000000000020L});
-    public static final BitSet FOLLOW_NEWLINE_in_while_839 = new BitSet(new long[]{0x0000000080000000L});
+    public static final BitSet FOLLOW_WHILE_in_while_827 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_while_831 = new BitSet(new long[]{0x0000200000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_NEWLINE_in_while_839 = new BitSet(new long[]{0x0000000040000000L});
     public static final BitSet FOLLOW_block_in_while_841 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_69_in_while_859 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_67_in_while_859 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_expr_in_while_863 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_in_or891 = new BitSet(new long[]{0x0010000000000002L});
-    public static final BitSet FOLLOW_OR_in_or894 = new BitSet(new long[]{0x00064A1A00000500L,0x0000000000000001L});
-    public static final BitSet FOLLOW_and_in_or897 = new BitSet(new long[]{0x0010000000000002L});
+    public static final BitSet FOLLOW_and_in_or891 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_OR_in_or894 = new BitSet(new long[]{0x4001C94300000500L});
+    public static final BitSet FOLLOW_and_in_or897 = new BitSet(new long[]{0x0004000000000002L});
     public static final BitSet FOLLOW_rel_in_and910 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_AND_in_and913 = new BitSet(new long[]{0x00064A1A00000500L,0x0000000000000001L});
+    public static final BitSet FOLLOW_AND_in_and913 = new BitSet(new long[]{0x4001C94300000500L});
     public static final BitSet FOLLOW_rel_in_and916 = new BitSet(new long[]{0x0000000000000012L});
-    public static final BitSet FOLLOW_add_in_rel929 = new BitSet(new long[]{0x0040842018810002L});
-    public static final BitSet FOLLOW_set_in_rel932 = new BitSet(new long[]{0x00064A1A00000500L,0x0000000000000001L});
-    public static final BitSet FOLLOW_add_in_rel951 = new BitSet(new long[]{0x0040842018810002L});
-    public static final BitSet FOLLOW_mul_in_add964 = new BitSet(new long[]{0x0080080000000002L});
-    public static final BitSet FOLLOW_set_in_add967 = new BitSet(new long[]{0x00064A1A00000500L,0x0000000000000001L});
-    public static final BitSet FOLLOW_mul_in_add974 = new BitSet(new long[]{0x0080080000000002L});
-    public static final BitSet FOLLOW_unary_in_mul987 = new BitSet(new long[]{0x0000300000080002L});
-    public static final BitSet FOLLOW_set_in_mul990 = new BitSet(new long[]{0x00064A1A00000500L,0x0000000000000001L});
-    public static final BitSet FOLLOW_unary_in_mul999 = new BitSet(new long[]{0x0000300000080002L});
+    public static final BitSet FOLLOW_add_in_rel929 = new BitSet(new long[]{0x001010840C810002L});
+    public static final BitSet FOLLOW_set_in_rel932 = new BitSet(new long[]{0x4001C94300000500L});
+    public static final BitSet FOLLOW_add_in_rel951 = new BitSet(new long[]{0x001010840C810002L});
+    public static final BitSet FOLLOW_mul_in_add964 = new BitSet(new long[]{0x0020010000000002L});
+    public static final BitSet FOLLOW_set_in_add967 = new BitSet(new long[]{0x4001C94300000500L});
+    public static final BitSet FOLLOW_mul_in_add974 = new BitSet(new long[]{0x0020010000000002L});
+    public static final BitSet FOLLOW_unary_in_mul987 = new BitSet(new long[]{0x0000060000080002L});
+    public static final BitSet FOLLOW_set_in_mul990 = new BitSet(new long[]{0x4001C94300000500L});
+    public static final BitSet FOLLOW_unary_in_mul999 = new BitSet(new long[]{0x0000060000080002L});
     public static final BitSet FOLLOW_postfix_in_unary1013 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NOT_in_unary1018 = new BitSet(new long[]{0x0004421A00000500L,0x0000000000000001L});
+    public static final BitSet FOLLOW_NOT_in_unary1018 = new BitSet(new long[]{0x4001884300000500L});
     public static final BitSet FOLLOW_postfix_in_unary1021 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_unary1026 = new BitSet(new long[]{0x0004421A00000500L,0x0000000000000001L});
+    public static final BitSet FOLLOW_MINUS_in_unary1026 = new BitSet(new long[]{0x4001884300000500L});
     public static final BitSet FOLLOW_postfix_in_unary1028 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primary_in_postfix1050 = new BitSet(new long[]{0x0000020800100002L});
-    public static final BitSet FOLLOW_LPAREN_in_postfix1063 = new BitSet(new long[]{0x08064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_postfix1066 = new BitSet(new long[]{0x08064A1A40004540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_COMMA_in_postfix1069 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_postfix1072 = new BitSet(new long[]{0x08064A1A40004540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_RPAREN_in_postfix1078 = new BitSet(new long[]{0x0000020800100002L});
-    public static final BitSet FOLLOW_LBRACK_in_postfix1102 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_postfix1104 = new BitSet(new long[]{0x0200000000000000L});
-    public static final BitSet FOLLOW_RBRACK_in_postfix1106 = new BitSet(new long[]{0x0000020800100002L});
-    public static final BitSet FOLLOW_DOT_in_postfix1129 = new BitSet(new long[]{0x0004421A00000500L,0x0000000000000001L});
-    public static final BitSet FOLLOW_primary_in_postfix1133 = new BitSet(new long[]{0x0000020800100002L});
+    public static final BitSet FOLLOW_primary_in_postfix1050 = new BitSet(new long[]{0x0000004100100002L});
+    public static final BitSet FOLLOW_LPAREN_in_postfix1063 = new BitSet(new long[]{0x4201C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_postfix1066 = new BitSet(new long[]{0x4201C94320004540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_postfix1069 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_postfix1072 = new BitSet(new long[]{0x4201C94320004540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_RPAREN_in_postfix1078 = new BitSet(new long[]{0x0000004100100002L});
+    public static final BitSet FOLLOW_LBRACK_in_postfix1102 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_postfix1104 = new BitSet(new long[]{0x0080000000000000L});
+    public static final BitSet FOLLOW_RBRACK_in_postfix1106 = new BitSet(new long[]{0x0000004100100002L});
+    public static final BitSet FOLLOW_DOT_in_postfix1129 = new BitSet(new long[]{0x4001884300000500L});
+    public static final BitSet FOLLOW_primary_in_postfix1133 = new BitSet(new long[]{0x0000004100100002L});
     public static final BitSet FOLLOW_NAME_in_primary1168 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_AT_in_primary1173 = new BitSet(new long[]{0x0000400000000000L});
+    public static final BitSet FOLLOW_AT_in_primary1173 = new BitSet(new long[]{0x0000080000000000L});
     public static final BitSet FOLLOW_NAME_in_primary1176 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_primary1182 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NUMBER_in_primary1182 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_STRING_in_primary1187 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_BOOL_in_primary1192 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_NULL_in_primary1197 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LPAREN_in_primary1202 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_primary1204 = new BitSet(new long[]{0x0800000000000000L});
+    public static final BitSet FOLLOW_LPAREN_in_primary1202 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_primary1204 = new BitSet(new long[]{0x0200000000000000L});
     public static final BitSet FOLLOW_RPAREN_in_primary1206 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_obj_in_primary1215 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_array_in_primary1220 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_prop_in_primary1225 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LCURLY_in_obj1237 = new BitSet(new long[]{0x0400400000004000L});
-    public static final BitSet FOLLOW_pair_in_obj1240 = new BitSet(new long[]{0x0400400000004000L});
-    public static final BitSet FOLLOW_COMMA_in_obj1243 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_pair_in_obj1246 = new BitSet(new long[]{0x0400400000004000L});
-    public static final BitSet FOLLOW_COMMA_in_obj1252 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_LCURLY_in_obj1237 = new BitSet(new long[]{0x0100080000004000L});
+    public static final BitSet FOLLOW_pair_in_obj1240 = new BitSet(new long[]{0x0100080000004000L});
+    public static final BitSet FOLLOW_COMMA_in_obj1243 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_pair_in_obj1246 = new BitSet(new long[]{0x0100080000004000L});
+    public static final BitSet FOLLOW_COMMA_in_obj1252 = new BitSet(new long[]{0x0100000000000000L});
     public static final BitSet FOLLOW_RCURLY_in_obj1255 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_NAME_in_pair1275 = new BitSet(new long[]{0x0000000000002000L});
-    public static final BitSet FOLLOW_COLON_in_pair1277 = new BitSet(new long[]{0x00074A1A40000540L,0x0000000000000009L});
+    public static final BitSet FOLLOW_COLON_in_pair1277 = new BitSet(new long[]{0x4001E94320000540L,0x0000000000000002L});
     public static final BitSet FOLLOW_body_in_pair1280 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LCURLY_in_prop1291 = new BitSet(new long[]{0x0000001000000000L});
-    public static final BitSet FOLLOW_obj_in_prop1293 = new BitSet(new long[]{0x0400000000000000L});
+    public static final BitSet FOLLOW_LCURLY_in_prop1291 = new BitSet(new long[]{0x0000000200000000L});
+    public static final BitSet FOLLOW_obj_in_prop1293 = new BitSet(new long[]{0x0100000000000000L});
     public static final BitSet FOLLOW_RCURLY_in_prop1295 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LBRACK_in_array1315 = new BitSet(new long[]{0x02064A1A40004540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_array1318 = new BitSet(new long[]{0x02064A1A40004540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_COMMA_in_array1321 = new BitSet(new long[]{0x00064A1A40000540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_expr_in_array1324 = new BitSet(new long[]{0x02064A1A40004540L,0x0000000000000009L});
-    public static final BitSet FOLLOW_COMMA_in_array1331 = new BitSet(new long[]{0x0200000000000000L});
+    public static final BitSet FOLLOW_LBRACK_in_array1315 = new BitSet(new long[]{0x4081C94320004540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_array1318 = new BitSet(new long[]{0x4081C94320004540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_array1321 = new BitSet(new long[]{0x4001C94320000540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_expr_in_array1324 = new BitSet(new long[]{0x4081C94320004540L,0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_array1331 = new BitSet(new long[]{0x0080000000000000L});
     public static final BitSet FOLLOW_RBRACK_in_array1334 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_NAME_in_vardef1354 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_assign_in_synpred1_Atto340 = new BitSet(new long[]{0x0000000000000002L});

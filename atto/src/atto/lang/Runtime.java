@@ -1,6 +1,7 @@
 package atto.lang;
 
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.Map;
 
 import atto.AttoTree;
@@ -16,7 +17,7 @@ public class Runtime {
     protected Obj objProto;
     protected Obj boolProto;
     protected Obj funProto;
-    protected Obj integerProto;
+    protected Obj numberProto;
     protected Obj arrayProto;
     protected Obj stringProto;
     protected Obj propProto;
@@ -29,7 +30,7 @@ public class Runtime {
     protected ClassFun boolClass;
     protected ClassFun funClass;
     protected ClassFun arrayClass;
-    protected ClassFun integerClass;
+    protected ClassFun numberClass;
     protected ClassFun stringClass;
 
     public Runtime(Interpreter interpreter, PrintWriter out) {
@@ -44,7 +45,7 @@ public class Runtime {
         funProto = new Obj(this, objProto);
         arrayProto = new Obj(this, objProto);
         boolProto = new Obj(this, objProto);
-        integerProto = new Obj(this, objProto);
+        numberProto = new Obj(this, objProto);
         stringProto = new Obj(this, objProto);
         propProto = new Obj(this, objProto); // TODO
 
@@ -56,8 +57,8 @@ public class Runtime {
                 arrayProto);
         boolClass = new ClassFun(this, currentEnv,
                 new String[] { "__value__" }, "Boolean", boolProto);
-        integerClass = new ClassFun(this, currentEnv,
-                new String[] { "__value__" }, "Integer", integerProto);
+        numberClass = new ClassFun(this, currentEnv,
+                new String[] { "__value__" }, "Number", numberProto);
         stringClass = new ClassFun(this, currentEnv, new String[] {}, "String",
                 stringProto);
 
@@ -65,7 +66,7 @@ public class Runtime {
         initFunProto();
         initArrayProto();
         initBoolProto();
-        initIntegerProto();
+        initNumberProto();
         initStringProto();
         initPropProto();
 
@@ -86,7 +87,7 @@ public class Runtime {
         currentEnv.put(funClass.name, funClass);
         currentEnv.put(arrayClass.name, arrayClass);
         currentEnv.put(boolClass.name, boolClass);
-        currentEnv.put(integerClass.name, integerClass);
+        currentEnv.put(numberClass.name, numberClass);
         currentEnv.put(stringClass.name, stringClass);
 
         // built-in function
@@ -148,7 +149,7 @@ public class Runtime {
 
     public void initArrayProto() {
         arrayProto.put("__proto__", arrayProto);
-        arrayProto.put("length", newInteger(0));
+        arrayProto.put("length", newNumber(0));
 
         arrayProto.addMethod("==", new Method("rhs") {
             @Override
@@ -157,8 +158,8 @@ public class Runtime {
                 if (!arrayProto.isPrototypeOf(other)) {
                     return falseObj;
                 }
-                int length = receiver.getInt("length");
-                if (length != other.getInt("length")) {
+                int length = receiver.getBigDecimal("length").intValue();
+                if (length != other.getBigDecimal("length").intValue()) {
                     return falseObj;
                 }
                 for (int i = 0; i < length; i++) {
@@ -177,9 +178,9 @@ public class Runtime {
         arrayProto.addMethod("push", new Method("element") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                int length = receiver.getInt("length");
+                int length = receiver.getBigDecimal("length").intValue();
                 receiver.put(String.valueOf(length), args[0]);
-                receiver.put("length", newInteger(length + 1));
+                receiver.put("length", newNumber(length + 1));
                 return receiver;
             }
         });
@@ -187,14 +188,14 @@ public class Runtime {
         arrayProto.addMethod("set", new Method("index", "element") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                int index = args[0].asInt();
+                int index = args[0].asBigDecimal().intValue();
                 Obj element = args[1];
-                int length = receiver.getInt("length");
+                int length = receiver.getBigDecimal("length").intValue();
                 for (; length < index; length++) {
                     receiver.send("push", nullObj);
                 }
                 receiver.put(String.valueOf(index), element);
-                receiver.put("length", newInteger(length + 1));
+                receiver.put("length", newNumber(length + 1));
                 return receiver;
             }
         });
@@ -202,7 +203,7 @@ public class Runtime {
         arrayProto.addMethod("get", new Method("index") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                int index = args[0].asInt();
+                int index = args[0].asBigDecimal().intValue();
                 Obj element = receiver.get(String.valueOf(index));
                 return element == null ? nullObj : element;
             }
@@ -212,16 +213,16 @@ public class Runtime {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Fun fun = (Fun) args[0];
-                int length = receiver.getInt("length");
+                int length = receiver.getBigDecimal("length").intValue();
                 Obj result = newArray();
                 for (int i = 0; i < length; i++) {
-                    String key = String.valueOf(i);
-                    Obj element = receiver.values.get(key);
+                    Obj key = newNumber(i);
+                    Obj element = receiver.send("get", new Obj[] { key });
                     Obj newElement = fun.call(receiver, new Obj[] { element,
-                            newInteger(i) });
-                    result.values.put(key, newElement);
+                            newNumber(i) });
+                    result.send("push", new Obj[] { newElement });
                 }
-                result.put("length", newInteger(length));
+                result.put("length", newNumber(length));
                 return result;
             }
         });
@@ -230,19 +231,20 @@ public class Runtime {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Fun fun = (Fun) args[0];
-                int length = receiver.getInt("length");
+                int length = receiver.getBigDecimal("length").intValue();
                 Obj result = newArray();
                 int index = 0;
                 for (int i = 0; i < length; i++) {
-                    Obj element = receiver.values.get(String.valueOf(i));
+                    Obj key = newNumber(i);
+                    Obj element = receiver.send("get", new Obj[] { key });
                     Obj bool = fun.call(receiver, new Obj[] { element,
-                            newInteger(i) });
+                            newNumber(i) });
                     if (bool == trueObj) {
-                        result.values.put(String.valueOf(index), element);
+                        result.send("push", new Obj[] { element });
                         index++;
                     }
                 }
-                result.put("length", newInteger(index));
+                result.put("length", newNumber(index));
                 return result;
             }
         });
@@ -250,11 +252,12 @@ public class Runtime {
         arrayProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                int length = receiver.getInt("length");
+                int length = receiver.getBigDecimal("length").intValue();
                 StringBuilder buf = new StringBuilder();
                 buf.append("[");
                 for (int i = 0; i < length; i++) {
-                    Obj element = receiver.values.get(String.valueOf(i));
+                    Obj key = newNumber(i);
+                    Obj element = receiver.send("get", new Obj[] { key });
                     Obj string = element.send("toString");
                     buf.append(string.get("__value__"));
                     buf.append(", ");
@@ -292,6 +295,7 @@ public class Runtime {
         funProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
+                // TODO
                 Fun fun = (Fun) receiver;
                 StringBuilder buf = new StringBuilder();
                 buf.append("(");
@@ -352,14 +356,14 @@ public class Runtime {
         });
     }
 
-    protected void initIntegerProto() {
-        integerProto.addMethod("constructor", new Method("__value__") {
+    protected void initNumberProto() {
+        numberProto.addMethod("constructor", new Method("__value__") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj v = args[0].get("__value__");
                 if (v instanceof Value) {
                     Object object = ((Value) v).value;
-                    if (object instanceof Integer) {
+                    if (object instanceof BigDecimal) {
                         receiver.put("__value__", v);
                         return nullObj;
                     }
@@ -368,72 +372,78 @@ public class Runtime {
             }
         });
 
-        integerProto.addMethod("+", new Method("rhs") {
+        numberProto.addMethod("+", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)) {
-                    return newInteger(receiver.asInt() + rhs.asInt());
+                if (numberProto.isPrototypeOf(rhs)) {
+                    return newNumber(receiver.asBigDecimal().add(
+                            rhs.asBigDecimal()));
                 } else {
-                    return newString(receiver.asInt() + rhs.asString());
+                    return newString(receiver.asBigDecimal() + rhs.asString());
                 }
             }
         });
 
-        integerProto.addMethod("-", new Method("rhs") {
+        numberProto.addMethod("-", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)) {
-                    return newInteger(receiver.asInt() - rhs.asInt());
-                } else {
-                    return nullObj;
-                }
-            }
-        });
-
-        integerProto.addMethod("*", new Method("rhs") {
-            @Override
-            public Obj call(Obj receiver, Obj[] args) {
-                Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)) {
-                    return newInteger(receiver.asInt() * rhs.asInt());
+                if (numberProto.isPrototypeOf(rhs)) {
+                    return newNumber(receiver.asBigDecimal().subtract(
+                            rhs.asBigDecimal()));
                 } else {
                     return nullObj;
                 }
             }
         });
 
-        integerProto.addMethod("/", new Method("rhs") {
+        numberProto.addMethod("*", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)) {
-                    return newInteger(receiver.asInt() / rhs.asInt());
+                if (numberProto.isPrototypeOf(rhs)) {
+                    return newNumber(receiver.asBigDecimal().multiply(
+                            rhs.asBigDecimal()));
                 } else {
                     return nullObj;
                 }
             }
         });
 
-        integerProto.addMethod("%", new Method("rhs") {
+        numberProto.addMethod("/", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)) {
-                    return newInteger(receiver.asInt() % rhs.asInt());
+                if (numberProto.isPrototypeOf(rhs)) {
+                    return newNumber(receiver.asBigDecimal().divide(
+                            rhs.asBigDecimal()));
                 } else {
                     return nullObj;
                 }
             }
         });
 
-        integerProto.addMethod("==", new Method("rhs") {
+        numberProto.addMethod("%", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)
-                        && receiver.asInt() == rhs.asInt()) {
+                if (numberProto.isPrototypeOf(rhs)) {
+                    return newNumber(receiver.asBigDecimal().intValue()
+                            % rhs.asBigDecimal().intValue());
+                } else {
+                    return nullObj;
+                }
+            }
+        });
+
+        numberProto.addMethod("==", new Method("rhs") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj rhs = args[0];
+                if (numberProto.isPrototypeOf(rhs)
+                        && receiver.asBigDecimal()
+                                .compareTo(rhs.asBigDecimal()) == 0) {
                     return trueObj;
                 } else {
                     return falseObj;
@@ -441,12 +451,13 @@ public class Runtime {
             }
         });
 
-        integerProto.addMethod("<", new Method("rhs") {
+        numberProto.addMethod("<", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)
-                        && receiver.asInt() < rhs.asInt()) {
+                if (numberProto.isPrototypeOf(rhs)
+                        && receiver.asBigDecimal()
+                                .compareTo(rhs.asBigDecimal()) < 0) {
                     return trueObj;
                 } else {
                     return falseObj;
@@ -454,12 +465,13 @@ public class Runtime {
             }
         });
 
-        integerProto.addMethod(">", new Method("rhs") {
+        numberProto.addMethod(">", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)
-                        && receiver.asInt() > rhs.asInt()) {
+                if (numberProto.isPrototypeOf(rhs)
+                        && receiver.asBigDecimal()
+                                .compareTo(rhs.asBigDecimal()) > 0) {
                     return trueObj;
                 } else {
                     return falseObj;
@@ -467,12 +479,13 @@ public class Runtime {
             }
         });
 
-        integerProto.addMethod("<=", new Method("rhs") {
+        numberProto.addMethod("<=", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)
-                        && receiver.asInt() <= rhs.asInt()) {
+                if (numberProto.isPrototypeOf(rhs)
+                        && receiver.asBigDecimal()
+                                .compareTo(rhs.asBigDecimal()) <= 0) {
                     return trueObj;
                 } else {
                     return falseObj;
@@ -480,12 +493,13 @@ public class Runtime {
             }
         });
 
-        integerProto.addMethod(">=", new Method("rhs") {
+        numberProto.addMethod(">=", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj rhs = args[0];
-                if (integerProto.isPrototypeOf(rhs)
-                        && receiver.asInt() >= rhs.asInt()) {
+                if (numberProto.isPrototypeOf(rhs)
+                        && receiver.asBigDecimal()
+                                .compareTo(rhs.asBigDecimal()) >= 0) {
                     return trueObj;
                 } else {
                     return falseObj;
@@ -493,14 +507,15 @@ public class Runtime {
             }
         });
 
-        integerProto.addMethod("unary_minus", new Method() {
+        numberProto.addMethod("unary_minus", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                return newInteger(receiver.asInt() * -1);
+                return newNumber(receiver.asBigDecimal().multiply(
+                        new BigDecimal(-1)));
             }
         });
 
-        integerProto.addMethod("toString", new Method() {
+        numberProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 return newString(receiver.get("__value__").toString());
@@ -633,11 +648,15 @@ public class Runtime {
         return obj;
     }
 
-    public Obj newInteger(Integer i) {
-        Value value = i == null ? new Value(0) : new Value(i);
-        Obj obj = new Obj(this, integerProto);
+    public Obj newNumber(BigDecimal d) {
+        Value value = d == null ? new Value(0) : new Value(d);
+        Obj obj = new Obj(this, numberProto);
         obj.put("__value__", value);
         return obj;
+    }
+
+    public Obj newNumber(int i) {
+        return newNumber(new BigDecimal(i));
     }
 
     public Obj newProp(Obj value) {

@@ -1,3 +1,5 @@
 double = x -> 2 * x
 pow = x -> x * x
-10 |> double |> print
+y = 0
+10 |> double |> (x -> y = x)
+assert(y == 20, '')

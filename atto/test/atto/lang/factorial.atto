@@ -4,4 +4,7 @@ fact = n ->
 	else 
 		n * fact(n-1)
 
-fact(10)
+x = fact(10)
+
+print(x)
+assert(x == 3628800, '')

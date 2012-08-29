@@ -1,5 +1,6 @@
 package atto.lang;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.AssertionFailedError;
@@ -7,147 +8,98 @@ import junit.framework.TestCase;
 
 public class ScriptTest extends TestCase {
 
-    private InputStream stream;
-
-    @Override
-    protected void tearDown() throws Exception {
-        if (stream != null) {
-            stream.close();
-        }
-    }
-
     public void testSpike() throws Exception {
-        InputStream stream = read("spike.atto");
-        Interpreter i = new Interpreter();
-        i.run(stream);
+        run("spike.atto");
     }
 
     public void testWhile() throws Exception {
-        InputStream stream = read("while.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(1000), i.run(stream).asObject());
+        run("while.atto");
     }
 
     public void testWhile_then() throws Exception {
-        InputStream stream = read("while_then.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(1000), i.run(stream).asObject());
+        run("while_then.atto");
     }
 
     public void testFactorial() throws Exception {
-        InputStream stream = read("factorial.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(3628800), i.run(stream).asObject());
+        run("factorial.atto");
     }
 
     public void testIf() throws Exception {
-        InputStream stream = read("if.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("foo", i.run(stream).asObject());
+        run("if.atto");
     }
 
     public void testIf_then() throws Exception {
-        InputStream stream = read("if_then.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("foo", i.run(stream).asObject());
+        run("if_then.atto");
     }
 
     public void testCounter() throws Exception {
-        InputStream stream = read("counter.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("3", i.run(stream).asObject());
+        run("counter.atto");
     }
 
     public void testObj() throws Exception {
-        InputStream stream = read("obj.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(20), i.run(stream).asObject());
+        run("obj.atto");
     }
 
     public void testObjBlock() throws Exception {
-        InputStream stream = read("obj_block.atto");
-        Interpreter i = new Interpreter();
-        i.run(stream);
+        run("obj_block.atto");
     }
 
     public void testLineJoining() throws Exception {
-        InputStream stream = read("line_joining.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("4", i.run(stream).asObject());
+        run("line_joining.atto");
     }
 
     public void testAssign() throws Exception {
-        InputStream stream = read("assign.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(1), i.run(stream).asObject());
+        run("assign.atto");
     }
 
     public void testComposite() throws Exception {
-        InputStream stream = read("composite.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(10), i.run(stream).asObject());
+        run("composite.atto");
     }
 
     public void testPartialApplication() throws Exception {
-        InputStream stream = read("partial_application.atto");
-        Interpreter i = new Interpreter();
-        assertEquals(new Integer(7), i.run(stream).asObject());
+        run("partial_application.atto");
     }
 
     public void testDotChain() throws Exception {
-        InputStream stream = read("dot_chain.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("hoge", i.run(stream).asObject());
+        run("dot_chain.atto");
     }
 
     public void testPipeline() throws Exception {
-        InputStream stream = read("pipeline.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("20", i.run(stream).asObject());
+        run("pipeline.atto");
     }
 
     public void testArrayMap() throws Exception {
-        InputStream stream = read("array_map.atto");
-        Interpreter i = new Interpreter();
-        Obj result = i.run(stream);
-        assertEquals(4, result.values.size());
-        assertEquals(new Integer(3), result.get("length").asObject());
-        assertEquals(new Integer(10), result.get("0").asObject());
-        assertEquals(new Integer(20), result.get("1").asObject());
-        assertEquals(new Integer(30), result.get("2").asObject());
+        run("array_map.atto");
     }
 
     public void testArrayFilter() throws Exception {
-        InputStream stream = read("array_filter.atto");
-        Interpreter i = new Interpreter();
-        Obj result = i.run(stream);
-        assertEquals(4, result.values.size());
-        assertEquals(new Integer(3), result.get("length").asObject());
-        assertEquals(new Integer(2), result.get("0").asObject());
-        assertEquals(new Integer(4), result.get("1").asObject());
-        assertEquals(new Integer(6), result.get("2").asObject());
+        run("array_filter.atto");
     }
 
     public void testAt() throws Exception {
-        InputStream stream = read("at.atto");
-        Interpreter i = new Interpreter();
-        assertEquals("hogefoo", i.run(stream).asObject());
+        run("at.atto");
     }
 
     public void testClass() throws Exception {
-        InputStream stream = read("class.atto");
-        Interpreter i = new Interpreter();
-        i.run(stream);
+        run("class.atto");
     }
 
-    private InputStream read(String fileName) throws Exception {
+    private void run(String fileName) throws Exception {
         String path = "atto/lang/" + fileName;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream stream = loader.getResourceAsStream(path);
         if (stream == null) {
             throw new AssertionFailedError("not found: " + path);
         }
-        return stream;
+        try {
+            Interpreter i = new Interpreter();
+            i.run(stream);
+        } finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-
 }

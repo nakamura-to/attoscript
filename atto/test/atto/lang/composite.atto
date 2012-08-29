@@ -4,3 +4,5 @@ h = f >> g
 result = h(2, 3)
 print(result)
 result
+
+assert(result == 10, '')

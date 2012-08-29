@@ -5,6 +5,7 @@ import static atto.AttoParser.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -131,8 +132,8 @@ public class Interpreter {
             return index(t);
         case FIELD_ACCESS:
             return field_access(t);
-        case INT:
-            return int_(t);
+        case NUMBER:
+            return number(t);
         case STRING:
             return string(t);
         case BOOL:
@@ -474,9 +475,9 @@ public class Interpreter {
         return expr.send("unary_minus");
     }
 
-    protected Object int_(AttoTree t) {
-        Assert.treeType(t, INT);
-        return runtime.newInteger(Integer.valueOf(t.getText()));
+    protected Object number(AttoTree t) {
+        Assert.treeType(t, NUMBER);
+        return runtime.newNumber(new BigDecimal(t.getText()));
     }
 
     protected Object string(AttoTree t) {
@@ -558,7 +559,7 @@ public class Interpreter {
             Obj arg = (Obj) exec(t.getChild(i));
             array.values.put(String.valueOf(i), arg);
         }
-        array.put("length", runtime.newInteger(len));
+        array.put("length", runtime.newNumber(len));
         return array;
     }
 

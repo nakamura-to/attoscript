@@ -1,5 +1,6 @@
 package atto.lang;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 
 public class Obj {
@@ -61,14 +62,14 @@ public class Obj {
         throw new IllegalArgumentException("name=" + name);
     }
 
-    public int getInt(String name) {
+    public BigDecimal getBigDecimal(String name) {
         Obj obj = get(name);
         if (obj == null) {
             throw new IllegalArgumentException("name=" + name);
         }
         Obj v = obj.get("__value__");
         if (v instanceof Value) {
-            return (Integer) ((Value) v).value;
+            return (BigDecimal) ((Value) v).value;
         }
         throw new IllegalArgumentException("name=" + name);
     }
@@ -81,10 +82,10 @@ public class Obj {
         throw new RuntimeException();
     }
 
-    public int asInt() {
+    public BigDecimal asBigDecimal() {
         Obj v = get("__value__");
         if (v instanceof Value) {
-            return (Integer) ((Value) v).value;
+            return (BigDecimal) ((Value) v).value;
         }
         throw new RuntimeException();
     }

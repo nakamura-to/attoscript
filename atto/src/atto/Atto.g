@@ -181,7 +181,7 @@ postfix
 primary 
 	: NAME
 	| AT^ NAME	
-	| INT
+	| NUMBER
 	| STRING
 	| BOOL
 	| NULL
@@ -211,17 +211,7 @@ vardef
 	: NAME
 	;
 
-// Literals
-fragment INTEGER:;
-fragment FLOAT:;
-/*
-NUMBER:             '-'? DIGIT+
-                      // Fix ambiguity with dot for message sending (DOT NAME).
-                      ( {isNum(input.LA(2))}?=> '.' DIGIT+  { $type = FLOAT; }
-                      |                                     { $type = INTEGER; }
-                      );
-*/           
-INT		: DIGIT+;	           
+NUMBER		: DIGIT+ ('.' DIGIT+)?;	           
 STRING		: '"' ~('\\' | '"')* '"' | '\'' ~('\\' | '\'')* '\'' ;
 BOOL		: 'true' | 'false';
 NULL		: 'null';

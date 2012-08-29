@@ -1,8 +1,8 @@
-user = { }
-user.name = "parrt"
+user = {}
+user.name = 'parrt'
 user.age = 20
-user.hello = (-> print('Hi'))
-user.hello()
-print(user)
-user.age
+user.hello = -> 'Hi ' + @name
+
+assert(user.hello() == 'Hi parrt', 'hello')
+assert(user.age == 20, 'age')
 

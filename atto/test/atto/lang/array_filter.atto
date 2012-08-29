@@ -1,4 +1,6 @@
-a = [1,2,3,4,5,6,7]
+a = [1 2 3 4 5 6 7]
 b = a.filter(x -> x % 2 == 0)
 print(b)
-b
+
+assert(b.length == 3, 'b.length')
+assert(b == [2 4 6], 'b')

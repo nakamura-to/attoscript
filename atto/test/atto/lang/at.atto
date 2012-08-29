@@ -5,6 +5,9 @@ person = {
 }
 
 print(person.hi())
+assert(person.hi() == 'Hi hoge', '1')
+
 person.set('foo')
+
 print(person.hi())
-person.name
+assert(person.hi() == 'Hi hogefoo', '2')

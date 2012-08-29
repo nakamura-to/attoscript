@@ -7,7 +7,7 @@ import org.antlr.runtime.CommonTokenStream;
 
 public class AttoParserTest extends TestCase {
 
-    public void testAtom_INT() throws Exception {
+    public void testPrimary_NUMBER() throws Exception {
         AttoParser p = createParser("1");
         AttoTree t = (AttoTree) p.primary().getTree();
         assertEquals("1", t.toStringTree());

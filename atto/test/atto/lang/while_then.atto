@@ -3,4 +3,5 @@ i = 0
 while i < n then i = i + 1
 
 print("looped " + n + " times.")
-n
+
+assert(n == 1000, 'n == 1000')

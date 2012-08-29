@@ -2,6 +2,7 @@ package atto.lang;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 
 import junit.framework.TestCase;
 
@@ -10,41 +11,41 @@ public class InterpreterTest extends TestCase {
     public void testIF() throws Exception {
         Interpreter i = new Interpreter();
         Obj result = i.run("i=3\nif i==3\n  100\n");
-        assertEquals(new Integer(100), result.asObject());
+        assertEquals(new BigDecimal(100), result.asObject());
     }
 
     public void testELIF_first() throws Exception {
         Interpreter i = new Interpreter();
         Obj result = i
                 .run("i=3\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelif i==4\n  400\n");
-        assertEquals(new Integer(300), result.asObject());
+        assertEquals(new BigDecimal(300), result.asObject());
     }
 
     public void testELIF_middle() throws Exception {
         Interpreter i = new Interpreter();
         Obj result = i
                 .run("i=3\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelif i==4\n  400\n");
-        assertEquals(new Integer(300), result.asObject());
+        assertEquals(new BigDecimal(300), result.asObject());
     }
 
     public void testELIF_last() throws Exception {
         Interpreter i = new Interpreter();
         Obj result = i
                 .run("i=4\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelif i==4\n  400\n");
-        assertEquals(new Integer(400), result.asObject());
+        assertEquals(new BigDecimal(400), result.asObject());
     }
 
     public void testELSE() throws Exception {
         Interpreter i = new Interpreter();
         Obj result = i
                 .run("i=0\nif i==1\n  100\nelif i==2\n  200\nelif i==3\n  300\nelse\n  400\n");
-        assertEquals(new Integer(400), result.asObject());
+        assertEquals(new BigDecimal(400), result.asObject());
     }
 
     public void testWHILE() throws Exception {
         Interpreter i = new Interpreter();
         Obj result = i.run("i=0\nwhile i<3\n  i=i+1\n");
-        assertEquals(new Integer(3), result.asObject());
+        assertEquals(new BigDecimal(3), result.asObject());
     }
 
     public void testOBJ() throws Exception {
@@ -52,7 +53,7 @@ public class InterpreterTest extends TestCase {
         Obj result = i.run("{name: 'hoge', age: 10}\n");
         assertEquals(2, result.values.size());
         assertEquals("hoge", result.getString("name"));
-        assertEquals(10, result.getInt("age"));
+        assertEquals(new BigDecimal(10), result.getBigDecimal("age"));
     }
 
     public void testOBJ_assign_and_load() throws Exception {
@@ -90,25 +91,25 @@ public class InterpreterTest extends TestCase {
     public void testARRAY_get() throws Exception {
         Interpreter i = new Interpreter();
         i.run("a=[1,2,3]\n");
-        assertEquals(new Integer(1), i.run("a[0]\n").asObject());
-        assertEquals(new Integer(2), i.run("a[1]\n").asObject());
-        assertEquals(new Integer(3), i.run("a[2]\n").asObject());
+        assertEquals(new BigDecimal(1), i.run("a[0]\n").asObject());
+        assertEquals(new BigDecimal(2), i.run("a[1]\n").asObject());
+        assertEquals(new BigDecimal(3), i.run("a[2]\n").asObject());
     }
 
     public void testARRAY_set() throws Exception {
         Interpreter i = new Interpreter();
         i.run("a=[0,0,0]\na[0]=1\na[1]=2\na[2]=3\n");
-        assertEquals(new Integer(1), i.run("a[0]\n").asObject());
-        assertEquals(new Integer(2), i.run("a[1]\n").asObject());
-        assertEquals(new Integer(3), i.run("a[2]\n").asObject());
+        assertEquals(new BigDecimal(1), i.run("a[0]\n").asObject());
+        assertEquals(new BigDecimal(2), i.run("a[1]\n").asObject());
+        assertEquals(new BigDecimal(3), i.run("a[2]\n").asObject());
     }
 
     public void testARRAY_push() throws Exception {
         Interpreter i = new Interpreter();
         i.run("a=[]\na.push(1)\na.push(2)\na.push(3)\n");
-        assertEquals(new Integer(1), i.run("a[0]\n").asObject());
-        assertEquals(new Integer(2), i.run("a[1]\n").asObject());
-        assertEquals(new Integer(3), i.run("a[2]\n").asObject());
+        assertEquals(new BigDecimal(1), i.run("a[0]\n").asObject());
+        assertEquals(new BigDecimal(2), i.run("a[1]\n").asObject());
+        assertEquals(new BigDecimal(3), i.run("a[2]\n").asObject());
     }
 
     public void testARROW_expr() throws Exception {
@@ -149,11 +150,12 @@ public class InterpreterTest extends TestCase {
 
     public void testCALL() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(3), i.run("f=x,y->x+y\nf(1,2)\n").asObject());
-        assertEquals(new Integer(3), i.run("(x,y->x+y)(1,2)\n").asObject());
+        assertEquals(new BigDecimal(3), i.run("f=x,y->x+y\nf(1,2)\n")
+                .asObject());
+        assertEquals(new BigDecimal(3), i.run("(x,y->x+y)(1,2)\n").asObject());
     }
 
-    public void testPRINT() throws Exception {
+    public void testPRNUMBER() throws Exception {
         StringWriter writer = new StringWriter();
         Interpreter i = new Interpreter();
         i.run("a = 100\nprint(a)\n", new PrintWriter(writer));
@@ -185,101 +187,101 @@ public class InterpreterTest extends TestCase {
 
     public void testUNARY_MINUS() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(-1), i.run("-1\n").asObject());
+        assertEquals(new BigDecimal(-1), i.run("-1\n").asObject());
     }
 
-    public void testINT() throws Exception {
+    public void testNUMBER() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(new Integer(10), i.run("10\n").asObject());
+        assertEquals(new BigDecimal(10), i.run("10\n").asObject());
     }
 
-    public void testINT_EQ() throws Exception {
+    public void testNUMBER_EQ() throws Exception {
         Interpreter i = new Interpreter();
         assertTrue(i.run("10 == 10\n").asBoolean());
         assertTrue(i.run("'abc' == 'abc'\n").asBoolean());
     }
 
-    public void testINT_NE() throws Exception {
+    public void testNUMBER_NE() throws Exception {
         Interpreter i = new Interpreter();
         assertTrue(i.run("10 != 20\n").asBoolean());
     }
 
-    public void testINT_LT() throws Exception {
+    public void testNUMBER_LT() throws Exception {
         Interpreter i = new Interpreter();
         assertTrue(i.run("10 < 20\n").asBoolean());
         assertFalse(i.run("10 < 10\n").asBoolean());
         assertFalse(i.run("20 < 10\n").asBoolean());
     }
 
-    public void testINT_GT() throws Exception {
+    public void testNUMBER_GT() throws Exception {
         Interpreter i = new Interpreter();
         assertFalse(i.run("10 > 20\n").asBoolean());
         assertFalse(i.run("10 > 10\n").asBoolean());
         assertTrue(i.run("20 > 10\n").asBoolean());
     }
 
-    public void testINT_LE() throws Exception {
+    public void testNUMBER_LE() throws Exception {
         Interpreter i = new Interpreter();
         assertTrue(i.run("10 <= 20\n").asBoolean());
         assertTrue(i.run("10 <= 10\n").asBoolean());
         assertFalse(i.run("20 <= 10\n").asBoolean());
     }
 
-    public void testINT_GE() throws Exception {
+    public void testNUMBER_GE() throws Exception {
         Interpreter i = new Interpreter();
         assertFalse(i.run("10 >= 20\n").asBoolean());
         assertTrue(i.run("10 >= 10\n").asBoolean());
         assertTrue(i.run("20 >= 10\n").asBoolean());
     }
 
-    public void testINT_PLUS() throws Exception {
+    public void testNUMBER_PLUS() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(30, i.run("10 + 20\n").asInt());
+        assertEquals(new BigDecimal(30), i.run("10 + 20\n").asBigDecimal());
     }
 
-    public void testINT_MINUS() throws Exception {
+    public void testNUMBER_MINUS() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(-10, i.run("10 - 20\n").asInt());
+        assertEquals(new BigDecimal(-10), i.run("10 - 20\n").asBigDecimal());
     }
 
-    public void testINT_MUL() throws Exception {
+    public void testNUMBER_MUL() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(200, i.run("10 * 20\n").asInt());
+        assertEquals(new BigDecimal(200), i.run("10 * 20\n").asBigDecimal());
     }
 
-    public void testINT_DIV() throws Exception {
+    public void testNUMBER_DIV() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(5, i.run("100 / 20\n").asInt());
+        assertEquals(new BigDecimal(5), i.run("100 / 20\n").asBigDecimal());
     }
 
-    public void testINT_MOD() throws Exception {
+    public void testNUMBER_MOD() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(3, i.run("8 % 5\n").asInt());
+        assertEquals(new BigDecimal(3), i.run("8 % 5\n").asBigDecimal());
     }
 
-    public void testINT_PLUS_ASSIGN() throws Exception {
+    public void testNUMBER_PLUS_ASSIGN() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(3, i.run("a=1\na+=2\na\n").asInt());
+        assertEquals(new BigDecimal(3), i.run("a=1\na+=2\na\n").asBigDecimal());
     }
 
-    public void testINT_MINUS_ASSIGN() throws Exception {
+    public void testNUMBER_MINUS_ASSIGN() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(-1, i.run("a=1\na-=2\na\n").asInt());
+        assertEquals(new BigDecimal(-1), i.run("a=1\na-=2\na\n").asBigDecimal());
     }
 
-    public void testINT_MUL_ASSIGN() throws Exception {
+    public void testNUMBER_MUL_ASSIGN() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(6, i.run("a=2\na*=3\na\n").asInt());
+        assertEquals(new BigDecimal(6), i.run("a=2\na*=3\na\n").asBigDecimal());
     }
 
-    public void testINT_DIV_ASSIGN() throws Exception {
+    public void testNUMBER_DIV_ASSIGN() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(5, i.run("a=10\na/=2\na\n").asInt());
+        assertEquals(new BigDecimal(5), i.run("a=10\na/=2\na\n").asBigDecimal());
     }
 
-    public void testINT_MOD_ASSIGN() throws Exception {
+    public void testNUMBER_MOD_ASSIGN() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(3, i.run("a=8\na%=5\na\n").asInt());
+        assertEquals(new BigDecimal(3), i.run("a=8\na%=5\na\n").asBigDecimal());
     }
 
     public void testSTRING() throws Exception {
@@ -347,7 +349,7 @@ public class InterpreterTest extends TestCase {
 
     public void testSEMICOLON() throws Exception {
         Interpreter i = new Interpreter();
-        assertEquals(3, i.run("a=1;a=a + 2;a").asInt());
+        assertTrue(i.run("a=1.0;a=a + 2;a==3").asBoolean());
     }
 
     public void testPARENTHESES() throws Exception {

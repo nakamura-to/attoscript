@@ -4,4 +4,4 @@ f = ->
 .b
 	.c
 		.d
-f()
+assert(f() == 'hoge', '')
