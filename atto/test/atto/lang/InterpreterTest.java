@@ -345,6 +345,11 @@ public class InterpreterTest extends TestCase {
         assertEquals(i.runtime.nullObj, result);
     }
 
+    public void testSEMICOLON() throws Exception {
+        Interpreter i = new Interpreter();
+        assertEquals(3, i.run("a=1;a=a + 2;a").asInt());
+    }
+
     public void testPARENTHESES() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals(Boolean.TRUE, i.run("(true)\n").asObject());

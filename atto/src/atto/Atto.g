@@ -64,11 +64,11 @@ package atto;
 }
 
 root
-	: stmt* EOF -> ^(BLOCK stmt*)
+	: stmt* -> ^(BLOCK stmt*)
 	;
 
 stmt	
-	: expr (NEWLINE)? 
+	: expr (SEMICOLON)? (NEWLINE)? 
 		-> ^(STMT expr)
 	| 'class' c=NAME ('extends' e=NAME)? NEWLINE 
 	  INDENT pair NEWLINE? (COMMA? pair NEWLINE?)* DEDENT 
