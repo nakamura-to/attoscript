@@ -1,3 +1,2 @@
-x = (-> 2)
-x.y = 'a'
-print(x)
+a = [1,2,3]
+a.each(x -> print(x))

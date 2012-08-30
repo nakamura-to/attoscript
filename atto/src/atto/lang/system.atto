@@ -1,0 +1,26 @@
+Array.prototype.map = f -> 
+	i = 0
+	len = self.length
+	ret = []
+	while i < len
+		ret.push(f(self[i]))
+		i += 1
+	ret
+
+Array.prototype.filter = f -> 
+	i = 0
+	len = self.length
+	ret = []
+	while i < len
+		e = self[i]
+		if f(e)
+			ret.push(e)
+		i += 1
+	ret
+
+Array.prototype.each = f -> 
+	i = 0
+	len = self.length
+	while i < len
+		f(self[i])
+		i += 1

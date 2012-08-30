@@ -1,8 +1,12 @@
 package atto.lang;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.Map;
+
+import org.antlr.runtime.RecognitionException;
 
 import atto.AttoTree;
 
@@ -38,7 +42,7 @@ public class Runtime {
         this.out = out;
     }
 
-    public void init() {
+    public void init() throws IOException, RecognitionException {
         currentEnv = new Env(this);
 
         objProto = new Obj(this, null);
@@ -93,6 +97,24 @@ public class Runtime {
         // built-in function
         currentEnv.put("print", new BuiltinFun.PrintFun(this, out));
         currentEnv.put("assert", new BuiltinFun.AssertFun(this, out));
+
+        Interpreter system = new Interpreter();
+        system.runtime = this;
+        InputStream stream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream("atto/lang/system.atto");
+        if (stream == null) {
+            throw new RuntimeException("system.atto not found");
+        }
+        try {
+            system.run(stream);
+        } finally {
+            try {
+                stream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     protected void initObjProto() {
@@ -206,46 +228,6 @@ public class Runtime {
                 int index = args[0].asBigDecimal().intValue();
                 Obj element = receiver.get(String.valueOf(index));
                 return element == null ? nullObj : element;
-            }
-        });
-
-        arrayProto.addMethod("map", new Method("fun") {
-            @Override
-            public Obj call(Obj receiver, Obj[] args) {
-                Fun fun = (Fun) args[0];
-                int length = receiver.getBigDecimal("length").intValue();
-                Obj result = newArray();
-                for (int i = 0; i < length; i++) {
-                    Obj key = newNumber(i);
-                    Obj element = receiver.send("get", new Obj[] { key });
-                    Obj newElement = fun.call(receiver, new Obj[] { element,
-                            newNumber(i) });
-                    result.send("push", new Obj[] { newElement });
-                }
-                result.put("length", newNumber(length));
-                return result;
-            }
-        });
-
-        arrayProto.addMethod("filter", new Method("fun") {
-            @Override
-            public Obj call(Obj receiver, Obj[] args) {
-                Fun fun = (Fun) args[0];
-                int length = receiver.getBigDecimal("length").intValue();
-                Obj result = newArray();
-                int index = 0;
-                for (int i = 0; i < length; i++) {
-                    Obj key = newNumber(i);
-                    Obj element = receiver.send("get", new Obj[] { key });
-                    Obj bool = fun.call(receiver, new Obj[] { element,
-                            newNumber(i) });
-                    if (bool == trueObj) {
-                        result.send("push", new Obj[] { element });
-                        index++;
-                    }
-                }
-                result.put("length", newNumber(index));
-                return result;
             }
         });
 

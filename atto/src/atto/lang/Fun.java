@@ -22,6 +22,7 @@ public abstract class Fun extends Obj {
                 calleeEnv.putLocal(params[i], args[i]);
             }
         }
+        calleeEnv.putLocal("self", receiver);
         if (args.length < params.length) {
             String[] newParams = new String[params.length - args.length];
             for (int i = 0; i < newParams.length; i++) {
