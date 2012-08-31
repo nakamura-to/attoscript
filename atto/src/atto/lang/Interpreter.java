@@ -16,7 +16,6 @@ import org.antlr.runtime.tree.TreeAdaptor;
 
 import atto.AttoLexer;
 import atto.AttoParser;
-import atto.AttoTokenSource;
 import atto.AttoTree;
 import atto.AttoTreeAdaptor;
 import atto.lang.util.Assert;
@@ -52,8 +51,6 @@ public class Interpreter {
             throws RecognitionException, IOException {
         AttoLexer lexer = new AttoLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        AttoTokenSource source = new AttoTokenSource(tokens);
-        tokens = new CommonTokenStream(source);
         AttoParser parser = new AttoParser(tokens);
         parser.setTreeAdaptor(treeAdaptor);
         AttoParser.root_return ret = parser.root();
@@ -65,7 +62,7 @@ public class Interpreter {
             AttoTree root = (AttoTree) ret.getTree();
             return (Obj) block(root);
         }
-        return null;
+        throw new RuntimeException("SyntaxError");
     }
 
     protected Object exec(AttoTree t) {
@@ -74,8 +71,6 @@ public class Interpreter {
             return block(t);
         case STMT:
             return stmt(t);
-        case CLASS:
-            return class_(t);
         case EXTENDS:
             return extends_(t);
         case IF:
@@ -112,6 +107,8 @@ public class Interpreter {
             return composite(t);
         case PIPELINE:
             return pipeline(t);
+        case R_PIPELINE:
+            return r_pipeline(t);
         case PLUS:
             return plus(t);
         case MINUS:
@@ -126,6 +123,8 @@ public class Interpreter {
             return not(t);
         case UNARY_MINUS:
             return unary_minus(t);
+        case APPLY:
+            return apply(t);
         case CALL:
             return call(t);
         case INDEX:
@@ -148,8 +147,6 @@ public class Interpreter {
             return obj(t);
         case COLON:
             return colon(t);
-        case PROP:
-            return prop(t);
         case ARRAY:
             return array(t);
         default:
@@ -170,17 +167,6 @@ public class Interpreter {
         Assert.treeType(t, STMT);
         Assert.equals(1, t.getChildCount());
         return exec(t.getChild(0));
-    }
-
-    protected Object class_(AttoTree t) {
-        Assert.treeType(t, CLASS);
-        String className = t.getChild(0).getText();
-        Obj superclass = (Obj) exec(t.getChild(1));
-        Obj prototype = (Obj) exec(t.getChild(2));
-        prototype.__proto__ = superclass.get("prototype");
-        Obj clazz = runtime.newClass(className, prototype);
-        runtime.currentEnv.put(className, clazz);
-        return clazz;
     }
 
     protected Object extends_(AttoTree t) {
@@ -310,6 +296,30 @@ public class Interpreter {
         return obj.send(name, args);
     }
 
+    protected Object apply(AttoTree t) {
+        Assert.treeType(t, APPLY);
+        AttoTree target = t.getChild(0);
+        Obj arg = (Obj) exec(t.getChild(1));
+        Obj[] args = new Obj[] { arg };
+        if (target.getType() == FIELD_ACCESS) {
+            Obj receiver = (Obj) exec(target.getChild(0));
+            String field = target.getChild(1).getText();
+            return receiver.send(field, args);
+        } else {
+            if (target.getType() == AT) {
+                Obj receiver = runtime.currentEnv.self;
+                String name = target.getChild(0).getText();
+                return receiver.send(name, args);
+            } else {
+                Obj fun = (Obj) exec(target);
+                if (fun instanceof Fun) {
+                    return ((Fun) fun).call(runtime.nullObj, args);
+                }
+                throw new RuntimeException("not function: " + target);
+            }
+        }
+    }
+
     protected Object call(AttoTree t) {
         Assert.treeType(t, CALL);
         AttoTree target = t.getChild(0);
@@ -428,6 +438,13 @@ public class Interpreter {
         return fun.send(t.getText(), arg);
     }
 
+    protected Object r_pipeline(AttoTree t) {
+        Assert.treeType(t, R_PIPELINE);
+        Obj fun = (Obj) exec(t.getChild(0));
+        Obj arg = (Obj) exec(t.getChild(1));
+        return fun.send(t.getText(), arg);
+    }
+
     protected Object plus(AttoTree t) {
         Assert.treeType(t, PLUS);
         Obj lhs = (Obj) exec(t.getChild(0));
@@ -543,12 +560,6 @@ public class Interpreter {
         String key = lhs.getText();
         Obj value = (Obj) exec(rhs);
         return new Object[] { key, value };
-    }
-
-    protected Object prop(AttoTree t) {
-        Assert.treeType(t, PROP);
-        Obj obj = (Obj) exec(t.getChild(0));
-        return runtime.newProp(obj);
     }
 
     protected Object array(AttoTree t) {

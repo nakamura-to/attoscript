@@ -1,10 +1,11 @@
-person =
+person = {
 	name: 'hoge'
-	addr:
+	addr: {
 		city: 'Tokyo'
 		street: 'foo'
+	}
 	age: 20
-
+}
 assert(person.name == 'hoge', 'name')
 assert(person.addr.city == 'Tokyo', 'addr')
 assert(person.addr.street == 'foo', 'street')

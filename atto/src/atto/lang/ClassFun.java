@@ -2,14 +2,10 @@ package atto.lang;
 
 public class ClassFun extends Fun {
 
-    protected String name;
-
     protected Obj prototype;
 
-    public ClassFun(Runtime runtime, Env env, String[] params, String name,
-            Obj prototype) {
+    public ClassFun(Runtime runtime, Env env, String[] params, Obj prototype) {
         super(runtime, env, params);
-        this.name = name;
         this.prototype = prototype;
         put("prototype", prototype);
     }

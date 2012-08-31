@@ -1,7 +1,6 @@
 package atto.lang;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -36,6 +35,7 @@ public class Runtime {
     protected ClassFun arrayClass;
     protected ClassFun numberClass;
     protected ClassFun stringClass;
+    protected ClassFun propClass;
 
     public Runtime(Interpreter interpreter, PrintWriter out) {
         this.interpreter = interpreter;
@@ -53,18 +53,16 @@ public class Runtime {
         stringProto = new Obj(this, objProto);
         propProto = new Obj(this, objProto); // TODO
 
-        objClass = new ClassFun(this, currentEnv, new String[] {}, "Object",
-                objProto);
-        funClass = new ClassFun(this, currentEnv, new String[] {}, "Function",
-                funProto);
-        arrayClass = new ClassFun(this, currentEnv, new String[] {}, "Array",
-                arrayProto);
+        objClass = new ClassFun(this, currentEnv, new String[] {}, objProto);
+        funClass = new ClassFun(this, currentEnv, new String[] {}, funProto);
+        arrayClass = new ClassFun(this, currentEnv, new String[] {}, arrayProto);
         boolClass = new ClassFun(this, currentEnv,
-                new String[] { "__value__" }, "Boolean", boolProto);
+                new String[] { "__value__" }, boolProto);
         numberClass = new ClassFun(this, currentEnv,
-                new String[] { "__value__" }, "Number", numberProto);
-        stringClass = new ClassFun(this, currentEnv, new String[] {}, "String",
+                new String[] { "__value__" }, numberProto);
+        stringClass = new ClassFun(this, currentEnv, new String[] {},
                 stringProto);
+        propClass = new ClassFun(this, currentEnv, new String[] {}, propProto);
 
         initObjProto();
         initFunProto();
@@ -82,38 +80,39 @@ public class Runtime {
             }
         });
         trueObj = new Obj(this, boolProto);
-        trueObj.put("__value__", new Value(true));
+        trueObj.putJavaObject("__value__", Boolean.TRUE);
         falseObj = new Obj(this, boolProto);
-        falseObj.put("__value__", new Value(false));
+        falseObj.putJavaObject("__value__", Boolean.FALSE);
 
         // built-in constructors
-        currentEnv.put(objClass.name, objClass);
-        currentEnv.put(funClass.name, funClass);
-        currentEnv.put(arrayClass.name, arrayClass);
-        currentEnv.put(boolClass.name, boolClass);
-        currentEnv.put(numberClass.name, numberClass);
-        currentEnv.put(stringClass.name, stringClass);
+        currentEnv.put("Object", objClass);
+        currentEnv.put("Function", funClass);
+        currentEnv.put("Array", arrayClass);
+        currentEnv.put("Boolean", boolClass);
+        currentEnv.put("Number", numberClass);
+        currentEnv.put("String", stringClass);
+        currentEnv.put("Property", propClass);
 
         // built-in function
         currentEnv.put("print", new BuiltinFun.PrintFun(this, out));
         currentEnv.put("assert", new BuiltinFun.AssertFun(this, out));
 
-        Interpreter system = new Interpreter();
-        system.runtime = this;
-        InputStream stream = Thread.currentThread().getContextClassLoader()
-                .getResourceAsStream("atto/lang/system.atto");
-        if (stream == null) {
-            throw new RuntimeException("system.atto not found");
-        }
-        try {
-            system.run(stream);
-        } finally {
-            try {
-                stream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // Interpreter system = new Interpreter();
+        // system.runtime = this;
+        // InputStream stream = Thread.currentThread().getContextClassLoader()
+        // .getResourceAsStream("atto/lang/system.atto");
+        // if (stream == null) {
+        // throw new RuntimeException("system.atto not found");
+        // }
+        // try {
+        // system.run(stream);
+        // } finally {
+        // try {
+        // stream.close();
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // }
 
     }
 
@@ -140,16 +139,29 @@ public class Runtime {
             }
         });
 
+        objProto.addMethod("clone", new Method("prototype") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj prototype = args[0];
+                prototype.__proto__ = receiver.get("prototype");
+                return newClass(prototype);
+            }
+        });
+
         objProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 StringBuilder buf = new StringBuilder();
                 buf.append("{");
-                for (Map.Entry<String, Obj> e : receiver.values.entrySet()) {
+                for (Map.Entry<String, Object> e : receiver.values.entrySet()) {
                     String key = e.getKey();
                     buf.append(key);
                     buf.append(": ");
-                    Obj value = e.getValue();
+                    Object v = e.getValue();
+                    if (!(v instanceof Obj)) {
+                        continue;
+                    }
+                    Obj value = (Obj) v;
                     Obj string = value.send("toString");
                     if (stringProto.isPrototypeOf(value)) {
                         buf.append("\"");
@@ -186,8 +198,8 @@ public class Runtime {
                 }
                 for (int i = 0; i < length; i++) {
                     String key = String.valueOf(i);
-                    Obj element = receiver.values.get(key);
-                    Obj otherElement = other.values.get(key);
+                    Obj element = receiver.get(key);
+                    Obj otherElement = other.get(key);
                     Obj result = element.send("==", otherElement);
                     if (!result.asBoolean()) {
                         return falseObj;
@@ -231,6 +243,61 @@ public class Runtime {
             }
         });
 
+        arrayProto.addMethod("map", new Method("fun") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Fun fun = (Fun) args[0];
+                int length = receiver.getBigDecimal("length").intValue();
+                Obj result = newArray();
+                for (int i = 0; i < length; i++) {
+                    Obj key = newNumber(i);
+                    Obj element = receiver.send("get", new Obj[] { key });
+                    Obj newElement = fun.call(receiver, new Obj[] { element,
+                            key });
+                    result.send("push", new Obj[] { newElement });
+                }
+                result.put("length", newNumber(length));
+                return result;
+            }
+        });
+
+        arrayProto.addMethod("filter", new Method("fun") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Fun fun = (Fun) args[0];
+                int length = receiver.getBigDecimal("length").intValue();
+                Obj result = newArray();
+                int index = 0;
+                for (int i = 0; i < length; i++) {
+                    Obj key = newNumber(i);
+                    Obj element = receiver.send("get", new Obj[] { key });
+                    Obj bool = fun.call(receiver, new Obj[] { element, key });
+                    if (bool == trueObj) {
+                        result.send("push", new Obj[] { element });
+                        index++;
+                    }
+                }
+                result.put("length", newNumber(index));
+                return result;
+            }
+        });
+
+        arrayProto.addMethod("each", new Method("fun") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Fun fun = (Fun) args[0];
+                int length = receiver.getBigDecimal("length").intValue();
+                for (int i = 0; i < length; i++) {
+                    Obj key = newNumber(i);
+                    Obj element = receiver.send("get", new Obj[] { key });
+                    fun.call(receiver, new Obj[] { element, key });
+                }
+                return nullObj;
+            }
+        });
+
+        arrayProto.put("forEach", arrayProto.get("each"));
+
         arrayProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
@@ -241,7 +308,7 @@ public class Runtime {
                     Obj key = newNumber(i);
                     Obj element = receiver.send("get", new Obj[] { key });
                     Obj string = element.send("toString");
-                    buf.append(string.get("__value__"));
+                    buf.append(string.getJavaObject("__value__"));
                     buf.append(", ");
                 }
                 if (length > 0) {
@@ -253,8 +320,16 @@ public class Runtime {
         });
     }
 
-    public void initFunProto() {
+    protected void initFunProto() {
         funProto.addMethod("|>", new Method("arg") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Fun fun = (Fun) receiver;
+                return fun.call(nullObj, args);
+            }
+        });
+
+        funProto.addMethod("<|", new Method("arg") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Fun fun = (Fun) receiver;
@@ -342,13 +417,10 @@ public class Runtime {
         numberProto.addMethod("constructor", new Method("__value__") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                Obj v = args[0].get("__value__");
-                if (v instanceof Value) {
-                    Object object = ((Value) v).value;
-                    if (object instanceof BigDecimal) {
-                        receiver.put("__value__", v);
-                        return nullObj;
-                    }
+                Object value = args[0].getJavaObject("__value__");
+                if (value instanceof BigDecimal) {
+                    receiver.putJavaObject("__value__", value);
+                    return nullObj;
                 }
                 throw new RuntimeException("not implemented");
             }
@@ -500,7 +572,8 @@ public class Runtime {
         numberProto.addMethod("toString", new Method() {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                return newString(receiver.get("__value__").toString());
+                Object value = receiver.getJavaObject("__value__");
+                return newString(value.toString());
             }
         });
     }
@@ -510,9 +583,9 @@ public class Runtime {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Obj s = args[0].send("toString");
-                Obj value = s.get("__value__");
-                if (value instanceof Value) {
-                    receiver.put("__value__", value);
+                Object value = s.getJavaObject("__value__");
+                if (value instanceof String) {
+                    receiver.putJavaObject("__value__", value);
                 }
                 return nullObj;
             }
@@ -604,7 +677,21 @@ public class Runtime {
     }
 
     protected void initPropProto() {
-
+        propProto.addMethod("constructor", new Method("__value__") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                Obj options = args[0];
+                Obj getter = options.get("get");
+                Obj setter = options.get("set");
+                if (funProto.isPrototypeOf(getter)) {
+                    receiver.put("get", getter);
+                }
+                if (funProto.isPrototypeOf(setter)) {
+                    receiver.put("set", setter);
+                }
+                return nullObj;
+            }
+        });
     }
 
     public Obj newObj() {
@@ -624,16 +711,14 @@ public class Runtime {
     }
 
     public Obj newString(String s) {
-        Value value = s == null ? new Value("") : new Value(s);
         Obj obj = new Obj(this, stringProto);
-        obj.put("__value__", value);
+        obj.putJavaObject("__value__", s == null ? "" : s);
         return obj;
     }
 
     public Obj newNumber(BigDecimal d) {
-        Value value = d == null ? new Value(0) : new Value(d);
         Obj obj = new Obj(this, numberProto);
-        obj.put("__value__", value);
+        obj.putJavaObject("__value__", d == null ? BigDecimal.ZERO : d);
         return obj;
     }
 
@@ -641,26 +726,13 @@ public class Runtime {
         return newNumber(new BigDecimal(i));
     }
 
-    public Obj newProp(Obj value) {
-        Obj getter = value.get("get");
-        Obj setter = value.get("set");
-        Obj prop = new Obj(this, propProto);
-        if (funProto.isPrototypeOf(getter)) {
-            prop.put("get", getter);
-        }
-        if (funProto.isPrototypeOf(setter)) {
-            prop.put("set", setter);
-        }
-        return prop;
-    }
-
-    public Obj newClass(String name, Obj prototype) {
+    public Obj newClass(Obj prototype) {
         String[] params = new String[] {};
         Obj constructor = prototype.get("constructor");
         if (constructor instanceof Fun) {
             params = ((Fun) constructor).params;
         }
-        return new ClassFun(this, currentEnv, params, name, prototype);
+        return new ClassFun(this, currentEnv, params, prototype);
     }
 
     public Obj exec(AttoTree tree) {

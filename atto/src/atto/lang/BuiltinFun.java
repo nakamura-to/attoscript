@@ -30,7 +30,7 @@ public abstract class BuiltinFun extends Fun {
                 out.println("null");
             } else {
                 s = o.send("toString");
-                out.println(s.get("__value__"));
+                out.println(s.asObject());
             }
             out.flush();
             return s;

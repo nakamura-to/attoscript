@@ -1,0 +1,7 @@
+a = [1, 2, 3, 4, 5, 6, 7]
+b = []
+a.each({ x -> b.push(x) })
+print(b)
+
+assert(b.length == 7, 'b.length')
+assert(b == a, 'b')

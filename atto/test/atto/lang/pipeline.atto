@@ -1,5 +1,11 @@
-double = x -> 2 * x
-pow = x -> x * x
+double = { x -> 2 * x }
+pow = { x -> x * x }
 y = 0
-10 |> double |> (x -> y = x)
-assert(y == 20, '')
+10 |> double |> { x -> y = x }
+assert(y == 20, 'y')
+print <| y
+
+z = 0
+{ x -> z = x } <| double <| 20
+assert(z == 40, 'z')
+print <| z

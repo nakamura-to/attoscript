@@ -1,36 +1,3 @@
-/*
- Indentation logic is based on Python.g which is from a following URL.
- - https://github.com/antlr/examples-v3/blob/master/java/python/Python.g
-*/
-
-/*
- [The 'BSD licence']
- Copyright (c) 2004 Terence Parr and Loring Craymer
- All rights reserved.
-
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions
- are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
- 3. The name of the author may not be used to endorse or promote products
-    derived from this software without specific prior written permission.
-
- THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
- 
 grammar Atto;
 
 options {
@@ -41,22 +8,13 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
-	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND; PROP;
-	CLASS='class'; EXTENDS='extends';
+	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
+	CLASS='class'; EXTENDS='extends'; FUN;
+	APPLY;
 }
 
 @lexer::header {
 package atto;
-}
-
-@lexer::members {
-	int implicitLineJoiningLevel = 0;
-	int startPos = -1;
-	
-	public Token nextToken() {
-	    startPos = getCharPositionInLine();
-	    return super.nextToken();
-	}
 }
 
 @header {
@@ -64,80 +22,72 @@ package atto;
 }
 
 root
-	: stmt* -> ^(BLOCK stmt*)
+	: block
+	;
+
+block
+	: (stmt (terminator stmt)*)? terminator? -> ^(BLOCK stmt*)
 	;
 
 stmt	
-	: expr (SEMICOLON)? (NEWLINE)? 
-		-> ^(STMT expr)
-	| 'class' c=NAME ('extends' e=NAME)? NEWLINE 
-	  INDENT pair NEWLINE? (COMMA? pair NEWLINE?)* DEDENT 
-		-> ^(CLASS $c ^(EXTENDS $e?) ^(OBJ pair+)) 
+	: expr
 	;
 
-block	 
-	: INDENT 
-	  ( stmt* -> ^(BLOCK stmt*)
-	  | pair NEWLINE? (COMMA? pair NEWLINE?)* -> ^(OBJ pair+)
-	  ) 
-	  DEDENT
-	;
+terminator
+	: SEMICOLON NEWLINE?|NEWLINE
+	; 
 
 expr
 	: (assign)=> assign
-	| (fun)=> fun
+	| or
 	| if_
 	| while_
-	| or
+
 	;
 
 assign
 	: postfix 
-	  ( ASSIGN body -> ^(ASSIGN postfix body)
-	  | ( PLUS ASSIGN body -> ^(ASSIGN postfix ^(PLUS postfix body))
-	    | MINUS ASSIGN body -> ^(ASSIGN postfix ^(MINUS postfix body))
-	    | MUL ASSIGN body -> ^(ASSIGN postfix ^(MUL postfix body))
-	    | DIV ASSIGN body -> ^(ASSIGN postfix ^(DIV postfix body))
-	    | MOD ASSIGN body -> ^(ASSIGN postfix ^(MOD postfix body))
+	  ( ASSIGN expr -> ^(ASSIGN postfix expr)
+	  | ( PLUS ASSIGN expr -> ^(ASSIGN postfix ^(PLUS postfix expr))
+	    | MINUS ASSIGN expr -> ^(ASSIGN postfix ^(MINUS postfix expr))
+	    | MUL ASSIGN expr -> ^(ASSIGN postfix ^(MUL postfix expr))
+	    | DIV ASSIGN expr -> ^(ASSIGN postfix ^(DIV postfix expr))
+	    | MOD ASSIGN expr -> ^(ASSIGN postfix ^(MOD postfix expr))
 	    ) 
 	  )
 	;
 
 fun
-	: paramsdef ARROW^ body
+	: '{' paramsdef '->' NEWLINE? block '}' -> ^(ARROW paramsdef block)
 	;
 
 paramsdef
-	: (vardef (COMMA? vardef)*)? -> ^(PARAMS vardef*)
-	| LPAREN (vardef (COMMA? vardef)*)? RPAREN -> ^(PARAMS vardef*)
-	;
-
-body	
-	:  expr
-	|  NEWLINE block -> block
+	: (vardef (COMMA vardef)*)? -> ^(PARAMS vardef*)
 	;
 	
 if_	
 	: 'if' cond_expr=expr 
-	  ( NEWLINE block elif* else_? 
+	  ( NEWLINE? '{' NEWLINE? block '}' NEWLINE? elif* else_? 
 	  	-> ^(IF $cond_expr block elif* else_?)
-	  | 'then' then_expr=expr ('else' else_expr=expr)? 
+	  | 'then' then_expr=expr ('else' else_expr=expr)?
 	  	-> ^(IF $cond_expr $then_expr ^(ELSE $else_expr)?)
 	  )
 	;
 
 elif	
-	: 'elif' expr NEWLINE block -> ^(ELIF expr block)
+	: 'elif' expr NEWLINE? '{' NEWLINE? block '}' NEWLINE? -> ^(ELIF expr block)
 	;
 
 else_
-	: 'else' NEWLINE block -> ^(ELSE block)
+	: 'else' NEWLINE? '{' NEWLINE? block '}' NEWLINE? -> ^(ELSE block)
 	;
 
 while_	
 	: 'while' cond_expr=expr 
-	  ( NEWLINE block -> ^(WHILE $cond_expr block)
-	  | 'then' then_expr=expr -> ^(WHILE $cond_expr $then_expr)
+	  ( NEWLINE? '{' NEWLINE? block '}' NEWLINE? 
+	  	-> ^(WHILE $cond_expr block)
+	  | 'then' then_expr=expr
+	  	-> ^(WHILE $cond_expr $then_expr)
 	  )
 	;
 
@@ -150,7 +100,12 @@ and
 	;
 
 rel
-	: add ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE)^ add)*
+	: rel2 ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE)^ rel2)*
+	;
+
+
+rel2
+	: add (R_PIPELINE^ rel)*
 	;
 
 add
@@ -166,15 +121,16 @@ unary
 	| NOT^ postfix
 	| MINUS postfix -> ^(UNARY_MINUS postfix)
 	;
-
+	
 postfix 
 	: ( primary -> primary )
-	  ( LPAREN (expr (COMMA? expr)*)? RPAREN 
-	  	-> ^(CALL $postfix expr*)
+	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
+	  	-> ^(CALL $postfix expr*)	
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
-	  | DOT p=primary
-	  	-> ^(FIELD_ACCESS $postfix $p) 
+	  | DOT ( p=primary -> ^(FIELD_ACCESS $postfix $p) 
+	  	| -> ^(CALL $postfix)
+	  	)
 	  )*
 	;
 
@@ -186,32 +142,29 @@ primary
 	| BOOL
 	| NULL
 	| LPAREN expr RPAREN -> expr
+	| (fun)=> fun
 	| obj
 	| array
-	| prop
 	;
 
 obj	
-	: LCURLY (pair (COMMA? pair)*)? COMMA? RCURLY -> ^(OBJ pair*)
+	: LCURLY NEWLINE? (pair ((COMMA|COMMA? NEWLINE) pair)*)? (COMMA|COMMA? NEWLINE)? RCURLY -> ^(OBJ pair*)
 	;
 
 pair
-	: NAME COLON^ body
+	: NAME COLON^ expr
 	;
 
-prop
-	: LCURLY obj RCURLY -> ^(PROP obj)
-	;
 
 array	
-	: LBRACK (expr (COMMA? expr)* )? COMMA? RBRACK -> ^(ARRAY expr*)
+	: LBRACK NEWLINE? (expr ((COMMA|COMMA? NEWLINE) expr)* )? (COMMA|COMMA? NEWLINE)? RBRACK -> ^(ARRAY expr*)
 	;
 
 vardef
 	: NAME
 	;
 
-NUMBER		: DIGIT+ ('.' DIGIT+)?;	           
+NUMBER		: '-'? DIGIT+ ('.' DIGIT+)?;	           
 STRING		: '"' ~('\\' | '"')* '"' | '\'' ~('\\' | '\'')* '\'' ;
 BOOL		: 'true' | 'false';
 NULL		: 'null';
@@ -221,12 +174,12 @@ SEMICOLON	: ';';
 COLON		: ':';
 DOT		: '.';
 COMMA		: ',';
-LPAREN		: '(' { implicitLineJoiningLevel++; } ;
-RPAREN		: ')' { implicitLineJoiningLevel--; } ;
-LCURLY		: '{' { implicitLineJoiningLevel++; } ;
-RCURLY		: '}' { implicitLineJoiningLevel--; } ;
-LBRACK		: '[' { implicitLineJoiningLevel++; } ;
-RBRACK		: ']' { implicitLineJoiningLevel--; } ;
+LPAREN		: '(';
+RPAREN		: ')';
+LCURLY		: '{';
+RCURLY		: '}';
+LBRACK		: '[';
+RBRACK		: ']';
 AT		: '@';
 EQ		: '==';
 NE		: '!=';
@@ -246,38 +199,13 @@ ASSIGN		: '=';
 ARROW		: '->';
 COMPOSITE	: '>>';
 PIPELINE	: '|>';
+R_PIPELINE	: '<|';
 
 NEWLINE
-		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE) )=> (('\r')? '\n')+ (' '|'\t')* { $channel=HIDDEN; } 
-		| (('\r')? '\n' )+ { if (startPos == 0 || implicitLineJoiningLevel > 0) $channel=HIDDEN; }
-		;
-WS		: { startPos > 0 }?=> SPACE+ { $channel = HIDDEN; };
-LEADING_WS
-@init { int spaces = 0; }
-		: { startPos == 0 }?=>
-			( { implicitLineJoiningLevel > 0 }? ( ' ' | '\t' )+ { $channel = HIDDEN; }
-			| (' ' { spaces++; } | '\t' { spaces += 8; spaces -= (spaces \% 8); })+
-				{
-					// make a string of n spaces where n is column number - 1
-					char[] indentation = new char[spaces];
-					for (int i = 0; i < spaces; i++) {
-						indentation[i] = ' ';
-					}
-					emit(new ClassicToken(LEADING_WS, new String(indentation)));
-				}
-				// kill trailing newline if present and then ignore
-				( ('\r')? '\n' 
-					{ 
-						if (state.token != null) state.token.setChannel(HIDDEN); 
-						else $channel = HIDDEN; 
-					}
-				)*
-			)
-		;
-COMMENT
-@init { $channel = HIDDEN; }
-		: { startPos == 0 }?=> SPACE* '#' (~'\n')* '\n'+
-		| { startPos > 0 }?=> '#' (~'\n')* 
+		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE|R_PIPELINE) )=> (('\r')? '\n')+ { $channel=HIDDEN; }
+		| (('\r')? '\n')+
+		;		
+WS		: SPACE+ { $channel = HIDDEN; }
 		;
 
 fragment LETTER	: LOWER | UPPER;

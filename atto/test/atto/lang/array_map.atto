@@ -1,6 +1,6 @@
-a = [1 2 3]
-b = a.map(x -> 10 * x)
+a = [1, 2, 3]
+b = a.map({x -> 10 * x})
 print(b)
 
 assert(b.length == 3, 'b.length')
-assert(b == [10 20 30], 'b')
+assert(b == [10, 20, 30], 'b')

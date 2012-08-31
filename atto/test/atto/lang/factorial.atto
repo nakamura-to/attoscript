@@ -1,10 +1,13 @@
-fact = n ->
-	if n < 2 
+fact = {n ->
+	if n < 2 {
 		1 
-	else 
-		n * fact(n-1)
+	} else {
+		n * fact(n - 1)
+	}
+}
 
 x = fact(10)
 
-print(x)
+print x
+
 assert(x == 3628800, '')

@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 
 public class Obj {
 
-    protected LinkedHashMap<String, Obj> values;
+    protected LinkedHashMap<String, Object> values;
 
     protected Runtime runtime;
 
@@ -17,7 +17,7 @@ public class Obj {
     public Obj(Runtime runtime, Obj __proto__) {
         this.runtime = runtime;
         this.__proto__ = __proto__;
-        values = new LinkedHashMap<String, Obj>();
+        values = new LinkedHashMap<String, Object>();
     }
 
     public void put(String name, Obj value) {
@@ -25,14 +25,29 @@ public class Obj {
     }
 
     public Obj get(String name) {
-        Obj value = values.get(name);
+        Object value = values.get(name);
         if (value instanceof Obj) {
             return (Obj) value;
         }
-        if (__proto__ == null) {
-            return null;
+        if (__proto__ != null) {
+            return __proto__.get(name);
         }
-        return __proto__.get(name);
+        return null;
+    }
+
+    public void putJavaObject(String name, Object value) {
+        values.put(name, value);
+    }
+
+    public Object getJavaObject(String name) {
+        Object value = values.get(name);
+        if (value != null) {
+            return value;
+        }
+        if (__proto__ != null) {
+            return __proto__.get(name);
+        }
+        return null;
     }
 
     public Obj send(String name, Obj... args) {
@@ -55,11 +70,7 @@ public class Obj {
         if (obj == null) {
             throw new IllegalArgumentException("name=" + name);
         }
-        Obj v = obj.get("__value__");
-        if (v instanceof Value) {
-            return (String) ((Value) v).value;
-        }
-        throw new IllegalArgumentException("name=" + name);
+        return obj.asString();
     }
 
     public BigDecimal getBigDecimal(String name) {
@@ -67,41 +78,33 @@ public class Obj {
         if (obj == null) {
             throw new IllegalArgumentException("name=" + name);
         }
-        Obj v = obj.get("__value__");
-        if (v instanceof Value) {
-            return (BigDecimal) ((Value) v).value;
-        }
-        throw new IllegalArgumentException("name=" + name);
+        return obj.asBigDecimal();
     }
 
     public Object asObject() {
-        Obj v = get("__value__");
-        if (v instanceof Value) {
-            return ((Value) v).value;
-        }
-        throw new RuntimeException();
+        return getJavaObject("__value__");
     }
 
     public BigDecimal asBigDecimal() {
-        Obj v = get("__value__");
-        if (v instanceof Value) {
-            return (BigDecimal) ((Value) v).value;
+        Object value = asObject();
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
         }
         throw new RuntimeException();
     }
 
     public boolean asBoolean() {
-        Obj v = get("__value__");
-        if (v instanceof Value) {
-            return (Boolean) ((Value) v).value;
+        Object value = asObject();
+        if (value instanceof Boolean) {
+            return (Boolean) value;
         }
         throw new RuntimeException();
     }
 
     public String asString() {
-        Obj v = get("__value__");
-        if (v instanceof Value) {
-            return (String) ((Value) v).value;
+        Object value = asObject();
+        if (value instanceof String) {
+            return (String) value;
         }
         throw new RuntimeException();
     }

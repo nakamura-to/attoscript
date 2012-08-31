@@ -1,0 +1,20 @@
+Parent = Object.clone({
+	name: 'foo'
+	hello: { -> 'hello ' + @name }
+})
+
+Child = Parent.clone({
+	constructor: { name ->
+		@name = name
+	}
+	hi: { -> 'hi ' + super.name }
+})
+
+child = Child('hoge')
+result = child.hello()
+print(result)
+assert(result == 'hello hoge', 'hello')
+
+result2 = child.hi()
+print(result2)
+assert(result2 == 'hi foo', 'hi')

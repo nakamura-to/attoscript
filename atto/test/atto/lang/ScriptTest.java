@@ -76,12 +76,16 @@ public class ScriptTest extends TestCase {
         run("array_filter.atto");
     }
 
+    public void testArrayEach() throws Exception {
+        run("array_each.atto");
+    }
+
     public void testAt() throws Exception {
         run("at.atto");
     }
 
-    public void testClass() throws Exception {
-        run("class.atto");
+    public void testClone() throws Exception {
+        run("clone.atto");
     }
 
     private void run(String fileName) throws Exception {
