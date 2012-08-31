@@ -26,15 +26,11 @@ root
 	;
 
 block
-	: (stmt (terminator stmt)*)? terminator? -> ^(BLOCK stmt*)
-	;
-
-stmt	
-	: expr
+	: (expr (terminator expr)*)? terminator? -> ^(BLOCK expr*)
 	;
 
 terminator
-	: SEMICOLON NEWLINE?|NEWLINE
+	: SEMICOLON NEWLINE? | NEWLINE
 	; 
 
 expr
@@ -42,7 +38,6 @@ expr
 	| or
 	| if_
 	| while_
-
 	;
 
 assign
@@ -96,12 +91,11 @@ and
 	;
 
 rel
-	: rel2 ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE)^ rel2)*
+	: reverse_pipeline ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE)^ reverse_pipeline)*
 	;
 
-
-rel2
-	: add (R_PIPELINE^ rel)*
+reverse_pipeline
+	: add (REVERSE_PIPELINE^ rel)*
 	;
 
 add
@@ -119,20 +113,22 @@ unary
 	;
 	
 postfix 
-	: ( primary -> primary )
+	: ( primary -> primary
+	  )
 	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
 	  	-> ^(CALL $postfix expr*)	
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
-	  | DOT ( p=primary -> ^(FIELD_ACCESS $postfix $p) 
-	  	| -> ^(CALL $postfix)
-	  	)
+	  | DOT primary 
+	  	-> ^(FIELD_ACCESS $postfix primary)
+	  | { input.LA(1) != MINUS }?=> expr
+	  	-> ^(APPLY $postfix expr)
 	  )*
 	;
 
 primary 
 	: NAME
-	| AT^ NAME	
+	| AT^ NAME
 	| NUMBER
 	| STRING
 	| BOOL
@@ -152,7 +148,7 @@ pair
 	;
 
 fun
-	: '{' (paramsdef '->')? NEWLINE? block '}' -> ^(FUN paramsdef? block)
+	: LCURLY (paramsdef ARROW)? NEWLINE? block RCURLY -> ^(FUN paramsdef? block)
 	;
 
 array	
@@ -171,6 +167,7 @@ NAME		: ( UPPER | LOWER | '_') ID_CHAR*;
 
 SEMICOLON	: ';';
 COLON		: ':';
+APPLY		: '^';
 DOT		: '.';
 COMMA		: ',';
 LPAREN		: '(';
@@ -198,10 +195,10 @@ ASSIGN		: '=';
 ARROW		: '->';
 COMPOSITE	: '>>';
 PIPELINE	: '|>';
-R_PIPELINE	: '<|';
+REVERSE_PIPELINE	: '<|';
 
 NEWLINE
-		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE|R_PIPELINE) )=> (('\r')? '\n')+ { $channel=HIDDEN; }
+		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE|REVERSE_PIPELINE) )=> (('\r')? '\n')+ { $channel=HIDDEN; }
 		| (('\r')? '\n')+
 		;		
 WS		: SPACE+ { $channel = HIDDEN; }

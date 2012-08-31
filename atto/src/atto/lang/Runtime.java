@@ -132,7 +132,7 @@ public class Runtime {
         objProto.addMethod("!=", new Method("rhs") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                if (receiver.send("==", args).asBoolean()) {
+                if (receiver.callMethod("==", args).asBoolean()) {
                     return falseObj;
                 }
                 return trueObj;
@@ -162,7 +162,7 @@ public class Runtime {
                         continue;
                     }
                     Obj value = (Obj) v;
-                    Obj string = value.send("toString");
+                    Obj string = value.callMethod("toString");
                     if (stringProto.isPrototypeOf(value)) {
                         buf.append("\"");
                         buf.append(string.get("__value__"));
@@ -200,7 +200,7 @@ public class Runtime {
                     String key = String.valueOf(i);
                     Obj element = receiver.get(key);
                     Obj otherElement = other.get(key);
-                    Obj result = element.send("==", otherElement);
+                    Obj result = element.callMethod("==", otherElement);
                     if (!result.asBoolean()) {
                         return falseObj;
                     }
@@ -226,7 +226,7 @@ public class Runtime {
                 Obj element = args[1];
                 int length = receiver.getBigDecimal("length").intValue();
                 for (; length < index; length++) {
-                    receiver.send("push", nullObj);
+                    receiver.callMethod("push", nullObj);
                 }
                 receiver.put(String.valueOf(index), element);
                 receiver.put("length", newNumber(length + 1));
@@ -251,10 +251,10 @@ public class Runtime {
                 Obj result = newArray();
                 for (int i = 0; i < length; i++) {
                     Obj key = newNumber(i);
-                    Obj element = receiver.send("get", new Obj[] { key });
+                    Obj element = receiver.callMethod("get", new Obj[] { key });
                     Obj newElement = fun.call(receiver, new Obj[] { element,
                             key });
-                    result.send("push", new Obj[] { newElement });
+                    result.callMethod("push", new Obj[] { newElement });
                 }
                 result.put("length", newNumber(length));
                 return result;
@@ -270,10 +270,10 @@ public class Runtime {
                 int index = 0;
                 for (int i = 0; i < length; i++) {
                     Obj key = newNumber(i);
-                    Obj element = receiver.send("get", new Obj[] { key });
+                    Obj element = receiver.callMethod("get", new Obj[] { key });
                     Obj bool = fun.call(receiver, new Obj[] { element, key });
                     if (bool == trueObj) {
-                        result.send("push", new Obj[] { element });
+                        result.callMethod("push", new Obj[] { element });
                         index++;
                     }
                 }
@@ -289,7 +289,7 @@ public class Runtime {
                 int length = receiver.getBigDecimal("length").intValue();
                 for (int i = 0; i < length; i++) {
                     Obj key = newNumber(i);
-                    Obj element = receiver.send("get", new Obj[] { key });
+                    Obj element = receiver.callMethod("get", new Obj[] { key });
                     fun.call(receiver, new Obj[] { element, key });
                 }
                 return nullObj;
@@ -306,8 +306,8 @@ public class Runtime {
                 buf.append("[");
                 for (int i = 0; i < length; i++) {
                     Obj key = newNumber(i);
-                    Obj element = receiver.send("get", new Obj[] { key });
-                    Obj string = element.send("toString");
+                    Obj element = receiver.callMethod("get", new Obj[] { key });
+                    Obj string = element.callMethod("toString");
                     buf.append(string.getJavaObject("__value__"));
                     buf.append(", ");
                 }
@@ -325,7 +325,7 @@ public class Runtime {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Fun fun = (Fun) receiver;
-                return fun.call(nullObj, args);
+                return fun.apply(nullObj, args);
             }
         });
 
@@ -333,7 +333,7 @@ public class Runtime {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
                 Fun fun = (Fun) receiver;
-                return fun.call(nullObj, args);
+                return fun.apply(nullObj, args);
             }
         });
 
@@ -582,7 +582,7 @@ public class Runtime {
         stringProto.addMethod("constructor", new Method("__value__") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                Obj s = args[0].send("toString");
+                Obj s = args[0].callMethod("toString");
                 Object value = s.getJavaObject("__value__");
                 if (value instanceof String) {
                     receiver.putJavaObject("__value__", value);
@@ -596,7 +596,7 @@ public class Runtime {
             public Obj call(Obj receiver, Obj[] args) {
                 String lhs = receiver.asString();
                 if (args[0] != nullObj) {
-                    String rhs = args[0].send("toString").asString();
+                    String rhs = args[0].callMethod("toString").asString();
                     return newString(lhs + rhs);
                 }
                 return receiver;

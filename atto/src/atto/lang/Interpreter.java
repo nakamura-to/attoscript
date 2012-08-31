@@ -107,8 +107,8 @@ public class Interpreter {
             return composite(t);
         case PIPELINE:
             return pipeline(t);
-        case R_PIPELINE:
-            return r_pipeline(t);
+        case REVERSE_PIPELINE:
+            return reverse_pipeline(t);
         case PLUS:
             return plus(t);
         case MINUS:
@@ -247,7 +247,7 @@ public class Interpreter {
         case INDEX: {
             Obj array = (Obj) exec(postfix.getChild(0));
             Obj index = (Obj) exec(postfix.getChild(1));
-            return array.send("set", index, value);
+            return array.callMethod("set", index, value);
         }
         case FIELD_ACCESS: {
             Obj obj = (Obj) exec(postfix.getChild(0));
@@ -300,35 +300,46 @@ public class Interpreter {
         for (int i = 0; i + 2 < t.getChildCount(); i++) {
             args[i] = (Obj) exec(t.getChild(i + 2));
         }
-        return obj.send(name, args);
+        return obj.callMethod(name, args);
     }
 
     protected Object apply(AttoTree t) {
         Assert.treeType(t, APPLY);
-        AttoTree target = t.getChild(0);
-        Obj arg = (Obj) exec(t.getChild(1));
-        Obj[] args = new Obj[] { arg };
-        if (target.getType() == FIELD_ACCESS) {
-            Obj receiver = (Obj) exec(target.getChild(0));
-            String field = target.getChild(1).getText();
-            return receiver.send(field, args);
-        } else {
-            if (target.getType() == AT) {
-                Obj receiver = runtime.currentEnv.self;
-                String name = target.getChild(0).getText();
-                return receiver.send(name, args);
-            } else {
-                Obj fun = (Obj) exec(target);
-                if (fun instanceof Fun) {
-                    return ((Fun) fun).call(runtime.nullObj, args);
-                }
-                throw new RuntimeException("not function: " + target);
+        return invoke(t, new Invoke() {
+            @Override
+            public Object method(Obj receiver, String name, Obj[] args) {
+                return receiver.applyMethod(name, args);
             }
-        }
+
+            @Override
+            public Object function(Fun fun, Obj[] args) {
+                return fun.apply(runtime.nullObj, args);
+            }
+        });
     }
 
     protected Object call(AttoTree t) {
         Assert.treeType(t, CALL);
+        return invoke(t, new Invoke() {
+            @Override
+            public Object method(Obj receiver, String name, Obj[] args) {
+                return receiver.callMethod(name, args);
+            }
+
+            @Override
+            public Object function(Fun fun, Obj[] args) {
+                return fun.call(runtime.nullObj, args);
+            }
+        });
+    }
+
+    public interface Invoke {
+        Object method(Obj receiver, String name, Obj[] args);
+
+        Object function(Fun fun, Obj[] args);
+    }
+
+    protected Object invoke(AttoTree t, Invoke inv) {
         AttoTree target = t.getChild(0);
         Obj[] args = new Obj[t.getChildCount() - 1];
         for (int i = 0; i + 1 < t.getChildCount(); i++) {
@@ -337,27 +348,28 @@ public class Interpreter {
         if (target.getType() == FIELD_ACCESS) {
             Obj receiver = (Obj) exec(target.getChild(0));
             String field = target.getChild(1).getText();
-            return receiver.send(field, args);
+            return inv.method(receiver, field, args);
         } else {
             if (target.getType() == AT) {
                 Obj receiver = runtime.currentEnv.self;
                 String name = target.getChild(0).getText();
-                return receiver.send(name, args);
+                return inv.method(receiver, name, args);
             } else {
                 Obj fun = (Obj) exec(target);
                 if (fun instanceof Fun) {
-                    return ((Fun) fun).call(runtime.nullObj, args);
+                    return inv.function((Fun) fun, args);
                 }
                 throw new RuntimeException("not function: " + target);
             }
         }
+
     }
 
     protected Object index(AttoTree t) {
         Assert.treeType(t, INDEX);
         Obj array = (Obj) exec(t.getChild(0));
         Obj index = (Obj) exec(t.getChild(1));
-        return array.send("get", index);
+        return array.callMethod("get", index);
     }
 
     protected Object field_access(AttoTree t) {
@@ -379,124 +391,124 @@ public class Interpreter {
         Assert.treeType(t, OR);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object and(AttoTree t) {
         Assert.treeType(t, AND);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object eq(AttoTree t) {
         Assert.treeType(t, EQ);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object ne(AttoTree t) {
         Assert.treeType(t, NE);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object lt(AttoTree t) {
         Assert.treeType(t, LT);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object gt(AttoTree t) {
         Assert.treeType(t, GT);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object le(AttoTree t) {
         Assert.treeType(t, LE);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object ge(AttoTree t) {
         Assert.treeType(t, GE);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object composite(AttoTree t) {
         Assert.treeType(t, COMPOSITE);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object pipeline(AttoTree t) {
         Assert.treeType(t, PIPELINE);
         Obj arg = (Obj) exec(t.getChild(0));
         Obj fun = (Obj) exec(t.getChild(1));
-        return fun.send(t.getText(), arg);
+        return fun.callMethod(t.getText(), arg);
     }
 
-    protected Object r_pipeline(AttoTree t) {
-        Assert.treeType(t, R_PIPELINE);
+    protected Object reverse_pipeline(AttoTree t) {
+        Assert.treeType(t, REVERSE_PIPELINE);
         Obj fun = (Obj) exec(t.getChild(0));
         Obj arg = (Obj) exec(t.getChild(1));
-        return fun.send(t.getText(), arg);
+        return fun.callMethod(t.getText(), arg);
     }
 
     protected Object plus(AttoTree t) {
         Assert.treeType(t, PLUS);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object minus(AttoTree t) {
         Assert.treeType(t, MINUS);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object mul(AttoTree t) {
         Assert.treeType(t, MUL);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object div(AttoTree t) {
         Assert.treeType(t, DIV);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object mod(AttoTree t) {
         Assert.treeType(t, MOD);
         Obj lhs = (Obj) exec(t.getChild(0));
         Obj rhs = (Obj) exec(t.getChild(1));
-        return lhs.send(t.getText(), rhs);
+        return lhs.callMethod(t.getText(), rhs);
     }
 
     protected Object not(AttoTree t) {
         Assert.treeType(t, NOT);
         Obj expr = (Obj) exec(t.getChild(0));
-        return expr.send(t.getText());
+        return expr.callMethod(t.getText());
     }
 
     protected Object unary_minus(AttoTree t) {
         Assert.treeType(t, UNARY_MINUS);
         Obj expr = (Obj) exec(t.getChild(0));
-        return expr.send("unary_minus");
+        return expr.callMethod("unary_minus");
     }
 
     protected Object number(AttoTree t) {

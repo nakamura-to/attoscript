@@ -1,5 +1,7 @@
 package atto.lang;
 
+import java.util.Arrays;
+
 public abstract class Fun extends Obj {
 
     protected Runtime runtime;
@@ -16,6 +18,16 @@ public abstract class Fun extends Obj {
     }
 
     public Obj call(Obj receiver, Obj[] args) {
+        Obj[] newArgs;
+        if (args.length < params.length) {
+            newArgs = Arrays.copyOf(args, params.length);
+        } else {
+            newArgs = args;
+        }
+        return apply(receiver, newArgs);
+    }
+
+    public Obj apply(Obj receiver, Obj[] args) {
         Env calleeEnv = new Env(runtime, receiver, env);
         Obj it = runtime.nullObj;
         if (args.length > 0) {

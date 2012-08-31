@@ -29,7 +29,7 @@ public abstract class BuiltinFun extends Fun {
                 s = runtime.newString("null");
                 out.println("null");
             } else {
-                s = o.send("toString");
+                s = o.callMethod("toString");
                 out.println(s.asObject());
             }
             out.flush();
@@ -58,7 +58,7 @@ public abstract class BuiltinFun extends Fun {
         @Override
         protected Obj invoke(Obj receiver, Obj[] args) {
             if (args[0] != runtime.trueObj) {
-                Object message = args[1].send("toString").get("__value__");
+                Object message = args[1].callMethod("toString").get("__value__");
                 out.println("ASSERT FAILED: " + message);
                 out.flush();
                 throw new AssertionError(message);

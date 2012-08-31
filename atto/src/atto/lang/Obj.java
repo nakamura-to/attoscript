@@ -50,11 +50,21 @@ public class Obj {
         return null;
     }
 
-    public Obj send(String name, Obj... args) {
+    public Obj callMethod(String name, Obj... args) {
         Obj method = get(name);
         if (method instanceof Fun) {
             Fun fun = (Fun) method;
             return fun.call(this, args);
+        }
+        // TODO dispatch to method missing
+        throw new RuntimeException("not fun: " + name);
+    }
+
+    public Obj applyMethod(String name, Obj... args) {
+        Obj method = get(name);
+        if (method instanceof Fun) {
+            Fun fun = (Fun) method;
+            return fun.apply(this, args);
         }
         // TODO dispatch to method missing
         throw new RuntimeException("not fun: " + name);
