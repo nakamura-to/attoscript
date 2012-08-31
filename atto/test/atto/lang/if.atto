@@ -1,19 +1,19 @@
 x = 0
 
 i = 0
-if i < 5 {
+if i < 5
 	x = 1
-} else {
+else
 	x = 2
-}
+end
 assert(x == 1, '1')
 
 x = 0
 i = 10
-if i < 5 {
+if i < 5
 	x = 1
-} else {
+else
 	x = 2
-}
+end
 assert(x == 2, '2')
 	

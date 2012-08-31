@@ -47,18 +47,14 @@ expr
 
 assign
 	: postfix 
-	  ( ASSIGN expr -> ^(ASSIGN postfix expr)
-	  | ( PLUS ASSIGN expr -> ^(ASSIGN postfix ^(PLUS postfix expr))
-	    | MINUS ASSIGN expr -> ^(ASSIGN postfix ^(MINUS postfix expr))
-	    | MUL ASSIGN expr -> ^(ASSIGN postfix ^(MUL postfix expr))
-	    | DIV ASSIGN expr -> ^(ASSIGN postfix ^(DIV postfix expr))
-	    | MOD ASSIGN expr -> ^(ASSIGN postfix ^(MOD postfix expr))
+	  ( ASSIGN NEWLINE? expr -> ^(ASSIGN postfix expr)
+	  | ( PLUS ASSIGN NEWLINE? expr -> ^(ASSIGN postfix ^(PLUS postfix expr))
+	    | MINUS ASSIGN NEWLINE? expr -> ^(ASSIGN postfix ^(MINUS postfix expr))
+	    | MUL ASSIGN NEWLINE? expr -> ^(ASSIGN postfix ^(MUL postfix expr))
+	    | DIV ASSIGN NEWLINE? expr -> ^(ASSIGN postfix ^(DIV postfix expr))
+	    | MOD ASSIGN NEWLINE? expr -> ^(ASSIGN postfix ^(MOD postfix expr))
 	    ) 
 	  )
-	;
-
-fun
-	: '{' paramsdef '->' NEWLINE? block '}' -> ^(ARROW paramsdef block)
 	;
 
 paramsdef
@@ -67,7 +63,7 @@ paramsdef
 	
 if_	
 	: 'if' cond_expr=expr 
-	  ( NEWLINE? '{' NEWLINE? block '}' NEWLINE? elif* else_? 
+	  ( NEWLINE block NEWLINE elif* else_? 'end'
 	  	-> ^(IF $cond_expr block elif* else_?)
 	  | 'then' then_expr=expr ('else' else_expr=expr)?
 	  	-> ^(IF $cond_expr $then_expr ^(ELSE $else_expr)?)
@@ -75,16 +71,16 @@ if_
 	;
 
 elif	
-	: 'elif' expr NEWLINE? '{' NEWLINE? block '}' NEWLINE? -> ^(ELIF expr block)
+	: 'elif' expr NEWLINE block NEWLINE -> ^(ELIF expr block)
 	;
 
 else_
-	: 'else' NEWLINE? '{' NEWLINE? block '}' NEWLINE? -> ^(ELSE block)
+	: 'else' NEWLINE block  NEWLINE -> ^(ELSE block)
 	;
 
 while_	
 	: 'while' cond_expr=expr 
-	  ( NEWLINE? '{' NEWLINE? block '}' NEWLINE? 
+	  ( NEWLINE block NEWLINE 'end' 
 	  	-> ^(WHILE $cond_expr block)
 	  | 'then' then_expr=expr
 	  	-> ^(WHILE $cond_expr $then_expr)
@@ -142,8 +138,8 @@ primary
 	| BOOL
 	| NULL
 	| LPAREN expr RPAREN -> expr
-	| (fun)=> fun
-	| obj
+	| (obj)=> obj
+	| fun
 	| array
 	;
 
@@ -155,6 +151,9 @@ pair
 	: NAME COLON^ expr
 	;
 
+fun
+	: '{' (paramsdef '->')? NEWLINE? block '}' -> ^(FUN paramsdef? block)
+	;
 
 array	
 	: LBRACK NEWLINE? (expr ((COMMA|COMMA? NEWLINE) expr)* )? (COMMA|COMMA? NEWLINE)? RBRACK -> ^(ARRAY expr*)

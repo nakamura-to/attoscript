@@ -14,27 +14,27 @@ public class InterpreterTest extends TestCase {
 
         "i=1\n" +
 
-        "if i==1 {\n" +
+        "if i==1\n" +
 
         "  100\n" +
 
-        "} elif i==2 {\n" +
+        "elif i==2\n" +
 
         "  200\n" +
 
-        "} elif i==3 {\n" +
+        "elif i==3\n" +
 
         "  300\n" +
 
-        "} elif i==4 {\n" +
+        "elif i==4\n" +
 
         "  400\n" +
 
-        "} else {\n" +
+        "else\n" +
 
         "  500\n" +
 
-        "}";
+        "end";
         Obj result = i.run(source);
         assertTrue(new BigDecimal(100).compareTo(result.asBigDecimal()) == 0);
     }
@@ -45,27 +45,27 @@ public class InterpreterTest extends TestCase {
 
         "i=2\n" +
 
-        "if i==1 {\n" +
+        "if i==1\n" +
 
         "  100\n" +
 
-        "} elif i==2 {\n" +
+        "elif i==2\n" +
 
         "  200\n" +
 
-        "} elif i==3 {\n" +
+        "elif i==3\n" +
 
         "  300\n" +
 
-        "} elif i==4 {\n" +
+        "elif i==4\n" +
 
         "  400\n" +
 
-        "} else {\n" +
+        "else\n" +
 
         "  500\n" +
 
-        "}";
+        "end";
         Obj result = i.run(source);
         assertTrue(new BigDecimal(200).compareTo(result.asBigDecimal()) == 0);
     }
@@ -76,27 +76,27 @@ public class InterpreterTest extends TestCase {
 
         "i=3\n" +
 
-        "if i==1 {\n" +
+        "if i==1\n" +
 
         "  100\n" +
 
-        "} elif i==2 {\n" +
+        "elif i==2\n" +
 
         "  200\n" +
 
-        "} elif i==3 {\n" +
+        "elif i==3\n" +
 
         "  300\n" +
 
-        "} elif i==4 {\n" +
+        "elif i==4\n" +
 
         "  400\n" +
 
-        "} else {\n" +
+        "else\n" +
 
         "  500\n" +
 
-        "}";
+        "end";
         Obj result = i.run(source);
         assertTrue(new BigDecimal(300).compareTo(result.asBigDecimal()) == 0);
     }
@@ -107,27 +107,27 @@ public class InterpreterTest extends TestCase {
 
         "i=4\n" +
 
-        "if i==1 {\n" +
+        "if i==1\n" +
 
         "  100\n" +
 
-        "} elif i==2 {\n" +
+        "elif i==2\n" +
 
         "  200\n" +
 
-        "} elif i==3 {\n" +
+        "elif i==3\n" +
 
         "  300\n" +
 
-        "} elif i==4 {\n" +
+        "elif i==4\n" +
 
         "  400\n" +
 
-        "} else {\n" +
+        "else\n" +
 
         "  500\n" +
 
-        "}";
+        "end";
         Obj result = i.run(source);
         assertTrue(new BigDecimal(400).compareTo(result.asBigDecimal()) == 0);
     }
@@ -138,34 +138,34 @@ public class InterpreterTest extends TestCase {
 
         "i=0\n" +
 
-        "if i==1 {\n" +
+        "if i==1\n" +
 
         "  100\n" +
 
-        "} elif i==2 {\n" +
+        "elif i==2\n" +
 
         "  200\n" +
 
-        "} elif i==3 {\n" +
+        "elif i==3\n" +
 
         "  300\n" +
 
-        "} elif i==4 {\n" +
+        "elif i==4\n" +
 
         "  400\n" +
 
-        "} else {\n" +
+        "else\n" +
 
         "  500\n" +
 
-        "}";
+        "end";
         Obj result = i.run(source);
         assertTrue(new BigDecimal(500).compareTo(result.asBigDecimal()) == 0);
     }
 
     public void testWHILE() throws Exception {
         Interpreter i = new Interpreter();
-        Obj result = i.run("i=0\nwhile i<3 {\n  i=i+1}\n");
+        Obj result = i.run("i=0\nwhile i<3 \n  i=i+1\nend\n");
         assertTrue(new BigDecimal(3).compareTo(result.asBigDecimal()) == 0);
     }
 
@@ -197,14 +197,14 @@ public class InterpreterTest extends TestCase {
 
     public void testOBJ_getter() throws Exception {
         Interpreter i = new Interpreter();
-        i.run("x={fname:'hoge',lname:'foo',fullname:Property({get:{->@fname+@lname}})}\n");
+        i.run("x={fname:'hoge',lname:'foo',fullname:Property({get:{@fname+@lname}})}\n");
         Obj result = i.run("x.fullname");
         assertEquals("hogefoo", result.asString());
     }
 
     public void testOBJ_setter() throws Exception {
         Interpreter i = new Interpreter();
-        i.run("x={name:'hoge',age:Property({set:{y->@name+=y}})}\n");
+        i.run("x={name:'hoge',age:Property({set:{@name+=it}})}\n");
         Obj result = i.run("x.age=10\nx.name\n");
         assertEquals("hoge10", result.asString());
     }
@@ -233,16 +233,28 @@ public class InterpreterTest extends TestCase {
         assertEquals(new BigDecimal(3), i.run("a[2]\n").asObject());
     }
 
-    public void testARROW_expr() throws Exception {
+    public void testFUN_expr() throws Exception {
         Interpreter i = new Interpreter();
-        Object result = i.run("{x, y -> x + y}\n");
-        assertTrue(result instanceof Fun);
+        Obj result = i.run("{x, y -> x + y}(2, 3)\n");
+        assertTrue(new BigDecimal(5).compareTo(result.asBigDecimal()) == 0);
     }
 
-    public void testARROW_block() throws Exception {
+    public void testFUN_block() throws Exception {
         Interpreter i = new Interpreter();
-        Object result = i.run("{x, y ->\n  x + y}\n");
-        assertTrue(result instanceof Fun);
+        Obj result = i.run("{x, y ->\n z = x + y\n z * 2}(2, 3)\n");
+        assertTrue(new BigDecimal(10).compareTo(result.asBigDecimal()) == 0);
+    }
+
+    public void testFUN_noargs() throws Exception {
+        Interpreter i = new Interpreter();
+        Obj result = i.run("{ 5 }()\n");
+        assertTrue(new BigDecimal(5).compareTo(result.asBigDecimal()) == 0);
+    }
+
+    public void testFUN_default_paramname() throws Exception {
+        Interpreter i = new Interpreter();
+        Obj result = i.run("{ it + 2 }(3)\n");
+        assertTrue(new BigDecimal(5).compareTo(result.asBigDecimal()) == 0);
     }
 
     public void testARRAY_EQ() throws Exception {

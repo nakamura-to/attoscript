@@ -1,8 +1,9 @@
 y = 1
-x = if y == 10 { 
+x = 
+	if y == 10
 		2 * y 
-	} else { 
+	else
 		y 
-	}
+	end
 
-assert(x == 1 'x')
+assert(x == 1, 'x')

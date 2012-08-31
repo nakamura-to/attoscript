@@ -83,8 +83,8 @@ public class Interpreter {
             return while_(t);
         case ASSIGN:
             return assign(t);
-        case ARROW:
-            return arrow(t);
+        case FUN:
+            return fun(t);
         case PARAMS:
             return params(t);
         case OR:
@@ -268,10 +268,17 @@ public class Interpreter {
         }
     }
 
-    protected Object arrow(AttoTree t) {
-        Assert.treeType(t, ARROW);
-        String[] params = (String[]) exec(t.getChild(0));
-        AttoTree body = t.getChild(1);
+    protected Object fun(AttoTree t) {
+        Assert.treeType(t, FUN);
+        String[] params;
+        AttoTree body;
+        if (t.getChildCount() > 1) {
+            params = (String[]) exec(t.getChild(0));
+            body = t.getChild(1);
+        } else {
+            params = new String[] {};
+            body = t.getChild(0);
+        }
         return runtime.newSimpleFun(params, body);
     }
 
