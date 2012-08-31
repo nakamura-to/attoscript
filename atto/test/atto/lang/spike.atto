@@ -1,3 +1,8 @@
-x = { x -> print(x) }
+Person = Object.clone({
+	constructor: { @age -> }
+})
 
-x 100
+Child = Person.clone()
+
+p = Child 10
+print p.age

@@ -21,6 +21,9 @@ public abstract class Fun extends Obj {
         Obj[] newArgs;
         if (args.length < params.length) {
             newArgs = Arrays.copyOf(args, params.length);
+            for (int i = args.length, len = params.length; i < len; i++) {
+                newArgs[i] = runtime.nullObj;
+            }
         } else {
             newArgs = args;
         }
@@ -38,7 +41,12 @@ public abstract class Fun extends Obj {
         calleeEnv.putLocal("super", receiver.__proto__);
         for (int i = 0; i < params.length; i++) {
             if (i < args.length) {
-                calleeEnv.putLocal(params[i], args[i]);
+                String p = params[i];
+                if (p.charAt(0) == '@') {
+                    receiver.put(p.substring(1), args[i]);
+                } else {
+                    calleeEnv.putLocal(params[i], args[i]);
+                }
             }
         }
         if (args.length < params.length) {

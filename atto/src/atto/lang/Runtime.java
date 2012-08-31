@@ -142,7 +142,7 @@ public class Runtime {
         objProto.addMethod("clone", new Method("prototype") {
             @Override
             public Obj call(Obj receiver, Obj[] args) {
-                Obj prototype = args[0];
+                Obj prototype = args[0] == nullObj ? newObj() : args[0];
                 prototype.__proto__ = receiver.get("prototype");
                 return newClass(prototype);
             }

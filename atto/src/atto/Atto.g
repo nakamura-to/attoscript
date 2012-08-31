@@ -10,7 +10,7 @@ tokens {
 	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
 	CLASS='class'; EXTENDS='extends'; FUN;
-	APPLY;
+	APPLY; VARDEF;
 }
 
 @lexer::header {
@@ -113,8 +113,7 @@ unary
 	;
 	
 postfix 
-	: ( primary -> primary
-	  )
+	: ( primary -> primary)
 	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
 	  	-> ^(CALL $postfix expr*)	
 	  | LBRACK expr RBRACK 
@@ -156,7 +155,7 @@ array
 	;
 
 vardef
-	: NAME
+	: AT? NAME -> ^(VARDEF AT? NAME)
 	;
 
 NUMBER		: '-'? DIGIT+ ('.' DIGIT+)?;	           

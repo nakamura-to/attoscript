@@ -4,17 +4,15 @@ Parent = Object.clone({
 })
 
 Child = Parent.clone({
-	constructor: { name ->
-		@name = name
-	}
-	hi: { -> 'hi ' + super.name }
+	constructor: { @name, @age -> }
+	hi: { -> 'hi ' + super.name + ' ' + @age }
 })
 
-child = Child('hoge')
+child = Child('hoge', 30)
 result = child.hello()
 print(result)
 assert(result == 'hello hoge', 'hello')
 
 result2 = child.hi()
 print(result2)
-assert(result2 == 'hi foo', 'hi')
+assert(result2 == 'hi foo 30', 'hi')
