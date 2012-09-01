@@ -1,8 +1,1 @@
-Person = Object.clone({
-	constructor: { @age -> }
-})
-
-Child = Person.clone()
-
-p = Child 10
-print p.age
+print "abcdef"

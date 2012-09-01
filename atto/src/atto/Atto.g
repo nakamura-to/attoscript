@@ -26,7 +26,13 @@ root
 	;
 
 block
-	: (expr (terminator expr)*)? terminator? -> ^(BLOCK expr*)
+	: (stmt (terminator stmt)*)? terminator? -> ^(BLOCK stmt*)
+	;
+
+stmt
+	: expr
+	| 'class' c=NAME ('extends' p=NAME)? NEWLINE (pair ((COMMA|COMMA? NEWLINE) pair)*)? (COMMA|COMMA? NEWLINE)? 'end'
+		-> ^(CLASS $c ^(EXTENDS $p?) pair*)
 	;
 
 terminator
@@ -114,7 +120,8 @@ unary
 	
 postfix 
 	: ( primary -> primary)
-	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
+	  ( { input.LT(-1).getTokenIndex() + 1 == input.LT(1).getTokenIndex() }?=> 
+	  	LPAREN (expr (COMMA expr)*)? RPAREN 
 	  	-> ^(CALL $postfix expr*)	
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
@@ -197,10 +204,12 @@ PIPELINE	: '|>';
 REVERSE_PIPELINE	: '<|';
 
 NEWLINE
-		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE|REVERSE_PIPELINE) )=> (('\r')? '\n')+ { $channel=HIDDEN; }
+		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE|REVERSE_PIPELINE) )=> (('\r')? '\n')+ { $channel = HIDDEN; }
 		| (('\r')? '\n')+
 		;		
 WS		: SPACE+ { $channel = HIDDEN; }
+		;
+COMMENT		: '#'  ~('\r'|'\n')* { $channel = HIDDEN; }
 		;
 
 fragment LETTER	: LOWER | UPPER;

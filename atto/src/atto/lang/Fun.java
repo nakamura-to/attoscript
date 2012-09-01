@@ -11,7 +11,7 @@ public abstract class Fun extends Obj {
     protected String[] params;
 
     protected Fun(Runtime runtime, Env env, String[] params) {
-        super(runtime, runtime.funProto);
+        super(runtime, runtime.functionProto);
         this.runtime = runtime;
         this.env = env;
         this.params = params;
@@ -66,13 +66,5 @@ public abstract class Fun extends Obj {
     protected abstract Obj invoke(Obj receiver, Obj[] args);
 
     protected abstract Obj applyPartial(Env env, String[] params);
-
-    public Env getEnv() {
-        return env;
-    }
-
-    public String[] getParams() {
-        return params;
-    }
 
 }

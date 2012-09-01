@@ -13,7 +13,7 @@ public abstract class BuiltinFun extends Fun {
         protected PrintWriter out;
 
         public PrintFun(Runtime runtime, PrintWriter out) {
-            this(runtime, null, new String[] { "obj" });
+            this(runtime, runtime.currentEnv, new String[] { "obj" });
             this.out = out;
         }
 
@@ -47,7 +47,8 @@ public abstract class BuiltinFun extends Fun {
         protected PrintWriter out;
 
         public AssertFun(Runtime runtime, PrintWriter out) {
-            this(runtime, null, new String[] { "bool", "message" });
+            this(runtime, runtime.currentEnv,
+                    new String[] { "bool", "message" });
             this.out = out;
         }
 
@@ -57,18 +58,45 @@ public abstract class BuiltinFun extends Fun {
 
         @Override
         protected Obj invoke(Obj receiver, Obj[] args) {
-            if (args[0] != runtime.trueObj) {
-                Object message = args[1].callMethod("toString").get("__value__");
-                out.println("ASSERT FAILED: " + message);
-                out.flush();
-                throw new AssertionError(message);
+            if (args.length > 0) {
+                if (args[0] != runtime.trueObj) {
+                    String message = "ASSERT FAILED: ";
+                    if (args.length > 1) {
+                        message += args[1].callMethod("toString").get(
+                                "__value__");
+                    }
+                    out.println("ASSERT FAILED: " + message);
+                    out.flush();
+                    throw new AssertionError(message);
+                }
             }
             return runtime.nullObj;
         }
 
         @Override
         protected Obj applyPartial(Env env, String[] params) {
-            return new PrintFun(runtime, env, params);
+            return new AssertFun(runtime, env, params);
+        }
+    }
+
+    public static class TimeFun extends BuiltinFun {
+
+        public TimeFun(Runtime runtime) {
+            this(runtime, runtime.currentEnv, new String[] {});
+        }
+
+        protected TimeFun(Runtime runtime, Env env, String[] params) {
+            super(runtime, env, params);
+        }
+
+        @Override
+        protected Obj invoke(Obj receiver, Obj[] args) {
+            return runtime.newNumber(System.currentTimeMillis());
+        }
+
+        @Override
+        protected Obj applyPartial(Env env, String[] params) {
+            return new TimeFun(runtime, env, params);
         }
     }
 

@@ -88,6 +88,18 @@ public class ScriptTest extends TestCase {
         run("clone.atto");
     }
 
+    public void testClass() throws Exception {
+        run("class.atto");
+    }
+
+    public void testComment() throws Exception {
+        run("comment.atto");
+    }
+
+    public void testTime() throws Exception {
+        run("time.atto");
+    }
+
     private void run(String fileName) throws Exception {
         String path = "atto/lang/" + fileName;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();

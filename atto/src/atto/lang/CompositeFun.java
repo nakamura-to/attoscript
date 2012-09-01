@@ -7,7 +7,7 @@ public class CompositeFun extends Fun {
     protected Fun second;
 
     public CompositeFun(Runtime runtime, Env env, Fun first, Fun second) {
-        this(runtime, env, first.getParams(), first, second);
+        this(runtime, env, first.params, first, second);
     }
 
     protected CompositeFun(Runtime runtime, Env env, String[] params,

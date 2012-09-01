@@ -71,6 +71,8 @@ public class Interpreter {
             return block(t);
         case STMT:
             return stmt(t);
+        case CLASS:
+            return class_(t);
         case EXTENDS:
             return extends_(t);
         case IF:
@@ -171,13 +173,26 @@ public class Interpreter {
         return exec(t.getChild(0));
     }
 
+    protected Object class_(AttoTree t) {
+        Assert.treeType(t, CLASS);
+        String name = t.getChild(0).getText();
+        Obj parent = (Obj) exec(t.getChild(1));
+        Obj proto = runtime.newObj();
+        for (int i = 2; i < t.getChildCount(); i++) {
+            Object[] pair = (Object[]) exec(t.getChild(i));
+            proto.put((String) pair[0], (Obj) pair[1]);
+        }
+        Obj clazz = parent.callMethod("clone", proto);
+        runtime.currentEnv.put(name, clazz);
+        return clazz;
+    }
+
     protected Object extends_(AttoTree t) {
         Assert.treeType(t, EXTENDS);
         if (t.getChildCount() > 0) {
-            String constructor = t.getChild(0).getText();
-            return runtime.currentEnv.get(constructor);
+            return exec(t.getChild(0));
         }
-        return runtime.objClass;
+        return runtime.objectClass;
     }
 
     protected Object if_(AttoTree t) {
@@ -255,7 +270,7 @@ public class Interpreter {
             Obj obj = (Obj) exec(postfix.getChild(0));
             String field = postfix.getChild(1).getText();
             Obj prop = obj.get(field);
-            if (runtime.propProto.isPrototypeOf(prop)) {
+            if (runtime.propertyClass.prototype.isPrototypeOf(prop)) {
                 Obj setter = prop.get("set");
                 if (setter instanceof Fun) {
                     ((Fun) setter).call(obj, new Obj[] { value });
@@ -388,7 +403,7 @@ public class Interpreter {
         Obj obj = (Obj) exec(t.getChild(0));
         String name = t.getChild(1).getText();
         Obj result = obj.get(name);
-        if (runtime.propProto.isPrototypeOf(result)) {
+        if (runtime.propertyClass.prototype.isPrototypeOf(result)) {
             Fun getter = (Fun) result.get("get");
             return getter.call(obj, new Obj[] {});
         }

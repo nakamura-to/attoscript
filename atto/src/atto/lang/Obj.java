@@ -78,7 +78,7 @@ public class Obj {
     public String getString(String name) {
         Obj obj = get(name);
         if (obj == null) {
-            throw new IllegalArgumentException("name=" + name);
+            return null;
         }
         return obj.asString();
     }
@@ -86,7 +86,7 @@ public class Obj {
     public BigDecimal getBigDecimal(String name) {
         Obj obj = get(name);
         if (obj == null) {
-            throw new IllegalArgumentException("name=" + name);
+            return null;
         }
         return obj.asBigDecimal();
     }
