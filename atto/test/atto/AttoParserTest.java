@@ -13,11 +13,11 @@ public class AttoParserTest extends TestCase {
         assertEquals("1", t.toStringTree());
     }
 
-    // public void testPipeline() throws Exception {
-    // AttoParser p = createParser("10 |> double |> print");
-    // AttoTree t = (AttoTree) p.rel().getTree();
-    // assertEquals("(|> (|> 10 double) print)", t.toStringTree());
-    // }
+    public void testMINUS() throws Exception {
+        AttoParser p = createParser("10 -2");
+        AttoTree t = (AttoTree) p.root().getTree();
+        assertEquals("(BLOCK (- 10 2))", t.toStringTree());
+    }
 
     private AttoParser createParser(String input) throws Exception {
         ANTLRStringStream stream = new ANTLRStringStream(input);

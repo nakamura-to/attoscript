@@ -183,7 +183,7 @@ EXTENDS		: { !memberMode }?=> 'extends';
 BOOLEAN		: { !memberMode }?=> 'true' | 'false';
 NULL		: { !memberMode }?=> 'null';
 
-NUMBER		: '-'? DIGIT+ ('.' DIGIT+)?;
+NUMBER		: DIGIT+ ('.' DIGIT+)?;
 STRING		: '"' ~('\\' | '"')* '"' | '\'' ~('\\' | '\'')* '\'' ;
 NAME		: ( UPPER | LOWER | '_') ID_CHAR* { memberMode = false; };
 

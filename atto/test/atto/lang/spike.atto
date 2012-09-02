@@ -1,10 +1,59 @@
-a = [1,2,3,4,5]
+# 代入
+a = 10
+print(a) # 10
 
-a.map({ it * 2 }).filter({ it > 5 })
-|> print
+# 四則演算
+b = a + 2 * 3 - 6 / 2
+print(b) # 13
 
-add = {x,y->x+y}
-add1 = add <| 1
-print(add1)
+# 関数
+add = { x, y -> x + y }
+print(add(1, 2)) # 3
+
+# 関数（パラメータの省略）
+double = { 2 * it }
+print(double(5)) # 10
+
+# パイプライン
+2 |> { x -> 2 * x } |> print # 4
+
+# 部分適用
+mul = { x, y -> x * y }
+mul2 = mul <| 2
+print(mul2(3)) # 6
+
+# 関数合成
+f = add >> { x -> 2 * x }
+print(f(2, 3)) # 10
+
+# クロージャ
+x = 10
+f = { y -> x + y }
+print(f(1)) # 11
+
+# 配列
+array = [1, 2, 3, 4, 5]
+array.map({ it * 2 }).filter({ it > 5 }) |> print # [6, 8, 10]
+
+# オブジェクト
+person = { name: 'hoge', age: 20 }
+print(person) # { name: 'hoge', age: 20 }
+
+# 条件分岐
+i = 5
+if i < 2
+	print('if')
+elif i > 10
+	print('elif')
+else
+	print('else')
+end
+
+# 繰り返し
+i = 0
+while i < 5
+	print(i)
+	i += 1
+end
 
 print("done!")
