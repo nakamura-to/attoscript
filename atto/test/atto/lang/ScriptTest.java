@@ -45,7 +45,7 @@ public class ScriptTest extends TestCase {
     }
 
     public void testLineJoining() throws Exception {
-        run("line_joining.atto");
+        run("omit_comma.atto");
     }
 
     public void testAssign() throws Exception {
@@ -113,7 +113,8 @@ public class ScriptTest extends TestCase {
         }
         try {
             Interpreter i = new Interpreter();
-            i.run(stream);
+            Obj result = i.run(stream);
+            assertEquals("done!", result.asString());
         } finally {
             try {
                 stream.close();

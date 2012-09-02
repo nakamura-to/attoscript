@@ -8,7 +8,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
-	FUN; APPLY; VARDEF; PARENT_CLASS;
+	FUN; VARDEF; PARENT_CLASS;
 }
 
 @lexer::header {
@@ -20,11 +20,18 @@ package atto;
 }
 
 @lexer::members {
+	int startPos;
 	boolean memberMode;
+	
+	@Override
+	public Token nextToken() {
+		startPos = getCharPositionInLine();
+		return super.nextToken();
+	}
 }
 
 root
-	: block
+	: block 
 	;
 
 block
@@ -99,11 +106,7 @@ and
 	;
 
 rel
-	: reverse_pipeline ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE)^ reverse_pipeline)*
-	;
-
-reverse_pipeline
-	: add (REVERSE_PIPELINE^ rel)*
+	: add ((EQ|NE|LE|GE|LT|GT|COMPOSITE|PIPELINE|REVERSE_PIPELINE)^ add)*
 	;
 
 add
@@ -122,15 +125,12 @@ unary
 	
 postfix 
 	: ( primary -> primary)
-	  ( { input.LT(-1).getTokenIndex() + 1 == input.LT(1).getTokenIndex() }?=> 
-	  	LPAREN (expr (COMMA expr)*)? RPAREN 
+	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
 	  	-> ^(CALL $postfix expr*)	
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
 	  | DOT primary 
 	  	-> ^(FIELD_ACCESS $postfix primary)
-	  | { input.LA(1) != MINUS }?=> expr
-	  	-> ^(APPLY $postfix expr)
 	  )*
 	;
 
@@ -167,7 +167,7 @@ vardef
 	: AT? NAME -> ^(VARDEF AT? NAME)
 	;
 
-IF			: { !memberMode }?=> 'if';
+IF		: { !memberMode }?=> 'if';
 ELIF		: { !memberMode }?=> 'elif'; 
 ELSE		: { !memberMode }?=> 'else'; 
 WHILE		: { !memberMode }?=> 'while';
@@ -184,8 +184,7 @@ NAME		: ( UPPER | LOWER | '_') ID_CHAR* { memberMode = false; };
 
 SEMICOLON	: ';';
 COLON		: ':';
-APPLY		: '^';
-DOT			: '.' { memberMode = true; };
+DOT		: '.' { memberMode = true; };
 COMMA		: ',';
 LPAREN		: '(';
 RPAREN		: ')';
@@ -212,15 +211,16 @@ ASSIGN		: '=';
 ARROW		: '->';
 COMPOSITE	: '>>';
 PIPELINE	: '|>';
-REVERSE_PIPELINE	: '<|';
+REVERSE_PIPELINE: '<|';
 
+COMMENT		: {startPos==0}?=> '#'  ~('\r'|'\n')* (('\r')? '\n')* { $channel = HIDDEN; }
+		| '#'  ~('\r'|'\n')* { $channel = HIDDEN; }
+		;
 NEWLINE
-		: ( (('\r')? '\n')+ (' '|'\t')* (DOT|PIPELINE|REVERSE_PIPELINE) )=> (('\r')? '\n')+ { $channel = HIDDEN; }
+		: ( (('\r')? '\n')+ SPACE* (DOT|PIPELINE|REVERSE_PIPELINE) )=> (('\r')? '\n')+ { $channel = HIDDEN; }
 		| (('\r')? '\n')+
 		;		
 WS		: SPACE+ { $channel = HIDDEN; }
-		;
-COMMENT		: '#'  ~('\r'|'\n')* { $channel = HIDDEN; }
 		;
 
 fragment LETTER	: LOWER | UPPER;

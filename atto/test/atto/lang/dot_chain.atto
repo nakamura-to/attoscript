@@ -6,3 +6,5 @@ f = { ->
 		.d
 }
 assert(f() == 'hoge', '')
+
+print("done!")

@@ -5,3 +5,5 @@ print(b)
 
 assert(b.length == 7, 'b.length')
 assert(b == a, 'b')
+
+print("done!")

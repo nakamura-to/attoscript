@@ -70,10 +70,10 @@ public class ObjectClassBuilder {
                     Obj string = value.callMethod("toString");
                     if (runtime.stringClass.prototype.isPrototypeOf(value)) {
                         buf.append("\"");
-                        buf.append(string.get("__value__"));
+                        buf.append(string.asString());
                         buf.append("\"");
                     } else {
-                        buf.append(string.get("__value__"));
+                        buf.append(string.asString());
                     }
                     buf.append(", ");
                 }

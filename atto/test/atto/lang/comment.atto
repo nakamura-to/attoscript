@@ -1,6 +1,7 @@
-# comment
 print(1)
 # comment
 print(2) # comment
-
-assert(true)
+# comment
+# hoge
+# foo
+print("done!") #bar

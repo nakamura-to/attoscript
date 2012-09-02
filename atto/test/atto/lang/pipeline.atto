@@ -6,6 +6,8 @@ assert(y == 20, 'y')
 print <| y
 
 z = 0
-{ x -> z = x } <| double <| 20
+{ x -> z = x } <| (double <| 20)
 assert(z == 40, 'z')
 print <| z
+
+print("done!")

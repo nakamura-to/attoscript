@@ -1,8 +1,12 @@
 user = {}
+
 user.name = 'parrt'
 user.age = 20
-user.hello = -> 'Hi ' + @name
+user.hello = { 'Hi ' + @name }
+
+print(user)
 
 assert(user.hello() == 'Hi parrt', 'hello')
 assert(user.age == 20, 'age')
 
+print("done!")

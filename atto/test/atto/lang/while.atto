@@ -7,3 +7,5 @@ end
 print("looped " + n + " times.")
 
 assert(n == 1000, 'n == 1000')
+
+print("done!")

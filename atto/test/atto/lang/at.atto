@@ -11,3 +11,5 @@ person.set('foo')
 
 print(person.hi())
 assert(person.hi() == 'Hi hogefoo', '2')
+
+print("done!")

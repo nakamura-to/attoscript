@@ -56,16 +56,6 @@ public class Obj {
         throw new RuntimeException("not fun: " + name);
     }
 
-    public Obj applyMethod(String name, Obj... args) {
-        Obj method = get(name);
-        if (method instanceof Fun) {
-            Fun fun = (Fun) method;
-            return fun.apply(this, args);
-        }
-        // TODO dispatch to method missing
-        throw new RuntimeException("not fun: " + name);
-    }
-
     public void addMethod(String name, Method method) {
         Obj fun = new MethodFun(runtime, method);
         values.put(name, fun);

@@ -10,3 +10,5 @@ assert(person.name == 'hoge', 'name')
 assert(person.addr.city == 'Tokyo', 'addr')
 assert(person.addr.street == 'foo', 'street')
 assert(person.age == 20, 'age')
+
+print("done!")

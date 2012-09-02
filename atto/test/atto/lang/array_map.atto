@@ -4,3 +4,5 @@ print(b)
 
 assert(b.length == 3, 'b.length')
 assert(b == [10, 20, 30], 'b')
+
+print("done!")

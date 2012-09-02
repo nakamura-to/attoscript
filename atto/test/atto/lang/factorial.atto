@@ -8,6 +8,8 @@ fact = {n ->
 
 x = fact(10)
 
-print x
+print(x)
 
-assert(x == 3628800, '')
+assert(x == 3628800)
+
+print("done!")

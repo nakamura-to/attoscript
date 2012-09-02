@@ -139,8 +139,6 @@ public class Interpreter {
             return not(t);
         case UNARY_MINUS:
             return unary_minus(t);
-        case APPLY:
-            return apply(t);
         case CALL:
             return call(t);
         case INDEX:
@@ -340,21 +338,6 @@ public class Interpreter {
             args[i] = (Obj) exec(t.getChild(i + 2));
         }
         return obj.callMethod(name, args);
-    }
-
-    protected Object apply(AttoTree t) {
-        Assert.treeType(t, APPLY);
-        return invoke(t, new Invoke() {
-            @Override
-            public Object method(Obj receiver, String name, Obj[] args) {
-                return receiver.applyMethod(name, args);
-            }
-
-            @Override
-            public Object function(Fun fun, Obj[] args) {
-                return fun.apply(runtime.nullObj, args);
-            }
-        });
     }
 
     protected Object call(AttoTree t) {

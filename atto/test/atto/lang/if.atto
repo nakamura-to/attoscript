@@ -16,4 +16,5 @@ else
 	x = 2
 end
 assert(x == 2, '2')
-	
+
+print("done!")

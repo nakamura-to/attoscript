@@ -7,3 +7,5 @@ x =
 	end
 
 assert(x == 1, 'x')
+
+print("done!")

@@ -9,3 +9,5 @@ fib = { n ->
 t = time()
 fib(10)
 print (time() - t) + ' msec'
+
+print("done!")

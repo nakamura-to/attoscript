@@ -1,1 +1,3 @@
-print "abcdef"
+print("abcdef")
+
+print("done!")
