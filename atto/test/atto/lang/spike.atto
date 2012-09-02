@@ -56,4 +56,30 @@ while i < 5
 	i += 1
 end
 
-print("done!")
+# プロトタイプ
+Array.prototype.concat = {
+	ret = []
+	push = { ret.push(it) }
+	self.each(push)
+	it.each(push)
+	ret
+}
+
+[1,2,3].concat([4, 5]) |> print # [1, 2, 3, 4, 5]
+
+# クラス
+class Parent
+	name: 'foo'
+	hello: { -> 'hello ' + @name }
+end
+
+class Child extends Parent
+	constructor: { @name, @age -> }
+	hi: { -> 'hi ' + super.name + ' ' + @age }
+end
+
+child = Child('hoge', 30)
+print(child.hello()) # hello hoge
+print(child.hi()) # hi foo 30
+
+print('done!')

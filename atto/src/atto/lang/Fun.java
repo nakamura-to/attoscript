@@ -35,7 +35,9 @@ public abstract class Fun extends Obj {
         }
         calleeEnv.putLocal("it", it);
         calleeEnv.putLocal("self", receiver);
-        calleeEnv.putLocal("super", receiver.__proto__);
+        if (receiver.__proto__ != null && receiver.__proto__.__proto__ != null) {
+            calleeEnv.putLocal("super", receiver.__proto__.__proto__);
+        }
         for (int i = 0; i < params.length; i++) {
             if (i < args.length) {
                 String p = params[i];
