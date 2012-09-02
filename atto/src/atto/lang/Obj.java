@@ -5,19 +5,15 @@ import java.util.LinkedHashMap;
 
 public class Obj {
 
-    protected LinkedHashMap<String, Object> values;
+    protected LinkedHashMap<String, Object> values = new LinkedHashMap<String, Object>();
 
     protected Runtime runtime;
 
     protected Obj __proto__;
 
-    protected Obj() {
-    }
-
     public Obj(Runtime runtime, Obj __proto__) {
         this.runtime = runtime;
         this.__proto__ = __proto__;
-        values = new LinkedHashMap<String, Object>();
     }
 
     public void put(String name, Obj value) {
@@ -129,6 +125,11 @@ public class Obj {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return values.toString();
     }
 
 }

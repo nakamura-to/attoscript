@@ -3,10 +3,14 @@ class Parent
 	hello: { -> 'hello ' + @name }
 end
 
+assert(Parent.class == 'Parent')
+
 class Child extends Parent
 	constructor: { @name, @age -> }
 	hi: { -> 'hi ' + super.name + ' ' + @age }
 end
+
+assert(Child.class == 'Child')
 
 child = Child('hoge', 30)
 result = child.hello()

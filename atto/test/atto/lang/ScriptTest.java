@@ -100,6 +100,10 @@ public class ScriptTest extends TestCase {
         run("time.atto");
     }
 
+    public void testString() throws Exception {
+        run("string.atto");
+    }
+
     private void run(String fileName) throws Exception {
         String path = "atto/lang/" + fileName;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();

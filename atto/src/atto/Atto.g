@@ -7,10 +7,8 @@ options {
 
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
-	IF='if'; ELIF='elif'; ELSE='else'; WHILE='while';
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
-	CLASS='class'; EXTENDS='extends'; FUN;
-	APPLY; VARDEF;
+	FUN; APPLY; VARDEF; PARENT_CLASS;
 }
 
 @lexer::header {
@@ -19,6 +17,10 @@ package atto;
 
 @header {
 package atto;
+}
+
+@lexer::members {
+	boolean memberMode;
 }
 
 root
@@ -31,8 +33,8 @@ block
 
 stmt
 	: expr
-	| 'class' c=NAME ('extends' p=NAME)? NEWLINE (pair ((COMMA|COMMA? NEWLINE) pair)*)? (COMMA|COMMA? NEWLINE)? 'end'
-		-> ^(CLASS $c ^(EXTENDS $p?) pair*)
+	| CLASS c=NAME (EXTENDS p=NAME)? NEWLINE (pair ((COMMA|COMMA? NEWLINE) pair)*)? (COMMA|COMMA? NEWLINE)? END
+		-> ^(CLASS $c ^(PARENT_CLASS $p?) pair*)
 	;
 
 terminator
@@ -63,27 +65,27 @@ paramsdef
 	;
 	
 if_	
-	: 'if' cond_expr=expr 
-	  ( NEWLINE block NEWLINE elif* else_? 'end'
+	: IF cond_expr=expr 
+	  ( NEWLINE block NEWLINE elif* else_? END
 	  	-> ^(IF $cond_expr block elif* else_?)
-	  | 'then' then_expr=expr ('else' else_expr=expr)?
+	  | THEN then_expr=expr (ELSE else_expr=expr)?
 	  	-> ^(IF $cond_expr $then_expr ^(ELSE $else_expr)?)
 	  )
 	;
 
 elif	
-	: 'elif' expr NEWLINE block NEWLINE -> ^(ELIF expr block)
+	: ELIF expr NEWLINE block NEWLINE -> ^(ELIF expr block)
 	;
 
 else_
-	: 'else' NEWLINE block  NEWLINE -> ^(ELSE block)
+	: ELSE NEWLINE block  NEWLINE -> ^(ELSE block)
 	;
 
 while_	
-	: 'while' cond_expr=expr 
-	  ( NEWLINE block NEWLINE 'end' 
+	: WHILE cond_expr=expr 
+	  ( NEWLINE block NEWLINE END 
 	  	-> ^(WHILE $cond_expr block)
-	  | 'then' then_expr=expr
+	  | THEN then_expr=expr
 	  	-> ^(WHILE $cond_expr $then_expr)
 	  )
 	;
@@ -137,7 +139,7 @@ primary
 	| AT^ NAME
 	| NUMBER
 	| STRING
-	| BOOL
+	| BOOLEAN
 	| NULL
 	| LPAREN expr RPAREN -> expr
 	| (obj)=> obj
@@ -165,16 +167,25 @@ vardef
 	: AT? NAME -> ^(VARDEF AT? NAME)
 	;
 
-NUMBER		: '-'? DIGIT+ ('.' DIGIT+)?;	           
+IF			: { !memberMode }?=> 'if';
+ELIF		: { !memberMode }?=> 'elif'; 
+ELSE		: { !memberMode }?=> 'else'; 
+WHILE		: { !memberMode }?=> 'while';
+THEN		: { !memberMode }?=> 'then';
+END		: { !memberMode }?=> 'end';
+CLASS		: { !memberMode }?=> 'class';
+EXTENDS		: { !memberMode }?=> 'extends';
+BOOLEAN		: { !memberMode }?=> 'true' | 'false';
+NULL		: { !memberMode }?=> 'null';
+
+NUMBER		: '-'? DIGIT+ ('.' DIGIT+)?;
 STRING		: '"' ~('\\' | '"')* '"' | '\'' ~('\\' | '\'')* '\'' ;
-BOOL		: 'true' | 'false';
-NULL		: 'null';
-NAME		: ( UPPER | LOWER | '_') ID_CHAR*;
+NAME		: ( UPPER | LOWER | '_') ID_CHAR* { memberMode = false; };
 
 SEMICOLON	: ';';
 COLON		: ':';
 APPLY		: '^';
-DOT		: '.';
+DOT			: '.' { memberMode = true; };
 COMMA		: ',';
 LPAREN		: '(';
 RPAREN		: ')';

@@ -1,10 +1,7 @@
 package atto.lang;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
-
-import org.antlr.runtime.RecognitionException;
 
 import atto.AttoTree;
 
@@ -35,7 +32,7 @@ public class Runtime {
         this.out = out;
     }
 
-    public void init() throws IOException, RecognitionException {
+    public void init() {
         currentEnv = new Env(this);
 
         objectProto = new Obj(this, null);

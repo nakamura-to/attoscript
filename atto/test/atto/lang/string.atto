@@ -1,0 +1,5 @@
+x = 'def'
+s = 'abc#{x}ghi#{10 + 20}mno'
+print(s)
+
+assert(s == 'abcdefghi30mno')

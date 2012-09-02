@@ -58,17 +58,14 @@ public abstract class BuiltinFun extends Fun {
 
         @Override
         protected Obj invoke(Obj receiver, Obj[] args) {
-            if (args.length > 0) {
-                if (args[0] != runtime.trueObj) {
-                    String message = "ASSERT FAILED: ";
-                    if (args.length > 1) {
-                        message += args[1].callMethod("toString").get(
-                                "__value__");
-                    }
-                    out.println("ASSERT FAILED: " + message);
-                    out.flush();
-                    throw new AssertionError(message);
+            if (args[0] != runtime.trueObj) {
+                String message = "ASSERT FAILED: ";
+                if (args[1] != runtime.nullObj) {
+                    message += args[1].callMethod("toString").get("__value__");
                 }
+                out.println("ASSERT FAILED: " + message);
+                out.flush();
+                throw new AssertionError(message);
             }
             return runtime.nullObj;
         }

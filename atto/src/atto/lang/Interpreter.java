@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -29,31 +31,41 @@ public class Interpreter {
     public Interpreter() {
     }
 
-    public Obj run(InputStream in) throws RecognitionException, IOException {
-        return run(new ANTLRInputStream(in), new PrintWriter(System.out));
+    public Obj run(InputStream in) {
+        try {
+            return run(new ANTLRInputStream(in), new PrintWriter(System.out));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Obj run(InputStream in, PrintWriter out)
-            throws RecognitionException, IOException {
-        return run(new ANTLRInputStream(in), out);
+    public Obj run(InputStream in, PrintWriter out) {
+        try {
+            return run(new ANTLRInputStream(in), out);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Obj run(String in) throws RecognitionException, IOException {
+    public Obj run(String in) {
         return run(new ANTLRStringStream(in), new PrintWriter(System.out));
     }
 
-    public Obj run(String in, PrintWriter out) throws RecognitionException,
-            IOException {
+    public Obj run(String in, PrintWriter out) {
         return run(new ANTLRStringStream(in), out);
     }
 
-    protected Obj run(CharStream in, PrintWriter out)
-            throws RecognitionException, IOException {
+    protected Obj run(CharStream in, PrintWriter out) {
         AttoLexer lexer = new AttoLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         AttoParser parser = new AttoParser(tokens);
         parser.setTreeAdaptor(treeAdaptor);
-        AttoParser.root_return ret = parser.root();
+        AttoParser.root_return ret;
+        try {
+            ret = parser.root();
+        } catch (RecognitionException e) {
+            throw new RuntimeException(e);
+        }
         if (parser.getNumberOfSyntaxErrors() == 0) {
             if (runtime == null) {
                 this.runtime = new Runtime(this, out);
@@ -73,8 +85,8 @@ public class Interpreter {
             return stmt(t);
         case CLASS:
             return class_(t);
-        case EXTENDS:
-            return extends_(t);
+        case PARENT_CLASS:
+            return parent_class(t);
         case IF:
             return if_(t);
         case ELIF:
@@ -139,8 +151,8 @@ public class Interpreter {
             return number(t);
         case STRING:
             return string(t);
-        case BOOL:
-            return bool(t);
+        case BOOLEAN:
+            return boolean_(t);
         case NULL:
             return null_(t);
         case NAME:
@@ -183,12 +195,13 @@ public class Interpreter {
             proto.put((String) pair[0], (Obj) pair[1]);
         }
         Obj clazz = parent.callMethod("clone", proto);
+        clazz.put("class", runtime.newString(name));
         runtime.currentEnv.put(name, clazz);
         return clazz;
     }
 
-    protected Object extends_(AttoTree t) {
-        Assert.treeType(t, EXTENDS);
+    protected Object parent_class(AttoTree t) {
+        Assert.treeType(t, PARENT_CLASS);
         if (t.getChildCount() > 0) {
             return exec(t.getChild(0));
         }
@@ -542,14 +555,26 @@ public class Interpreter {
         return runtime.newNumber(new BigDecimal(t.getText()));
     }
 
+    protected Pattern interpolationPattern = Pattern.compile("#\\{(.+?)\\}");
+
     protected Object string(AttoTree t) {
         Assert.treeType(t, STRING);
         String s = t.getText();
-        return runtime.newString(s.substring(1, s.length() - 1));
+        Matcher m = interpolationPattern
+                .matcher(s.substring(1, s.length() - 1));
+        StringBuffer buf = new StringBuffer(s.length());
+        while (m.find()) {
+            String expr = m.group(1);
+            Obj result = run(expr, runtime.out);
+            String replacement = result.callMethod("toString").asString();
+            m.appendReplacement(buf, replacement);
+        }
+        m.appendTail(buf);
+        return runtime.newString(buf.toString());
     }
 
-    protected Object bool(AttoTree t) {
-        Assert.treeType(t, BOOL);
+    protected Object boolean_(AttoTree t) {
+        Assert.treeType(t, BOOLEAN);
         if (Boolean.valueOf(t.getText())) {
             return runtime.trueObj;
         } else {

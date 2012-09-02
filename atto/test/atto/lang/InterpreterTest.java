@@ -461,7 +461,7 @@ public class InterpreterTest extends TestCase {
         assertEquals("a10", i.run("'a' + 10\n").asString());
     }
 
-    public void testBOOL() throws Exception {
+    public void testBOOLEAN() throws Exception {
         Interpreter i = new Interpreter();
         assertEquals(Boolean.TRUE, i.run("true\n").asObject());
         assertEquals(Boolean.FALSE, i.run("false\n").asObject());
