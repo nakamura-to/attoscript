@@ -4,15 +4,12 @@ import java.util.Arrays;
 
 public abstract class Fun extends Obj {
 
-    protected Runtime runtime;
-
     protected Env env;
 
     protected String[] params;
 
     protected Fun(Runtime runtime, Env env, String[] params) {
         super(runtime, runtime.functionProto);
-        this.runtime = runtime;
         this.env = env;
         this.params = params;
     }

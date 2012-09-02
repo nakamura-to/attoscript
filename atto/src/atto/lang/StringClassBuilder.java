@@ -1,5 +1,7 @@
 package atto.lang;
 
+import java.math.BigDecimal;
+
 public class StringClassBuilder {
 
     protected Runtime runtime;
@@ -18,6 +20,8 @@ public class StringClassBuilder {
                 Object value = s.getJavaObject("__value__");
                 if (value instanceof String) {
                     receiver.putJavaObject("__value__", value);
+                    int length = ((String) value).length();
+                    receiver.put("length", runtime.newNumber(length));
                 }
                 return runtime.nullObj;
             }
@@ -97,6 +101,42 @@ public class StringClassBuilder {
                 } else {
                     return runtime.falseObj;
                 }
+            }
+        });
+
+        proto.addMethod("charAt", new Method("index") {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                String s = receiver.asString();
+                if (args[0] == runtime.nullObj) {
+                    return runtime.nullObj;
+                }
+                BigDecimal decimal = args[0].asBigDecimal();
+                if (decimal == null) {
+                    return runtime.nullObj;
+                }
+                int index = decimal.intValue();
+                if (index < 0 || index >= s.length()) {
+                    return runtime.nullObj;
+                }
+                char c = s.charAt(index);
+                return runtime.newString(String.valueOf(c));
+            }
+        });
+
+        proto.addMethod("toLowerCase", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                String s = receiver.asString();
+                return runtime.newString(s.toLowerCase());
+            }
+        });
+
+        proto.addMethod("toUpperCase", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                String s = receiver.asString();
+                return runtime.newString(s.toUpperCase());
             }
         });
 

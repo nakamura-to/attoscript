@@ -141,6 +141,8 @@ public class Interpreter {
             return unary_minus(t);
         case CALL:
             return call(t);
+        case ARGS:
+            return args(t);
         case INDEX:
             return index(t);
         case FIELD_ACCESS:
@@ -342,49 +344,34 @@ public class Interpreter {
 
     protected Object call(AttoTree t) {
         Assert.treeType(t, CALL);
-        return invoke(t, new Invoke() {
-            @Override
-            public Object method(Obj receiver, String name, Obj[] args) {
-                return receiver.callMethod(name, args);
-            }
-
-            @Override
-            public Object function(Fun fun, Obj[] args) {
-                return fun.call(runtime.nullObj, args);
-            }
-        });
-    }
-
-    public interface Invoke {
-        Object method(Obj receiver, String name, Obj[] args);
-
-        Object function(Fun fun, Obj[] args);
-    }
-
-    protected Object invoke(AttoTree t, Invoke inv) {
         AttoTree target = t.getChild(0);
-        Obj[] args = new Obj[t.getChildCount() - 1];
-        for (int i = 0; i + 1 < t.getChildCount(); i++) {
-            args[i] = (Obj) exec(t.getChild(i + 1));
-        }
+        Obj[] args = (Obj[]) exec(t.getChild(1));
         if (target.getType() == FIELD_ACCESS) {
             Obj receiver = (Obj) exec(target.getChild(0));
             String field = target.getChild(1).getText();
-            return inv.method(receiver, field, args);
+            return receiver.callMethod(field, args);
         } else {
             if (target.getType() == AT) {
                 Obj receiver = runtime.currentEnv.self;
                 String name = target.getChild(0).getText();
-                return inv.method(receiver, name, args);
+                return receiver.callMethod(name, args);
             } else {
                 Obj fun = (Obj) exec(target);
                 if (fun instanceof Fun) {
-                    return inv.function((Fun) fun, args);
+                    return ((Fun) fun).call(runtime.nullObj, args);
                 }
                 throw new RuntimeException("not function: " + target);
             }
         }
+    }
 
+    protected Object args(AttoTree t) {
+        Assert.treeType(t, ARGS);
+        Obj[] args = new Obj[t.getChildCount()];
+        for (int i = 0; i < t.getChildCount(); i++) {
+            args[i] = (Obj) exec(t.getChild(i));
+        }
+        return args;
     }
 
     protected Object index(AttoTree t) {

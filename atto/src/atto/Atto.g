@@ -8,7 +8,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
-	FUN; VARDEF; PARENT_CLASS;
+	FUN; VARDEF; PARENT_CLASS; ARGS;
 }
 
 @lexer::header {
@@ -125,13 +125,17 @@ unary
 	
 postfix 
 	: ( primary -> primary)
-	  ( LPAREN (expr (COMMA expr)*)? RPAREN 
-	  	-> ^(CALL $postfix expr*)	
+	  ( LPAREN argsdef RPAREN 
+	  	-> ^(CALL $postfix argsdef)
 	  | LBRACK expr RBRACK 
 	  	-> ^(INDEX $postfix expr)
 	  | DOT primary 
 	  	-> ^(FIELD_ACCESS $postfix primary)
 	  )*
+	;
+
+argsdef
+	: (expr (COMMA expr)*)? -> ^(ARGS expr*)
 	;
 
 primary 

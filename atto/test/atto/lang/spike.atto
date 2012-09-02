@@ -1,3 +1,6 @@
-print("abcdef")
+a = [1,2,3,4,5]
+
+a.map({ it * 2 }).filter({ it > 5 })
+|> print
 
 print("done!")

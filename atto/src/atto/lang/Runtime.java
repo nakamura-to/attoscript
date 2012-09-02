@@ -120,6 +120,7 @@ public class Runtime {
     public Obj newString(String s) {
         Obj obj = stringClass.call(nullObj, new Obj[] {});
         obj.putJavaObject("__value__", s == null ? "" : s);
+        obj.put("length", newNumber(s.length()));
         return obj;
     }
 

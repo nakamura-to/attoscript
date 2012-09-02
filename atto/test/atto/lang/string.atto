@@ -1,7 +1,27 @@
+# length
+s = ''
+assert(s.length == 0)
+s = 'abc'
+assert(s.length == 3)
+
+# charAt
+s = 'abc'
+assert(s.charAt(-1) == null)
+assert(s.charAt(0) == 'a')
+assert(s.charAt(1) == 'b')
+assert(s.charAt(2) == 'c')
+assert(s.charAt(3) == null)
+
+# toLowerCase
+assert('ABC'.toLowerCase() == 'abc')
+
+# toUpperCase
+assert('abc'.toUpperCase() == 'ABC')
+
+# interpolation
 x = 'def'
 s = 'abc#{x}ghi#{10 + 20}mno'
 print(s)
-
 assert(s == 'abcdefghi30mno')
 
 print("done!")

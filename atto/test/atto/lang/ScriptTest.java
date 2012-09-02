@@ -44,7 +44,7 @@ public class ScriptTest extends TestCase {
         run("obj_block.atto");
     }
 
-    public void testLineJoining() throws Exception {
+    public void testOmitComma() throws Exception {
         run("omit_comma.atto");
     }
 
