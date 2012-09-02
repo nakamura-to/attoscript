@@ -3,4 +3,8 @@ a = [1,2,3,4,5]
 a.map({ it * 2 }).filter({ it > 5 })
 |> print
 
+add = {x,y->x+y}
+add1 = add <| 1
+print(add1)
+
 print("done!")

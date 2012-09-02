@@ -105,12 +105,15 @@ public class Runtime {
         return objectClass.call(nullObj, new Obj[] {});
     }
 
-    public Obj newSimpleFun(String[] params, AttoTree body) {
-        return new SimpleFun(this, currentEnv, params, body);
-    }
-
-    public Obj newCompositeFun(Fun first, Fun second) {
-        return new CompositeFun(this, currentEnv, first, second);
+    public Obj newSimpleFun(String[] params, AttoTree body, final Obj text) {
+        Obj obj = new SimpleFun(this, currentEnv, params, body);
+        obj.addMethod("toString", new Method() {
+            @Override
+            public Obj call(Obj receiver, Obj[] args) {
+                return text;
+            }
+        });
+        return obj;
     }
 
     public Obj newArray() {

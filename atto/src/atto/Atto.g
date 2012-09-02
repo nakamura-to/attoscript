@@ -8,7 +8,7 @@ options {
 tokens {
 	INDENT; DEDENT; OBJ; ARRAY; BLOCK; STMT;
 	UNARY_MINUS; PARAMS; CALL; INDEX; FIELD_ACCESS; SEND;
-	FUN; VARDEF; PARENT_CLASS; ARGS;
+	FUN; VARDEF; PARENT_CLASS; ARGS; TEXT;
 }
 
 @lexer::header {
@@ -160,7 +160,8 @@ pair
 	;
 
 fun
-	: LCURLY (paramsdef ARROW)? NEWLINE? block RCURLY -> ^(FUN paramsdef? block)
+	: LCURLY (paramsdef ARROW)? NEWLINE? block RCURLY 
+		-> ^(FUN paramsdef? block TEXT[$text])
 	;
 
 array	

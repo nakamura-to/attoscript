@@ -101,6 +101,8 @@ public class Interpreter {
             return fun(t);
         case PARAMS:
             return params(t);
+        case TEXT:
+            return text(t);
         case VARDEF:
             return vardef(t);
         case OR:
@@ -302,14 +304,19 @@ public class Interpreter {
         Assert.treeType(t, FUN);
         String[] params;
         AttoTree body;
-        if (t.getChildCount() > 1) {
-            params = (String[]) exec(t.getChild(0));
-            body = t.getChild(1);
-        } else {
+        Obj text;
+        if (t.getChildCount() == 2) {
             params = new String[] {};
             body = t.getChild(0);
+            text = (Obj) exec(t.getChild(1));
+        } else if (t.getChildCount() == 3) {
+            params = (String[]) exec(t.getChild(0));
+            body = t.getChild(1);
+            text = (Obj) exec(t.getChild(2));
+        } else {
+            throw new IllegalStateException();
         }
-        return runtime.newSimpleFun(params, body);
+        return runtime.newSimpleFun(params, body, text);
     }
 
     protected Object params(AttoTree t) {
@@ -320,6 +327,11 @@ public class Interpreter {
             params[i] = (String) exec(t.getChild(i));
         }
         return params;
+    }
+
+    protected Object text(AttoTree t) {
+        Assert.treeType(t, TEXT);
+        return runtime.newString(t.getText());
     }
 
     protected Object vardef(AttoTree t) {

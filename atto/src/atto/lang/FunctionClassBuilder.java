@@ -35,7 +35,9 @@ public class FunctionClassBuilder {
                 if (!(rhs instanceof Fun)) {
                     throw new RuntimeException("not function: ");
                 }
-                return runtime.newCompositeFun(lhs, (Fun) rhs);
+                Obj fun = new CompositeFun(runtime, runtime.currentEnv, lhs,
+                        (Fun) rhs);
+                return fun;
             }
         });
 
@@ -45,7 +47,7 @@ public class FunctionClassBuilder {
                 // TODO
                 Fun fun = (Fun) receiver;
                 StringBuilder buf = new StringBuilder();
-                buf.append("(");
+                buf.append("{");
                 String[] params = fun.params;
                 int len = fun.params.length;
                 for (int i = 0; i < len; i++) {
@@ -55,7 +57,7 @@ public class FunctionClassBuilder {
                 if (len > 0) {
                     buf.delete(buf.length() - 2, buf.length());
                 }
-                buf.append(")->...");
+                buf.append(" -> ... }");
                 return runtime.newString(buf.toString());
             }
         });
